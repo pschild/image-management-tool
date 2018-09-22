@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const sqlite3 = require('sqlite3');
 
-var db = new sqlite3.Database('./test/test.db');
+var db = new sqlite3.Database('test.db');
 db.serialize(() => {
     db.run("CREATE TABLE Products (name, barcode, quantity)");
 
