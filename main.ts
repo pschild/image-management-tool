@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as path from 'path';
 import * as url from 'url';
@@ -84,10 +84,29 @@ try {
 }
 
 // handling application updates
-app.on('ready', function()  {
+autoUpdater.autoDownload = false;
+
+app.on('ready', () => {
   autoUpdater.checkForUpdates();
 });
 
+autoUpdater.on('update-available', () => {
+  dialog.showMessageBox({
+    title: 'Update verfügbar',
+    message: 'Eine neue Version ist verfügbar. Wollen Sie die Software jetzt aktualisieren?',
+    buttons: [ 'Jetzt herunterladen', 'Später' ]
+  }, (buttonIndex) => {
+    if (buttonIndex === 0) {
+      autoUpdater.downloadUpdate();
+    }
+  });
+});
+
 autoUpdater.on('update-downloaded', (info) => {
-  autoUpdater.quitAndInstall();
+  dialog.showMessageBox({
+    title: 'Update installieren',
+    message: 'Die aktuellste Version wurde heruntergeladen. Die Anwendung wird nun neu gestartet.'
+  }, () => {
+    setImmediate(() => autoUpdater.quitAndInstall());
+  });
 });
