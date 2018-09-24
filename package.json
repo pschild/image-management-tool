@@ -1,11 +1,11 @@
 {
-  "name": "angular-electron",
-  "version": "4.2.2",
-  "description": "Angular 6 with Electron (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "name": "image-management-tool",
+  "version": "0.0.1",
+  "description": "Image Management Tool by Philippe Schild",
+  "homepage": "https://github.com/pschild/image-management-tool",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "Philippe Schild",
+    "email": "philippe.schild@gmail.com"
   },
   "keywords": [
     "angular",
@@ -15,7 +15,7 @@
     "sass"
   ],
   "main": "main.js",
-  "private": true,
+  "private": false,
   "scripts": {
     "postinstall": "npm run postinstall:electron && npx electron-builder install-app-deps",
     "postinstall:web": "node postinstall-web",
