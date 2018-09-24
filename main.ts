@@ -1,4 +1,5 @@
 import { app, BrowserWindow, screen } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -81,3 +82,12 @@ try {
   // Catch Error
   // throw e;
 }
+
+// handling application updates
+app.on('ready', function()  {
+  autoUpdater.checkForUpdates();
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  autoUpdater.quitAndInstall();
+});

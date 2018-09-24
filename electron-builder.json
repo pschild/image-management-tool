@@ -1,28 +1,33 @@
 {
-  "productName": "angular-electron",
+  "appId": "com.github.pschild.imagemanagementtool",
+  "productName": "Image Management Tool",
   "directories": {
     "output": "release/"
   },
-    "files": [
-        "**/*",
-        "!*.ts",
-        "!*.code-workspace",
-        "!LICENSE.md",
-        "!package.json",
-        "!package-lock.json",
-        "!src/",
-        "!e2e/",
-        "!hooks/",
-        "!.angular-cli.json",
-        "!_config.yml",
-        "!karma.conf.js",
-        "!tsconfig.json",
-        "!tslint.json"
-    ],
+  "files": [
+      "**/*",
+      "!*.ts",
+      "!*.code-workspace",
+      "!LICENSE.md",
+      "!package.json",
+      "!package-lock.json",
+      "!src/",
+      "!e2e/",
+      "!hooks/",
+      "!.angular-cli.json",
+      "!_config.yml",
+      "!karma.conf.js",
+      "!tsconfig.json",
+      "!tslint.json"
+  ],
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  },
   "win": {
     "icon": "dist",
     "target": [
-      "portable"
+      "nsis"
     ]
   },
   "mac": {
@@ -36,5 +41,12 @@
     "target": [
       "AppImage"
     ]
-  }
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "pschild",
+      "repo": "image-management-tool"
+    }
+  ]
 }
