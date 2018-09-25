@@ -1,7 +1,8 @@
-import { app, BrowserWindow, screen, dialog } from 'electron';
+import { app, BrowserWindow, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as path from 'path';
 import * as url from 'url';
+import { startServer } from './server';
 
 let win, serve;
 const args = process.argv.slice(1);
@@ -9,11 +10,8 @@ serve = args.some(val => val === '--serve');
 
 function createWindow() {
 
-  // include main file of server and run it on given port
-  const serverPort = 4201;
-  const serverApp = require('./server/main');
-  const http = require('http').Server(serverApp);
-  http.listen(serverPort);
+  // start the server
+  startServer();
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -83,30 +81,4 @@ try {
   // throw e;
 }
 
-// handling application updates
-autoUpdater.autoDownload = false;
-
-app.on('ready', () => {
-  autoUpdater.checkForUpdates();
-});
-
-autoUpdater.on('update-available', () => {
-  dialog.showMessageBox({
-    title: 'Update verfügbar',
-    message: 'Eine neue Version ist verfügbar. Wollen Sie die Software jetzt aktualisieren?',
-    buttons: [ 'Jetzt herunterladen', 'Später' ]
-  }, (buttonIndex) => {
-    if (buttonIndex === 0) {
-      autoUpdater.downloadUpdate();
-    }
-  });
-});
-
-autoUpdater.on('update-downloaded', (info) => {
-  dialog.showMessageBox({
-    title: 'Update installieren',
-    message: 'Die aktuellste Version wurde heruntergeladen. Die Anwendung wird nun neu gestartet.'
-  }, () => {
-    setImmediate(() => autoUpdater.quitAndInstall());
-  });
-});
+global['autoUpdater'] = autoUpdater; // put autoUpdater to global namespace, so that it can be called from an Angular component
