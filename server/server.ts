@@ -1,26 +1,26 @@
 import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as http from 'http';
 
-// TODO: import-syntax
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const sqlite3 = require('sqlite3');
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
+
+import { Database } from 'sqlite3';
 
 // config
 const SERVER_PORT = 4201;
 const APP_DIR = '.image-management-tool';
 const DB_NAME = 'image-management-tool.db';
 
+// application directory
 const appDirPath = path.join(os.homedir(), APP_DIR);
 if (!fs.existsSync(appDirPath)) {
     fs.mkdirSync(appDirPath);
 }
 
-const db = new sqlite3.Database(path.join(appDirPath, DB_NAME));
+// database
+const db: Database = new Database(path.join(appDirPath, DB_NAME));
 db.serialize(() => {
     db.run('CREATE TABLE IF NOT EXISTS Products (name, barcode, quantity)');
 
@@ -34,14 +34,20 @@ db.serialize(() => {
 });
 db.close();
 
+// server application
+const app: express.Application = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 
+// routes
 app.get(`/test`, (req, res) => {
     res.json({hello: 'world'});
 });
 
 export const startServer = () => {
-    http.createServer(app).listen(SERVER_PORT);
+    app.listen(SERVER_PORT, () => {
+        console.log(`Server started at port ${SERVER_PORT}`);
+    });
 };
