@@ -1,12 +1,12 @@
 import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
-
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
-
 import { Database } from 'sqlite3';
+
+import { WelcomeController } from './controllers';
 
 // config
 const SERVER_PORT = 4201;
@@ -40,11 +40,7 @@ const app: express.Application = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
-
-// routes
-app.get(`/test`, (req, res) => {
-    res.json({hello: 'world'});
-});
+app.use('/welcome', WelcomeController);
 
 export const startServer = () => {
     app.listen(SERVER_PORT, () => {
