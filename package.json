@@ -45,7 +45,9 @@
     "cors": "^2.8.4",
     "electron-updater": "^3.1.2",
     "express": "^4.16.3",
-    "sqlite3": "^4.0.2"
+    "reflect-metadata": "^0.1.12",
+    "sqlite3": "^4.0.2",
+    "typeorm": "^0.2.7"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.6.3",

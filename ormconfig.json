@@ -1,0 +1,20 @@
+{
+   "type": "sqlite",
+   "database": "<OVERWRITTEN_IN_SERVER.TS>",
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "server/entity/**/*.js"
+   ],
+   "migrations": [
+      "server/migration/**/*.js"
+   ],
+   "subscribers": [
+      "server/subscriber/**/*.js"
+   ],
+   "cli": {
+      "entitiesDir": "server/entity",
+      "migrationsDir": "server/migration",
+      "subscribersDir": "server/subscriber"
+   }
+}
