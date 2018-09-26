@@ -2,11 +2,13 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as express from 'express';
+import { Application, Request, Response } from 'express';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
-import { Database } from 'sqlite3';
 
-import { WelcomeController } from './controllers';
+import 'reflect-metadata';
+import { createConnection, getConnectionOptions } from 'typeorm';
+import { Routes } from './routes';
 
 // config
 const SERVER_PORT = 4201;
@@ -19,31 +21,40 @@ if (!fs.existsSync(appDirPath)) {
     fs.mkdirSync(appDirPath);
 }
 
-// database
-const db: Database = new Database(path.join(appDirPath, DB_NAME));
-db.serialize(() => {
-    db.run('CREATE TABLE IF NOT EXISTS Products (name, barcode, quantity)');
+export const startServer = async () => {
+    const connectionOptions = await getConnectionOptions();
+    Object.assign(connectionOptions, { database: path.join(appDirPath, DB_NAME) });
 
-    db.run('INSERT INTO Products VALUES (?, ?, ?)', ['product001', 'xxxxx', 20]);
-    db.run('INSERT INTO Products VALUES (?, ?, ?)', ['product002', 'xxxxx', 40]);
-    db.run('INSERT INTO Products VALUES (?, ?, ?)', ['product003', 'xxxxx', 60]);
+    createConnection(connectionOptions).then(connection => {
+        // server application
+        const app: Application = express();
 
-    db.each('SELECT * FROM Products', (err, row) => {
-        console.log(row);
-    });
-});
-db.close();
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(cors());
 
-// server application
-const app: express.Application = express();
+        // register express routes from defined application routes
+        Routes.forEach(route => {
+            (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
+                try {
+                    const actionResult = (new (route.controller as any))[route.action](req, res, next);
+                    if (actionResult instanceof Promise) {
+                        actionResult.then(result => result !== null && result !== undefined ? res.send(result) : res.send(null));
+                    } else if (actionResult !== null && actionResult !== undefined) {
+                        res.json(actionResult);
+                    } else {
+                        res.json(null);
+                    }
+                } catch (e) {
+                    res.json({ error: e });
+                }
+            });
+        });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors());
-app.use('/welcome', WelcomeController);
-
-export const startServer = () => {
-    app.listen(SERVER_PORT, () => {
-        console.log(`Server started at port ${SERVER_PORT}`);
+        app.listen(SERVER_PORT, () => {
+            console.log(`Server started at port ${SERVER_PORT}`);
+        });
     });
 };
+
+startServer();
