@@ -9,8 +9,8 @@ import { ElectronService } from '../../providers/electron.service';
 })
 export class HomeComponent implements OnInit {
 
-  private applicationVersion: string;
-  private greetings: string;
+  applicationVersion: string;
+  greetings: string;
 
   constructor(private http: HttpClient, private electronService: ElectronService) { }
 
