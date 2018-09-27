@@ -11,7 +11,10 @@ serve = args.some(val => val === '--serve');
 function createWindow() {
 
   // start the server
-  startServer();
+  // Pass the current appPath of electron to the server, so that paths for TypeORM can be set dynamically but correctly on server side.
+  // This is a workaround for now. It's necessary, because when built for production the paths defined in server/ormconfig.json don't point
+  // to the correct entities/migrations/subscribers.
+  startServer(app.getAppPath());
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;

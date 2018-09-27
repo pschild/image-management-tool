@@ -21,19 +21,23 @@ if (!fs.existsSync(appDirPath)) {
     fs.mkdirSync(appDirPath);
 }
 
-export const startServer = async () => {
+export const startServer = async (basePath: string) => {
     const connectionOptions = await getConnectionOptions();
+    // overwrite path to database
     Object.assign(connectionOptions, { database: path.join(appDirPath, DB_NAME) });
+    // overwrite paths to entities, migrations and subscribers
+    Object.assign(connectionOptions, { entities: [path.join(basePath, 'server/entity/**/*.js')] });
+    Object.assign(connectionOptions, { migrations: [path.join(basePath, 'server/migration/**/*.js')] });
+    Object.assign(connectionOptions, { subscribers: [path.join(basePath, 'server/subscriber/**/*.js')] });
 
     createConnection(connectionOptions).then(connection => {
-        // server application
         const app: Application = express();
 
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(cors());
 
-        // register express routes from defined application routes
+        // register express routes from defined application routes dynamically
         Routes.forEach(route => {
             (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
                 try {
