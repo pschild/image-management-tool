@@ -31,3 +31,12 @@ Based on <https://github.com/maximegris/angular-electron>.
 5. When you want to release a new version, make sure to increment the version in `package.json`, commit and push your changes.
 6. Do steps 2 and 3 again.
 7. The app will automatically detect the new release and update itself.
+
+# Develop
+
+## Create migration files
+Run `typeorm migration:create -n SomeNameForMigrationFile` to let the CLI create a file `<TIMESTAMP>-SomeNameForMigrationFile.ts` located in `server/migration`.
+
+Migrations are run automatically, when the flag `migrationsRun` is set to `true` in `ormconfig.json`. Changes to the entities of course need to be made manually.
+
+See the files `1538044562515-TagLabelName.ts` and `1538046038653-TagNameLabel.ts` as an example for creating migrations. They show, how the column `label` in table `tag` is renamed to `name`, and afterwards this change is reversed.

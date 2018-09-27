@@ -17,7 +17,8 @@
     ]
   },
   "include": [
-    "main.ts"
+    "main.ts",
+    "server/**/*"
   ],
   "exclude": [
     "node_modules",

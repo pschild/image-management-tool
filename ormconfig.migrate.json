@@ -1,6 +1,6 @@
 {
    "type": "sqlite",
-   "database": "<OVERWRITTEN_IN_SERVER.TS>",
+   "database": "image-management-tool.db",
    "synchronize": false,
    "migrationsRun": true,
    "logging": false,

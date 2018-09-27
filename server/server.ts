@@ -56,5 +56,3 @@ export const startServer = async () => {
         });
     });
 };
-
-startServer();
