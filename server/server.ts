@@ -12,23 +12,23 @@ import { Routes } from './routes';
 
 // config
 const SERVER_PORT = 4201;
-const APP_DIR = '.image-management-tool';
+const WORKING_DIR = '.image-management-tool';
 const DB_NAME = 'image-management-tool.db';
 
-// application directory
-const appDirPath = path.join(os.homedir(), APP_DIR);
-if (!fs.existsSync(appDirPath)) {
-    fs.mkdirSync(appDirPath);
+// ensure that working directory exists
+const workingDirPath = path.join(os.homedir(), WORKING_DIR);
+if (!fs.existsSync(workingDirPath)) {
+    fs.mkdirSync(workingDirPath);
 }
 
-export const startServer = async (basePath: string) => {
+export const startServer = async (electronAppPath: string) => {
     const connectionOptions = await getConnectionOptions();
     // overwrite path to database
-    Object.assign(connectionOptions, { database: path.join(appDirPath, DB_NAME) });
+    Object.assign(connectionOptions, { database: path.join(workingDirPath, DB_NAME) });
     // overwrite paths to entities, migrations and subscribers
-    Object.assign(connectionOptions, { entities: [path.join(basePath, 'server/entity/**/*.js')] });
-    Object.assign(connectionOptions, { migrations: [path.join(basePath, 'server/migration/**/*.js')] });
-    Object.assign(connectionOptions, { subscribers: [path.join(basePath, 'server/subscriber/**/*.js')] });
+    Object.assign(connectionOptions, { entities: [path.join(electronAppPath, 'server/entity/**/*.js')] });
+    Object.assign(connectionOptions, { migrations: [path.join(electronAppPath, 'server/migration/**/*.js')] });
+    Object.assign(connectionOptions, { subscribers: [path.join(electronAppPath, 'server/subscriber/**/*.js')] });
 
     createConnection(connectionOptions).then(connection => {
         const app: Application = express();
