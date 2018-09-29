@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { createConnection, getManager } from 'typeorm';
+import { createConnection, getManager, getConnection } from 'typeorm';
 import { Tag } from '../src/entity/Tag';
 import { Image } from '../src/entity/Image';
 import { Folder } from '../src/entity/Folder';
@@ -14,6 +14,10 @@ describe('Image Repository', function() {
             synchronize: true,
             entities: [Tag, Image, Place, Person, Folder]
         });
+    });
+
+    afterAll(async () => {
+        await getConnection().close();
     });
 
     it('can save and load entities', async () => {

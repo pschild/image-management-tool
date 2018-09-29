@@ -34,6 +34,11 @@ Based on <https://github.com/maximegris/angular-electron>.
 
 # Develop
 
+## Test
+Jasmine will be used to run test suites.  
+You can run tests for server with `npm run server:test`. Test specs are located in `server/test`.  
+Tests for client are not available yet.
+
 ## Create migration files
 Run `typeorm migration:create -n SomeNameForMigrationFile` to let the CLI create a file `<TIMESTAMP>-SomeNameForMigrationFile.ts` located in `server/migration`.
 
