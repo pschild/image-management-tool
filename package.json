@@ -34,6 +34,7 @@
     "electron:windows": "npm run build:prod && npx electron-builder build --windows",
     "electron:mac": "npm run build:prod && npx electron-builder build --mac",
     "server:start": "npm run electron:serve-tsc && node server/server.js",
+    "server:test": "tsc -p tsconfig.server.json && jasmine --config=server/spec/support/jasmine.json",
     "publish:windows": "npm run electron:windows -- -p always",
     "test": "npm run postinstall:web && ng test",
     "e2e": "npm run postinstall:web && ng e2e"
