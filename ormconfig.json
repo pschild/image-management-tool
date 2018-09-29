@@ -5,17 +5,17 @@
    "migrationsRun": true,
    "logging": false,
    "entities": [
-      "server/entity/**/*.js"
+      "server/src/entity/**/*.js"
    ],
    "migrations": [
-      "server/migration/**/*.js"
+      "server/src/migration/**/*.js"
    ],
    "subscribers": [
-      "server/subscriber/**/*.js"
+      "server/src/subscriber/**/*.js"
    ],
    "cli": {
-      "entitiesDir": "server/entity",
-      "migrationsDir": "server/migration",
-      "subscribersDir": "server/subscriber"
+      "entitiesDir": "server/src/entity",
+      "migrationsDir": "server/src/migration",
+      "subscribersDir": "server/src/subscriber"
    }
 }

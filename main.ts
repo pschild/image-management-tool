@@ -2,7 +2,7 @@ import { app, BrowserWindow, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as path from 'path';
 import * as url from 'url';
-import { startServer } from './server';
+import { startServer } from './server/src/server';
 
 let win, serve;
 const args = process.argv.slice(1);

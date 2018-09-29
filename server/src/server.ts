@@ -26,9 +26,9 @@ export const startServer = async (electronAppPath: string) => {
     // overwrite path to database
     Object.assign(connectionOptions, { database: path.join(workingDirPath, DB_NAME) });
     // overwrite paths to entities, migrations and subscribers
-    Object.assign(connectionOptions, { entities: [path.join(electronAppPath, 'server/entity/**/*.js')] });
-    Object.assign(connectionOptions, { migrations: [path.join(electronAppPath, 'server/migration/**/*.js')] });
-    Object.assign(connectionOptions, { subscribers: [path.join(electronAppPath, 'server/subscriber/**/*.js')] });
+    Object.assign(connectionOptions, { entities: [path.join(electronAppPath, 'server/src/entity/**/*.js')] });
+    Object.assign(connectionOptions, { migrations: [path.join(electronAppPath, 'server/src/migration/**/*.js')] });
+    Object.assign(connectionOptions, { subscribers: [path.join(electronAppPath, 'server/src/subscriber/**/*.js')] });
 
     createConnection(connectionOptions).then(connection => {
         const app: Application = express();

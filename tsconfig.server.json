@@ -18,9 +18,7 @@
     ]
   },
   "include": [
-    "server/**/*"
-  ],
-  "exclude": [
-    "node_modules"
+    "server/src/**/*",
+    "server/test/**/*"
   ]
 }

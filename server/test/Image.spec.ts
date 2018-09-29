@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { createConnection, getManager } from 'typeorm';
-import { Tag } from '../entity/Tag';
-import { Image } from '../entity/Image';
-import { Folder } from '../entity/Folder';
-import { Person } from '../entity/Person';
-import { Place } from '../entity/Place';
+import { Tag } from '../src/entity/Tag';
+import { Image } from '../src/entity/Image';
+import { Folder } from '../src/entity/Folder';
+import { Person } from '../src/entity/Person';
+import { Place } from '../src/entity/Place';
 
 describe('Image Repository', function() {
     beforeAll(async () => {
