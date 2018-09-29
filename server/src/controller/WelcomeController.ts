@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { JsonController, Get, Param } from 'routing-controllers';
 import { Folder } from '../entity/Folder';
 import { Image } from '../entity/Image';
 import { Tag } from '../entity/Tag';
@@ -6,13 +6,16 @@ import { getManager } from 'typeorm';
 import { Person } from '../entity/Person';
 import { Place } from '../entity/Place';
 
+@JsonController()
 export class WelcomeController {
 
-    greet(request: Request, response: Response, next: NextFunction) {
-        return `Hello, ${request.params.name}!`;
+    @Get('/welcome/:name')
+    greet(@Param('name') name: string) {
+        return `Hello, ${name}!`;
     }
 
-    async test(request: Request, response: Response, next: NextFunction) {
+    @Get('/dbtest')
+    async test() {
         const folder1 = new Folder();
         folder1.name = 'A';
         await getManager().save(folder1);

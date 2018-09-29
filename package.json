@@ -7,13 +7,6 @@
     "name": "Philippe Schild",
     "email": "philippe.schild@gmail.com"
   },
-  "keywords": [
-    "angular",
-    "angular 6",
-    "electron",
-    "typescript",
-    "sass"
-  ],
   "main": "main.js",
   "private": false,
   "scripts": {
@@ -33,7 +26,7 @@
     "electron:linux": "npm run build:prod && npx electron-builder build --linux",
     "electron:windows": "npm run build:prod && npx electron-builder build --windows",
     "electron:mac": "npm run build:prod && npx electron-builder build --mac",
-    "server:start": "npm run electron:serve-tsc && node server/src/server.js",
+    "server:start": "npm run electron:serve-tsc && node server/src/startServer.js",
     "server:test": "tsc -p tsconfig.server.json && jasmine --config=server/test/jasmine.json",
     "publish:windows": "npm run server:test && npm run electron:windows -- -p always",
     "test": "npm run postinstall:web && ng test",
@@ -47,6 +40,7 @@
     "electron-updater": "^3.1.2",
     "express": "^4.16.3",
     "reflect-metadata": "^0.1.12",
+    "routing-controllers": "^0.7.7",
     "sqlite3": "^4.0.2",
     "typeorm": "^0.2.7"
   },

@@ -1,5 +1,10 @@
 Based on <https://github.com/maximegris/angular-electron>.
 
+Used packages with link to their repository/homepage/API:
+
+* http://typeorm.io/#/ and https://github.com/typeorm/typeorm
+* https://github.com/typestack/routing-controllers
+
 # Install
 1. Run `npm install`
 2. Run `.\node_modules\.bin\electron-rebuild.cmd -f -w sqlite3` to be able to use sqlite3 with Electron (see Use SQLite with Electron).

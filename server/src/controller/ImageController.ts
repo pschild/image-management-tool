@@ -1,26 +1,36 @@
+import { JsonController, Get, Param, Body, Post, Delete, Put } from 'routing-controllers';
 import { getRepository } from 'typeorm';
-import { NextFunction, Request, Response } from 'express';
 import { Image } from '../entity/Image';
 
+@JsonController()
 export class ImageController {
 
     private repository = getRepository(Image);
 
-    async all(request: Request, response: Response, next: NextFunction) {
+    @Get('/images')
+    all() {
         return this.repository.find();
     }
 
-    async one(request: Request, response: Response, next: NextFunction) {
-        return this.repository.findOne(request.params.id);
+    @Get('/images/:id')
+    one(@Param('id') id: number) {
+        return this.repository.findOne(id);
     }
 
-    async save(request: Request, response: Response, next: NextFunction) {
-        return this.repository.save(request.body);
+    @Post('/images')
+    save(@Body() body: any) {
+        return this.repository.save(body);
     }
 
-    async remove(request: Request, response: Response, next: NextFunction) {
+    @Put('/images/:id')
+    update(@Param('id') id: number, @Body() body: any) {
+        return this.repository.update(id, body);
+    }
+
+    @Delete('/images/:id')
+    remove(@Param('id') id: number) {
         return this.repository.remove(
-            this.repository.create({ id: request.params.id })
+            this.repository.create({ id })
         );
     }
 }
