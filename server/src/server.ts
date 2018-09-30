@@ -1,8 +1,6 @@
 import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
 
 import 'reflect-metadata';
 import { createConnection, getConnectionOptions } from 'typeorm';
@@ -30,14 +28,9 @@ export const startServer = async (electronAppPath: string) => {
 
     createConnection(connectionOptions).then(connection => {
         const app = createExpressServer({
-            cors: true,                                     // TODO: necessary?
             controllers: [__dirname + '/controller/*.js'],
-            middlewares: [cors()]                           // TODO: necessary?
+            cors: true
          });
-
-         // TODO: necessary?
-        // app.use(bodyParser.json());
-        // app.use(bodyParser.urlencoded({ extended: true }));
 
         app.listen(SERVER_PORT, () => {
             console.log(`Server started at port ${SERVER_PORT}`);
