@@ -29,7 +29,7 @@
     "server:start": "npm run electron:serve-tsc && node server/src/startServer.js",
     "server:test": "tsc -p tsconfig.server.json && jasmine --config=server/test/jasmine.json",
     "publish:windows": "npm run server:test && npm run electron:windows -- -p always",
-    "test": "npm run postinstall:web && ng test",
+    "test": "npm run postinstall:web && npm run server:test && ng test",
     "e2e": "npm run postinstall:web && ng e2e"
   },
   "dependencies": {

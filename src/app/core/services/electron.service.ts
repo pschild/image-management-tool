@@ -3,9 +3,11 @@ import { ipcRenderer, webFrame, remote } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { AppUpdater } from 'electron-updater';
-import { AppConfig } from '../../environments/environment';
+import { AppConfig } from '../../../environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ElectronService {
 
   ipcRenderer: typeof ipcRenderer;

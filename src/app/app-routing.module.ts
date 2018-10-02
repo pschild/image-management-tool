@@ -1,16 +1,29 @@
-import { HomeComponent } from './components/home/home.component';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, NoPreloading } from '@angular/router';
 
 const routes: Routes = [
     {
         path: '',
-        component: HomeComponent
+        redirectTo: 'explorer',
+        pathMatch: 'full'
+    },
+    {
+        path: 'explorer',
+        loadChildren: './explorer/explorer.module#ExplorerModule'
+    },
+    {
+        path: 'settings',
+        loadChildren: './settings/settings.module#SettingsModule'
     }
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, {useHash: true})],
+    imports: [
+        RouterModule.forRoot(routes, {
+            preloadingStrategy: NoPreloading,
+            useHash: true
+        })
+    ],
     exports: [RouterModule]
 })
 export class AppRoutingModule { }
