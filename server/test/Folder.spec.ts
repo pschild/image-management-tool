@@ -1,23 +1,15 @@
 import 'reflect-metadata';
-import { createConnection, getManager, getConnection } from 'typeorm';
-import { Tag } from '../src/entity/Tag';
-import { Image } from '../src/entity/Image';
+import { getManager } from 'typeorm';
 import { Folder } from '../src/entity/Folder';
-import { Person } from '../src/entity/Person';
-import { Place } from '../src/entity/Place';
+import { setupTestConnection, closeTestConnection } from './utils/test-utils';
 
 describe('Folder Repository', function() {
     beforeAll(async () => {
-        await createConnection({
-            type: 'sqlite',
-            database: ':memory:',
-            synchronize: true,
-            entities: [Tag, Image, Place, Person, Folder]
-        });
+        await setupTestConnection();
     });
 
     afterAll(async () => {
-        await getConnection().close();
+        await closeTestConnection();
     });
 
     it('can save and load hierarchical folders', async () => {

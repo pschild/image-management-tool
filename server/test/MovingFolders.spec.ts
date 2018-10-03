@@ -1,24 +1,16 @@
 import 'reflect-metadata';
-import { createConnection, getConnection, getManager } from 'typeorm';
-import { Tag } from '../src/entity/Tag';
-import { Image } from '../src/entity/Image';
-import { Folder } from '../src/entity/Folder';
-import { Person } from '../src/entity/Person';
-import { Place } from '../src/entity/Place';
 import * as path from 'path';
+import { getManager } from 'typeorm';
+import { Folder } from '../src/entity/Folder';
+import { setupTestConnection, closeTestConnection } from './utils/test-utils';
 
 describe('Moving of Folders', function() {
     beforeAll(async () => {
-        await createConnection({
-            type: 'sqlite',
-            database: ':memory:',
-            synchronize: true,
-            entities: [Tag, Image, Place, Person, Folder]
-        });
+        await setupTestConnection();
     });
 
     afterAll(async () => {
-        await getConnection().close();
+        await closeTestConnection();
     });
 
     beforeEach(async () => {
