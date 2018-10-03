@@ -46,7 +46,8 @@
     {
       "provider": "github",
       "owner": "pschild",
-      "repo": "image-management-tool"
+      "repo": "image-management-tool",
+      "releaseType": "release"
     }
   ]
 }

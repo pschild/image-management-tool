@@ -31,7 +31,8 @@ Used packages with link to their repository/homepage/API:
 
     Make sure to restart IDE/Terminal to inherit latest env variable.
 2. Run `$ npm run publish:windows` to build and package the app for Windows.
-3. A new release will automatically be created under <https://github.com/pschild/image-management-tool/releases>. Edit the new release and publish it.
+3. A new release will automatically be created under <https://github.com/pschild/image-management-tool/releases>.  
+If `"releaseType"` in `electron-builder.json` is set to `"draft"` or not set at all, edit the new release and publish it. When it's set to `"release"` it will be published automatically.
 4. Download and install the app from the latest release (using the .exe file).
 5. When you want to release a new version, make sure to increment the version in `package.json`, commit and push your changes.
 6. Do steps 2 and 3 again.
