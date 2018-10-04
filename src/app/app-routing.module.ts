@@ -12,6 +12,10 @@ const routes: Routes = [
         loadChildren: './explorer/explorer.module#ExplorerModule'
     },
     {
+        path: 'management',
+        loadChildren: './management/management.module#ManagementModule'
+    },
+    {
         path: 'settings',
         loadChildren: './settings/settings.module#SettingsModule'
     }
