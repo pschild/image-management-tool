@@ -2,6 +2,7 @@ import { JsonController } from 'routing-controllers';
 import * as afs from 'async-file';
 import * as path from 'path';
 import { IFileDTO } from '../../../domain/IFileDTO';
+import * as drivelist from 'drivelist';
 
 @JsonController()
 export class FileSystemController {
@@ -18,8 +19,28 @@ export class FileSystemController {
         return files.filter((file: IFileDTO) => file.isFile && this.isImageFile(file));
     }
 
-    getSystemDrives() {
-        // TODO: https://www.npmjs.com/package/drivelist
+    async getSystemDrives() {
+        return new Promise((resolve, reject) => {
+            drivelist.list((error, driveList) => {
+                if (error) {
+                    reject(error);
+                }
+
+                const driveDirectories = [];
+                driveList.forEach(driveInfo => {
+                    driveInfo.mountpoints.forEach(mountpoint => {
+                        driveDirectories.push({
+                            name: mountpoint.path,
+                            absolutePath: mountpoint.path,
+                            ext: '',
+                            isFile: false,
+                            isDirectory: true
+                        });
+                    });
+                });
+                resolve(driveDirectories);
+            });
+        });
     }
 
     async getFilesByPath(givenPath: string): Promise<IFileDTO[]> {

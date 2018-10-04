@@ -38,6 +38,7 @@
     "async-file": "^2.0.2",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
+    "drivelist": "^6.4.3",
     "electron-updater": "^3.1.2",
     "express": "^4.16.3",
     "reflect-metadata": "^0.1.12",
