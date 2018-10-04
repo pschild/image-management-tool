@@ -1,28 +1,28 @@
 import { JsonController } from 'routing-controllers';
 import * as afs from 'async-file';
 import * as path from 'path';
-import { IFile } from '../../../domain/IFile';
+import { IFileDTO } from '../../../domain/IFileDTO';
 
 @JsonController()
 export class FileSystemController {
 
     IMAGE_FILE_EXTENSIONS: string[] = ['jpg', 'jpeg', 'png', 'gif'];
 
-    async getFoldersByPath(givenPath: string): Promise<IFile[]> {
-        const files: IFile[] = await this.getFilesByPath(givenPath);
-        return files.filter((file: IFile) => file.isDirectory);
+    async getFoldersByPath(givenPath: string): Promise<IFileDTO[]> {
+        const files: IFileDTO[] = await this.getFilesByPath(givenPath);
+        return files.filter((file: IFileDTO) => file.isDirectory);
     }
 
-    async getImagesByPath(givenPath: string): Promise<IFile[]> {
-        const files: IFile[] = await this.getFilesByPath(givenPath);
-        return files.filter((file: IFile) => file.isFile && this.isImageFile(file));
+    async getImagesByPath(givenPath: string): Promise<IFileDTO[]> {
+        const files: IFileDTO[] = await this.getFilesByPath(givenPath);
+        return files.filter((file: IFileDTO) => file.isFile && this.isImageFile(file));
     }
 
     getSystemDrives() {
         // TODO: https://www.npmjs.com/package/drivelist
     }
 
-    async getFilesByPath(givenPath: string): Promise<IFile[]> {
+    async getFilesByPath(givenPath: string): Promise<IFileDTO[]> {
         const fileList = await afs.readdir(givenPath);
         const filePromises = fileList.map(async fileName => {
             const absolutePath = path.join(givenPath, fileName);
@@ -39,7 +39,7 @@ export class FileSystemController {
         return Promise.all(filePromises);
     }
 
-    private isImageFile(file: IFile): boolean {
+    private isImageFile(file: IFileDTO): boolean {
         const fileExtensions = this.IMAGE_FILE_EXTENSIONS.join('|');
         return file.ext.match(new RegExp('(' + fileExtensions + ')$', 'i')) != null;
     }

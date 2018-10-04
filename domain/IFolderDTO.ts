@@ -1,7 +1,6 @@
-export interface IImage {
+export interface IFolderDTO {
     id?: number;
     name: string;
-    extension: string;
     addedInFs: boolean;
     removedInFs: boolean;
 }

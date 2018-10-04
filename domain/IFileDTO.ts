@@ -1,4 +1,4 @@
-export interface IFile {
+export interface IFileDTO {
     name: string;
     absolutePath: string;
     ext: string;
