@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ManagementComponent } from './management.component';
 import { ManagementRoutingModule } from './management-routing.module';
+import { PersonsListComponent } from './persons-list/persons-list.component';
 
 @NgModule({
   imports: [
@@ -9,7 +10,8 @@ import { ManagementRoutingModule } from './management-routing.module';
     ManagementRoutingModule
   ],
   declarations: [
-    ManagementComponent
+    ManagementComponent,
+    PersonsListComponent
   ],
   exports: [
     ManagementComponent
