@@ -18,11 +18,11 @@ describe('Moving of Folders', function() {
          * Create the following structure:
          *
          * ROOT
-         *  |- C
+         *  |- C:
          *  |--- F1
          *  |--- F2
          *  |------ F3
-         *  |- D
+         *  |- D:
          *  |--- F4
          *  |------ F5
          *  |--------- F6

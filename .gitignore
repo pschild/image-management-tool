@@ -9,6 +9,7 @@
 /main.js
 src/**/*.js
 server/**/*.js
+domain/**/*.js
 *.js.map
 
 # dependencies
