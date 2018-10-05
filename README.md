@@ -4,6 +4,8 @@ Used packages with link to their repository/homepage/API:
 
 * http://typeorm.io/#/ and https://github.com/typeorm/typeorm
 * https://github.com/typestack/routing-controllers
+* https://github.com/scttcper/ngx-toastr
+* https://material.angular.io/
 
 # Install
 1. Run `npm install`

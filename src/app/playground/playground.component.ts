@@ -9,6 +9,7 @@ import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-playground',
@@ -36,7 +37,7 @@ export class PlaygroundComponent implements OnInit {
   applicationVersion: string;
   greetings: string;
 
-  constructor(private http: HttpClient, private electronService: ElectronService, private dialogService: DialogService) {
+  constructor(private http: HttpClient, private electronService: ElectronService, private dialogService: DialogService, private toastr: ToastrService) {
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
       startWith(null),
       map((fruit: string | null) => fruit ? this._filter(fruit) : this.allFruits.slice()));
@@ -98,6 +99,10 @@ export class PlaygroundComponent implements OnInit {
     const filterValue = value.toLowerCase();
 
     return this.allFruits.filter(fruit => fruit.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  showSuccess() {
+    this.toastr.success('Hello world!', 'Toastr fun!');
   }
 
 }
