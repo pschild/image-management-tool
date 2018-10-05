@@ -1,6 +1,50 @@
 <h1>Playground</h1>
 
-<div>Version: {{applicationVersion}}</div>
-<div>{{greetings}}</div>
+<mat-card>
+  <mat-card-title>Image Management Tool</mat-card-title>
+  <mat-card-subtitle>Version: {{applicationVersion}}</mat-card-subtitle>
+  <mat-card-content>
+    {{greetings}}
+  </mat-card-content>
+</mat-card>
 
-<button (click)="openDialog()">Durchsuchen...</button>
+<button mat-flat-button (click)="openDialog()">Durchsuchen...</button>
+
+<mat-menu #appMenu="matMenu">
+  <button mat-menu-item>Settings</button>
+  <button mat-menu-item>Help</button>
+</mat-menu>
+
+<button mat-icon-button [matMenuTriggerFor]="appMenu">
+  <mat-icon>more_vert</mat-icon>
+</button>
+
+<span #contextMenuTrigger [matMenuTriggerFor]="contextMenu" class="context-menu-trigger" [style.left.px]="menuLeft" [style.top.px]="menuTop"></span>
+<div (contextmenu)="openContextMenu($event)">right click on me!</div>
+<mat-menu #contextMenu="matMenu"> 
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+</mat-menu>
+
+<mat-form-field class="example-chip-list">
+  <mat-chip-list #chipList>
+    <mat-chip *ngFor="let fruit of fruits" [selectable]="selectable" [removable]="removable" (removed)="remove(fruit)">
+      {{fruit}}
+      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+    </mat-chip>
+    <input
+      placeholder="New fruit..."
+      #fruitInput
+      [formControl]="fruitCtrl"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [matChipInputAddOnBlur]="addOnBlur"
+      (matChipInputTokenEnd)="add($event)">
+  </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+    <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
+      {{fruit}}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
