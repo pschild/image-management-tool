@@ -47,4 +47,19 @@ export class FolderController {
 
         return path.join(...pathParts.reverse());
     }
+
+    async getFolderByPath(givenPath: string): Promise<Folder> {
+        const pathParts = givenPath.split(path.sep);
+        let parentFolder = null;
+        let foundFolder;
+        for (const part of pathParts) {
+            foundFolder = await this.repository.findOne({ name: part, parent: parentFolder });
+            if (foundFolder) {
+                parentFolder = foundFolder;
+            } else {
+                return undefined;
+            }
+        }
+        return foundFolder;
+    }
 }

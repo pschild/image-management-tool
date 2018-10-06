@@ -43,8 +43,8 @@ describe('Folder Controller', function() {
 
     it('can build a path by folder id', async () => {
         const c = await this.repository.findOne({ name: 'C:' });
-        const pathOfFC = await this.controller.buildPathByFolderId(c.id);
-        expect(pathOfFC).toBe(path.join('C:'));
+        const pathOfC = await this.controller.buildPathByFolderId(c.id);
+        expect(pathOfC).toBe(path.join('C:'));
 
         const f6 = await this.repository.findOne({ name: 'F6' });
         const pathOfF6 = await this.controller.buildPathByFolderId(f6.id);
@@ -53,6 +53,24 @@ describe('Folder Controller', function() {
         const f3 = await this.repository.findOne({ name: 'F3' });
         const pathOfF3 = await this.controller.buildPathByFolderId(f3.id);
         expect(pathOfF3).toBe(path.join('C:', 'F2', 'F3'));
+    });
+
+    it('can get a folder by path', async () => {
+        let foundFolder;
+
+        const f6 = await this.repository.findOne({ name: 'F6' });
+        const pathOfF6 = path.join('D:', 'F4', 'F5', 'F6');
+        foundFolder = await this.controller.getFolderByPath(pathOfF6);
+        expect(foundFolder.id).toBe(f6.id);
+
+        const f3 = await this.repository.findOne({ name: 'F3' });
+        const pathOfF3 = path.join('C:', 'F2', 'F3');
+        foundFolder = await this.controller.getFolderByPath(pathOfF3);
+        expect(foundFolder.id).toBe(f3.id);
+
+        const pathOfUnknownFolder = path.join('C:', 'F2', 'F3', 'unknown');
+        foundFolder = await this.controller.getFolderByPath(pathOfUnknownFolder);
+        expect(foundFolder).toBeUndefined();
     });
 
     it('can find direct descendants', async () => {
