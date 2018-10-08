@@ -95,4 +95,41 @@ describe('Folder Controller', function() {
         expect(descendantNames[0]).toBe('F1');
         expect(descendantNames[1]).toBe('F2');
     });
+
+    it('can change a folders parent and children', async () => {
+        const f2 = await this.repository.findOne({ name: 'F2' });
+
+        // ensure correct situations at beginning
+        const ancestorsTree = await this.repository.findAncestorsTree(f2);
+        expect(ancestorsTree.name).toBe('F2');
+        expect(ancestorsTree.parent.name).toBe('C:');
+
+        const descendantsTree = await this.repository.findDescendantsTree(f2);
+        expect(descendantsTree.name).toBe('F2');
+        expect(descendantsTree.children.length).toBe(1);
+        expect(descendantsTree.children[0].name).toBe('F3');
+
+        // set parent of F2 to F4 (move F2 > F3 from C: to D: > F4)
+        const f4 = await this.repository.findOne({ name: 'F4' });
+        const f4Parent = await this.repository.findAncestorsTree(f4);
+        expect(f4Parent.name).toBe('F4');
+        expect(f4Parent.parent.name).toBe('D:');
+
+        f2.parent = f4;
+
+        const f2New = await this.repository.save(f2);
+        expect(f2New.parent.name).toBe('F4');
+        expect(f2New.children.length).toBe(1);
+        expect(f2New.children[0].name).toBe('F3');
+
+        // moving of tree entities is not yet implemented in TypeORM:
+        // https://github.com/typeorm/typeorm/issues/2032
+        // the following 3 lines are temporary!
+
+        // const f4New = await this.repository.findOne({ name: 'F4' });
+        // const f4Children = await this.repository.findDescendantsTree(f4New);
+        // console.log(f4Children);
+        // expect(f4Children.children.length).toBe(2);
+        // expect(f4Children.children[0].name).toBe('F2');
+    });
 });
