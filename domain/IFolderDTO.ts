@@ -1,4 +1,4 @@
-export interface IFolderDTO {
+export interface IFolderDto {
     id?: number;
     name: string;
     addedInFs: boolean;

@@ -1,7 +1,7 @@
 import { JsonController } from 'routing-controllers';
 import * as afs from 'async-file';
 import * as path from 'path';
-import { IFileDTO } from '../../../domain/IFileDTO';
+import { IFileDto } from '../../../domain/IFileDto';
 import * as drivelist from 'drivelist';
 
 @JsonController()
@@ -9,14 +9,14 @@ export class FileSystemController {
 
     IMAGE_FILE_EXTENSIONS: string[] = ['jpg', 'jpeg', 'png', 'gif'];
 
-    async getFoldersByPath(givenPath: string): Promise<IFileDTO[]> {
-        const files: IFileDTO[] = await this.getFilesByPath(givenPath);
-        return files.filter((file: IFileDTO) => file.isDirectory);
+    async getFoldersByPath(givenPath: string): Promise<IFileDto[]> {
+        const files: IFileDto[] = await this.getFilesByPath(givenPath);
+        return files.filter((file: IFileDto) => file.isDirectory);
     }
 
-    async getImagesByPath(givenPath: string): Promise<IFileDTO[]> {
-        const files: IFileDTO[] = await this.getFilesByPath(givenPath);
-        return files.filter((file: IFileDTO) => file.isFile && this.isImageFile(file));
+    async getImagesByPath(givenPath: string): Promise<IFileDto[]> {
+        const files: IFileDto[] = await this.getFilesByPath(givenPath);
+        return files.filter((file: IFileDto) => file.isFile && this.isImageFile(file));
     }
 
     async getSystemDrives() {
@@ -43,7 +43,7 @@ export class FileSystemController {
         });
     }
 
-    async getFilesByPath(givenPath: string): Promise<IFileDTO[]> {
+    async getFilesByPath(givenPath: string): Promise<IFileDto[]> {
         const fileList = await afs.readdir(givenPath);
         const filePromises = fileList.map(async fileName => {
             const absolutePath = path.join(givenPath, fileName);
@@ -60,7 +60,7 @@ export class FileSystemController {
         return Promise.all(filePromises);
     }
 
-    private isImageFile(file: IFileDTO): boolean {
+    private isImageFile(file: IFileDto): boolean {
         const fileExtensions = this.IMAGE_FILE_EXTENSIONS.join('|');
         return file.ext.match(new RegExp('(' + fileExtensions + ')$', 'i')) != null;
     }

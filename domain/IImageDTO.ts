@@ -1,4 +1,4 @@
-export interface IImageDTO {
+export interface IImageDto {
     id?: number;
     name: string;
     extension: string;
