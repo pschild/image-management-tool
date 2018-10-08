@@ -49,7 +49,9 @@ export class FolderController {
     }
 
     async getFolderByPath(givenPath: string): Promise<Folder> {
-        const pathParts = givenPath.split(path.sep);
+        let pathParts = givenPath.split(path.sep);
+        pathParts = this.removeDotFromSystemDriveLetter(pathParts);
+
         let parentFolder = null;
         let foundFolder;
         for (const part of pathParts) {
@@ -61,5 +63,16 @@ export class FolderController {
             }
         }
         return foundFolder;
+    }
+
+    removeDotFromSystemDriveLetter(pathParts: string[]): string[] {
+        // Workaround: check if we have only a system drive letter, e.g. C: or D:
+        // In those cases, path.join() returns the drive letter with a dot: path.join('C:') === 'C:.'
+        // Because this name cannot be found in database, remove the dot.
+        // https://github.com/nodejs/node/issues/14405
+        if (pathParts.length && pathParts[0].match(/^[A-Z]{1}:\.$/) !== null) {
+            pathParts[0] = pathParts[0].substr(0, 2); // C:. => C:
+        }
+        return pathParts;
     }
 }
