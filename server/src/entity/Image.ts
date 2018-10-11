@@ -42,7 +42,9 @@ export class Image {
     @JoinTable()
     persons: Person[];
 
-    @ManyToOne(type => Place, place => place.images)
+    @ManyToOne(type => Place, place => place.images, {
+        onDelete: 'SET NULL' // set place to null when place is removed from database
+    })
     place: Place;
 
 }
