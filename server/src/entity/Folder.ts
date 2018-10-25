@@ -1,18 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, Tree, TreeChildren, TreeParent } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, ManyToOne } from 'typeorm';
 import { Image } from './Image';
 
 @Entity()
-@Tree('closure-table')
 export class Folder {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @TreeChildren()
-    children: Folder[];
-
-    @TreeParent()
+    @ManyToOne(type => Folder, folder => folder.children)
     parent: Folder;
+
+    @OneToMany(type => Folder, folder => folder.parent)
+    children: Folder[];
 
     @Column()
     name: string;

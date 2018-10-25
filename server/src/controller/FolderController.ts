@@ -1,12 +1,12 @@
 import { JsonController, Get, Param } from 'routing-controllers';
-import { getTreeRepository } from 'typeorm';
+import { getRepository } from 'typeorm';
 import { Folder } from '../entity/Folder';
 import * as path from 'path';
 
 @JsonController()
 export class FolderController {
 
-    private repository = getTreeRepository(Folder);
+    private repository = getRepository(Folder);
 
     @Get('/folders')
     all() {
@@ -24,24 +24,23 @@ export class FolderController {
 
     async findDirectDescendants(folderId: number) {
         const startFolder = await this.repository.findOne(folderId);
-        const descendantsTree = await this.repository.findDescendantsTree(startFolder);
-        return descendantsTree.children;
+        const descendants = await this.repository.find({ where: { parent: startFolder } });
+        return descendants;
     }
 
     async buildPathByFolderId(folderId: number): Promise<string> {
         const pathParts = [];
 
-        const startFolder = await this.repository.findOne(folderId);
-        const parentsTree = await this.repository.findAncestorsTree(startFolder);
-
-        let folder = parentsTree;
         let stop = false;
+        let folder;
+        let idToLoad = folderId;
         while (!stop) {
+            folder = await this.repository.findOne(idToLoad, { relations: ['parent'] });
             pathParts.push(folder.name);
-            if (!folder.parent) {
+            if (folder.parent === null) {
                 stop = true;
             } else {
-                folder = folder.parent;
+                idToLoad = folder.parent.id;
             }
         }
 
@@ -52,12 +51,12 @@ export class FolderController {
         let pathParts = givenPath.split(path.sep);
         pathParts = this.removeDotFromSystemDriveLetter(pathParts);
 
-        let parentFolder = null;
+        let parent = null;
         let foundFolder;
         for (const part of pathParts) {
-            foundFolder = await this.repository.findOne({ name: part, parent: parentFolder });
+            foundFolder = await this.repository.findOne({ name: part, parent: parent });
             if (foundFolder) {
-                parentFolder = foundFolder;
+                parent = foundFolder;
             } else {
                 return undefined;
             }
