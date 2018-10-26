@@ -47,18 +47,28 @@ export class FolderController {
         return path.join(...pathParts.reverse());
     }
 
-    async getFolderByPath(givenPath: string): Promise<Folder> {
+    async getFolderByPath(givenPath: string, createIfNotExist: boolean = false): Promise<Folder> {
         let pathParts = givenPath.split(path.sep);
         pathParts = this.removeDotFromSystemDriveLetter(pathParts);
 
-        let parent = null;
-        let foundFolder;
-        for (const part of pathParts) {
-            foundFolder = await this.repository.findOne({ name: part, parent: parent });
+        let parent: Folder = null;
+        let foundFolder: Folder;
+        // analyze the given path from beginning to end: try to find each folder in database by name and parent folder
+        // optional: if parameter createIfNotExist is set to true, missing folders will be created automatically
+        for (const pathName of pathParts) {
+            foundFolder = await this.repository.findOne({ name: pathName, parent: parent });
             if (foundFolder) {
                 parent = foundFolder;
             } else {
-                return undefined;
+                if (createIfNotExist) {
+                    const newFolder = new Folder();
+                    newFolder.name = pathName;
+                    newFolder.parent = parent;
+                    foundFolder = await this.repository.save(newFolder);
+                    parent = foundFolder;
+                } else {
+                    return undefined;
+                }
             }
         }
         return foundFolder;

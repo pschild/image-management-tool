@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { setupTestConnection, closeTestConnection } from './utils/test-utils';
 import { FolderController } from '../src/controller/FolderController';
 import { Folder } from '../src/entity/Folder';
-import { getManager, getRepository } from 'typeorm';
+import { getManager, getRepository, getConnection } from 'typeorm';
 import * as path from 'path';
 
 describe('Folder Controller', function() {
@@ -17,6 +17,12 @@ describe('Folder Controller', function() {
     });
 
     beforeEach(async () => {
+        await getConnection()
+            .createQueryBuilder()
+            .delete()
+            .from(Folder)
+            .execute();
+
         /**
          * Create the following structure:
          *
@@ -81,9 +87,16 @@ describe('Folder Controller', function() {
         foundFolder = await this.controller.getFolderByPath(pathOfF3);
         expect(foundFolder.id).toBe(f3.id);
 
-        const pathOfUnknownFolder = path.join('C:', 'F2', 'F3', 'unknown');
-        foundFolder = await this.controller.getFolderByPath(pathOfUnknownFolder);
+        const pathOfUnknownFolderNoCreate = path.join('C:', 'F2', 'F3', 'unknown');
+        foundFolder = await this.controller.getFolderByPath(pathOfUnknownFolderNoCreate);
         expect(foundFolder).toBeUndefined();
+
+        const pathOfUnknownFolderCreate = path.join('C:', 'F2', 'F3', 'foo', 'bar');
+        foundFolder = await this.controller.getFolderByPath(pathOfUnknownFolderCreate, true);
+        expect(foundFolder).toBeDefined();
+        expect(typeof foundFolder.id).toBe('number');
+        expect(foundFolder.name).toBe('bar');
+        expect(foundFolder.parent.name).toBe('foo');
     });
 
     it('can find direct descendants', async () => {
