@@ -3,11 +3,13 @@ import * as path from 'path';
 import { getManager, getConnection } from 'typeorm';
 import { Folder } from '../src/entity/Folder';
 import { setupTestConnection, closeTestConnection } from './utils/test-utils';
+import { FolderController } from '../src/controller/FolderController';
 
 describe('Folder Repository', function() {
     beforeAll(async () => {
         await setupTestConnection();
         this.repository = getManager().getRepository(Folder);
+        this.folderController = new FolderController();
     });
 
     beforeEach(async () => {
@@ -106,23 +108,11 @@ describe('Folder Repository', function() {
         const folderToMove = await this.repository.findOne({ name: 'F2' });
 
         const newPath = path.join('D:', 'F4', 'F5'); // the new path will be chosen by Dialog in the application
-        const pathParts = newPath.split(path.sep);
 
-        let parent = null;
+        const foundFolder = await this.folderController.getFolderByPath(newPath);
+        expect(foundFolder.name).toBe('F5');
 
-        // analyze the given path from beginning to end: try to find each folder by name and parent folder
-        for (const part of pathParts) {
-            const foundFolder = await this.repository.findOne({ name: part, parent: parent });
-            if (foundFolder) {
-                parent = foundFolder;
-            } else {
-                // here we need to create a new folder. This should be sth for a different test case
-            }
-        }
-
-        expect(parent.name).toBe('F5');
-
-        folderToMove.parent = parent;
+        folderToMove.parent = foundFolder;
         await getManager().save(folderToMove);
 
         const f5 = await this.repository.findOne({ name: 'F5' }, { relations: ['children'] });
@@ -133,6 +123,30 @@ describe('Folder Repository', function() {
 
         const f2 = await this.repository.findOne({ name: 'F2' }, { relations: ['parent', 'children'] });
         expect(f2.parent.name).toBe('F5');
+        expect(f2.children).toBeDefined();
+        expect(f2.children.length).toBe(1);
+        expect(f2.children[0].name).toBe('F3');
+    });
+
+    it('can move folders (not existing folder)', async () => {
+        // Usecase: set parent of F2 to new folder bar (move F2 > F3 from C: to D: > F4 > F5 > foo > bar)
+        const folderToMove = await this.repository.findOne({ name: 'F2' });
+
+        const newPath = path.join('D:', 'F4', 'F5', 'foo', 'bar'); // the new path will be chosen by Dialog in the application
+
+        const foundFolder = await this.folderController.getFolderByPath(newPath, true);
+        expect(foundFolder.name).toBe('bar');
+
+        folderToMove.parent = foundFolder;
+        await getManager().save(folderToMove);
+
+        const bar = await this.repository.findOne({ name: 'bar' }, { relations: ['children'] });
+        expect(bar.children).toBeDefined();
+        expect(bar.children.length).toBe(1);
+        expect(bar.children[0].name).toBe('F2');
+
+        const f2 = await this.repository.findOne({ name: 'F2' }, { relations: ['parent', 'children'] });
+        expect(f2.parent.name).toBe('bar');
         expect(f2.children).toBeDefined();
         expect(f2.children.length).toBe(1);
         expect(f2.children[0].name).toBe('F3');
