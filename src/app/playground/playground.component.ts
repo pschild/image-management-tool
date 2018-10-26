@@ -50,10 +50,11 @@ export class PlaygroundComponent implements OnInit {
       .subscribe((args) => {
         this.greetings = args.toString();
       });
+
+    this.dialogService.selectedFilePaths.subscribe(x => console.log(x));
   }
 
   openDialog() {
-    this.dialogService.selectedFilePaths.subscribe(x => console.log(x));
     this.dialogService.showOpenFolderDialog(true);
   }
 
