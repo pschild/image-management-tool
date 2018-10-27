@@ -14,37 +14,49 @@ export class ExplorerController {
 
     @Get('/explorer/:folderId')
     async getContentByFolderId(@Param('folderId') folderId: number) {
-        const folders = await this.getMergedFolderList(folderId);
-        const images = await this.getMergedImageList(folderId);
-
-        return { folders, images };
+        const folderPath = await this.folderController.buildPathByFolderId(folderId);
+        return this.getContentByFolderPath(folderPath);
     }
 
     @Get('/explorer/path/:folderPath')
     async getContentByFolderPath(@Param('folderPath') folderPath: string) {
-        const folder = await this.folderController.getFolderByPath(folderPath, true);
-        return this.getContentByFolderId(folder.id);
+        let folders;
+        try {
+            folders = await this.getMergedFolderList(folderPath);
+        } catch (error) {
+            return { error: true, message: error.message };
+        }
+
+        let images;
+        try {
+            images = await this.getMergedImageList(folderPath);
+        } catch (error) {
+            return { error: true, message: error.message };
+        }
+
+        return { folders, images };
     }
 
-    async getMergedFolderList(folderId: number): Promise<IFolderDto[]> {
-        const folderPath = await this.folderController.buildPathByFolderId(folderId);
+    async getMergedFolderList(folderPath: string): Promise<IFolderDto[]> {
+        let dbFolders = [];
+        const folderFromDb = await this.folderController.getFolderByPath(folderPath);
+        if (folderFromDb) {
+            dbFolders = await this.folderController.findDirectDescendantsByFolder(folderFromDb);
+        }
 
-        // DB > Folders
-        const directDescendantFolders = await this.folderController.findDirectDescendants(folderId);
-        // FS > Folders
-        const foldersFromFileSystem = await this.fileSystemController.getFoldersByPath(folderPath);
+        const fsFolders = await this.fileSystemController.getFoldersByPath(folderPath);
 
         // merge DB and FS folder lists
-        const foldersInDbAndFs: IFolderDto[] = directDescendantFolders.map(dbFolder => {
+        const foldersInDbAndFs: IFolderDto[] = dbFolders.map(dbFolder => {
             let removedInFs = false;
 
-            const accordingFsFolderIndex = foldersFromFileSystem.findIndex(folder => folder.name === dbFolder.name);
+            const accordingFsFolderIndex = fsFolders.findIndex(folder => folder.name === dbFolder.name);
             if (accordingFsFolderIndex < 0) {
                 removedInFs = true;
             } else {
                 // remove found folder from foldersFromFileSystem, so that in the end this array only contains elements
                 // that are in FS but not in DB.
-                foldersFromFileSystem.splice(accordingFsFolderIndex, 1);
+                fsFolders.splice(accordingFsFolderIndex, 1);
             }
 
             return {
@@ -56,8 +68,8 @@ export class ExplorerController {
         });
 
         // if there are elements left in foldersFromFileSystem, they are in FS but not in DB
-        if (foldersFromFileSystem.length) {
-            const foldersOnlyInFs: IFolderDto[] = foldersFromFileSystem.map(fsFolder => {
+        if (fsFolders.length) {
+            const foldersOnlyInFs: IFolderDto[] = fsFolders.map(fsFolder => {
                 return {
                     name: fsFolder.name,
                     removedInFs: false,
@@ -70,19 +82,20 @@ export class ExplorerController {
         }
     }
 
-    async getMergedImageList(folderId: number): Promise<IImageDto[]> {
-        const folderPath = await this.folderController.buildPathByFolderId(folderId);
+    async getMergedImageList(folderPath: string): Promise<IImageDto[]> {
+        let dbImages = [];
+        const folderFromDb = await this.folderController.getFolderByPath(folderPath);
+        if (folderFromDb) {
+            dbImages = await this.imageController.allByFolderId(folderFromDb.id);
+        }
 
-        // DB > Images
-        const directDescendantImages = await this.imageController.allByFolderId(folderId);
-        // FS > Images
-        const imagesFromFileSystem = await this.fileSystemController.getImagesByPath(folderPath);
+        const fsImages = await this.fileSystemController.getImagesByPath(folderPath);
 
         // merge DB and FS folder lists
-        const imagesInDbAndFs: IImageDto[] = directDescendantImages.map(dbImage => {
+        const imagesInDbAndFs: IImageDto[] = dbImages.map(dbImage => {
             let removedInFs = false;
 
-            const accordingFsImageIndex = imagesFromFileSystem.findIndex(
+            const accordingFsImageIndex = fsImages.findIndex(
                 image => image.name === dbImage.name && image.ext === dbImage.suffix
             );
             if (accordingFsImageIndex < 0) {
@@ -90,7 +103,7 @@ export class ExplorerController {
             } else {
                 // remove found image from imagesFromFileSystem, so that in the end this array only contains elements
                 // that are in FS but not in DB.
-                imagesFromFileSystem.splice(accordingFsImageIndex, 1);
+                fsImages.splice(accordingFsImageIndex, 1);
             }
 
             return {
@@ -103,8 +116,8 @@ export class ExplorerController {
         });
 
         // if there are elements left in foldersFromFileSystem, they are in FS but not in DB
-        if (imagesFromFileSystem.length) {
-            const imagesOnlyInFs: IImageDto[] = imagesFromFileSystem.map(fsImage => {
+        if (fsImages.length) {
+            const imagesOnlyInFs: IImageDto[] = fsImages.map(fsImage => {
                 return {
                     name: fsImage.name,
                     extension: fsImage.ext,

@@ -85,7 +85,7 @@ describe('FileSystem Controller', function() {
         expect(systemDrives.length).toBe(2);
         expect(systemDrives[0].name).toBe('C://');
         expect(systemDrives[0].absolutePath).toBe('C://');
-        expect(systemDrives[0].ext).toBe('');
+        expect(systemDrives[0].ext).toBeUndefined();
         expect(systemDrives[0].isFile).toBe(false);
         expect(systemDrives[0].isDirectory).toBe(true);
     });

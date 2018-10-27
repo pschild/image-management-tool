@@ -32,7 +32,6 @@ export class FileSystemController {
                         driveDirectories.push({
                             name: mountpoint.path,
                             absolutePath: mountpoint.path,
-                            ext: '',
                             isFile: false,
                             isDirectory: true
                         });
@@ -48,14 +47,25 @@ export class FileSystemController {
         const filePromises = fileList.map(async fileName => {
             const absolutePath = path.join(givenPath, fileName);
             const stat = await afs.stat(absolutePath);
-            const extension = path.extname(fileName);
-            return {
-                name: path.basename(fileName, extension), // name without extension
+
+            let fileInfo;
+            if (stat.isDirectory()) {
+                fileInfo = {
+                    name: fileName
+                };
+            } else {
+                const extension = path.extname(fileName);
+                fileInfo = {
+                    name: path.basename(fileName, extension), // name without extension
+                    ext: extension.substring(1) // remove . at the beginning
+                };
+            }
+
+            return Object.assign(fileInfo, {
                 absolutePath: absolutePath,
-                ext: extension.substring(1), // remove . at the beginning
                 isFile: stat.isFile(),
                 isDirectory: stat.isDirectory()
-            };
+            });
         });
         return Promise.all(filePromises);
     }

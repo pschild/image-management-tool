@@ -1,7 +1,6 @@
 import { JsonController, Get, Param, Body, Post, Delete, Put } from 'routing-controllers';
 import { getRepository } from 'typeorm';
 import { Image } from '../entity/Image';
-import { FolderController } from './FolderController';
 
 @JsonController()
 export class ImageController {
@@ -19,8 +18,6 @@ export class ImageController {
     }
 
     async allByFolderId(folderId: number) {
-        const folderController = new FolderController();
-        const folder = await folderController.one(folderId);
         return this.repository
             .createQueryBuilder('image')
             .innerJoin('image.parentFolder', 'folder', 'folder.id = :folderId', { folderId })

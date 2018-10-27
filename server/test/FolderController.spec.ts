@@ -58,15 +58,15 @@ describe('Folder Controller', function() {
     it('can build a path by folder id', async () => {
         const c = await this.repository.findOne({ name: 'C:' });
         const pathOfC = await this.controller.buildPathByFolderId(c.id);
-        expect(pathOfC).toBe(path.join('C:'));
+        expect(pathOfC).toBe(['C:'].join(path.sep));
 
         const f6 = await this.repository.findOne({ name: 'F6' });
         const pathOfF6 = await this.controller.buildPathByFolderId(f6.id);
-        expect(pathOfF6).toBe(path.join('D:', 'F4', 'F5', 'F6'));
+        expect(pathOfF6).toBe(['D:', 'F4', 'F5', 'F6'].join(path.sep));
 
         const f3 = await this.repository.findOne({ name: 'F3' });
         const pathOfF3 = await this.controller.buildPathByFolderId(f3.id);
-        expect(pathOfF3).toBe(path.join('C:', 'F2', 'F3'));
+        expect(pathOfF3).toBe(['C:', 'F2', 'F3'].join(path.sep));
     });
 
     it('can get a folder by path', async () => {
@@ -99,9 +99,17 @@ describe('Folder Controller', function() {
         expect(foundFolder.parent.name).toBe('foo');
     });
 
+    it('can find direct descendants by folder and folder id', async () => {
+        const c = await this.repository.findOne({ name: 'C:' });
+        const directChildrenByFolder = await this.controller.findDirectDescendantsByFolder(c);
+        const directChildrenByFolderId = await this.controller.findDirectDescendantsByFolderId(c.id);
+
+        expect(directChildrenByFolder).toEqual(directChildrenByFolderId);
+    });
+
     it('can find direct descendants', async () => {
         const c = await this.repository.findOne({ name: 'C:' });
-        const directChildren = await this.controller.findDirectDescendants(c.id);
+        const directChildren = await this.controller.findDirectDescendantsByFolder(c);
 
         const descendantNames = directChildren.map(child => child.name);
         expect(descendantNames.length).toBe(2);

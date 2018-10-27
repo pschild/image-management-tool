@@ -22,10 +22,13 @@ export class FolderController {
         return this.repository.findOne({ name });
     }
 
-    async findDirectDescendants(folderId: number) {
-        const startFolder = await this.repository.findOne(folderId);
-        const descendants = await this.repository.find({ where: { parent: startFolder } });
-        return descendants;
+    async findDirectDescendantsByFolder(folder: Folder) {
+        return await this.repository.find({ where: { parent: folder } });
+    }
+
+    async findDirectDescendantsByFolderId(folderId: number) {
+        const folder = await this.repository.findOne(folderId);
+        return this.findDirectDescendantsByFolder(folder);
     }
 
     async buildPathByFolderId(folderId: number): Promise<string> {
@@ -36,6 +39,11 @@ export class FolderController {
         let idToLoad = folderId;
         while (!stop) {
             folder = await this.repository.findOne(idToLoad, { relations: ['parent'] });
+            if (!folder) {
+                stop = true;
+                return undefined;
+            }
+
             pathParts.push(folder.name);
             if (folder.parent === null) {
                 stop = true;
@@ -44,7 +52,7 @@ export class FolderController {
             }
         }
 
-        return path.join(...pathParts.reverse());
+        return pathParts.reverse().join(path.sep);
     }
 
     async getFolderByPath(givenPath: string, createIfNotExist: boolean = false): Promise<Folder> {

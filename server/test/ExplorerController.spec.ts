@@ -19,14 +19,12 @@ describe('Explorer Controller', function() {
             {
                 name: 'F1',
                 absolutePath: 'some/drive/F1',
-                ext: '',
                 isFile: false,
                 isDirectory: true
             },
             {
                 name: 'F2',
                 absolutePath: 'some/drive/F2',
-                ext: '',
                 isFile: false,
                 isDirectory: true
             },
