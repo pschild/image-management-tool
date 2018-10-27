@@ -7,7 +7,9 @@ export class Folder {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => Folder, folder => folder.children)
+    @ManyToOne(type => Folder, folder => folder.children, {
+        onDelete: 'CASCADE' // delete all subfolders when a folder is removed
+    })
     parent: Folder;
 
     @OneToMany(type => Folder, folder => folder.parent)

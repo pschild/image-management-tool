@@ -155,28 +155,25 @@ describe('Folder Repository', function() {
     it('can delete leaf folders', async () => {
         // Usecase: delete Folder F3, which does not have child folders
         const folderToDelete = await this.repository.findOne({ name: 'F3' });
+        await this.repository.remove(folderToDelete);
 
-        let error;
-        try {
-            await this.repository.remove(folderToDelete);
-        } catch (errorMsg) {
-            error = errorMsg;
-        }
-
-        expect(error).toBeUndefined();
+        const f3 = await this.repository.findOne({ name: 'F3' });
+        expect(f3).toBeUndefined();
     });
 
-    it('cannot delete folder with children', async () => {
+    it('can delete subfolders when parent folder is removed', async () => {
         // Usecase: delete Folder D:, which has child folders
         const folderToDelete = await this.repository.findOne({ name: 'D:' });
+        await this.repository.remove(folderToDelete);
 
-        let error;
-        try {
-            await this.repository.remove(folderToDelete);
-        } catch (errorMsg) {
-            error = errorMsg;
-        }
+        const d = await this.repository.findOne({ name: 'D:' });
+        const f4 = await this.repository.findOne({ name: 'F4' });
+        const f5 = await this.repository.findOne({ name: 'F5' });
+        const f6 = await this.repository.findOne({ name: 'F6' });
 
-        expect(error).toBeDefined();
+        expect(d).toBeUndefined();
+        expect(f4).toBeUndefined();
+        expect(f5).toBeUndefined();
+        expect(f6).toBeUndefined();
     });
 });

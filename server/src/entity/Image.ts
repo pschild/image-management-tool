@@ -10,7 +10,9 @@ export class Image {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => Folder, folder => folder.images)
+    @ManyToOne(type => Folder, folder => folder.images, {
+        onDelete: 'CASCADE' // delete all images when the parent folder is removed
+    })
     parentFolder: Folder;
 
     @Column()
