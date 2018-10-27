@@ -20,6 +20,12 @@ export class ExplorerController {
         return { folders, images };
     }
 
+    @Get('/explorer/path/:folderPath')
+    async getContentByFolderPath(@Param('folderPath') folderPath: string) {
+        const folder = await this.folderController.getFolderByPath(folderPath, true);
+        return this.getContentByFolderId(folder.id);
+    }
+
     async getMergedFolderList(folderId: number): Promise<IFolderDto[]> {
         const folderPath = await this.folderController.buildPathByFolderId(folderId);
 

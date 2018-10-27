@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import * as path from 'path';
 import { setupTestConnection, closeTestConnection } from './utils/test-utils';
 import { ExplorerController } from '../src/controller/ExplorerController';
 import { getManager } from 'typeorm';
@@ -179,5 +180,15 @@ describe('Explorer Controller', function() {
         expect(mergeResult.images[0].name).toBe('img1');
         expect(mergeResult.images[0].removedInFs).toBe(true);
         expect(mergeResult.images[0].addedInFs).toBe(false);
+    });
+
+    it('returns equal results by folder path and folder id', async () => {
+        spyOn(FileSystemController.prototype, 'getFilesByPath').and.returnValue(this.dummyFolderContent);
+
+        const c = await this.folderController.oneByName('C:');
+
+        const mergeResult1 = await this.controller.getContentByFolderPath(path.join('C:'));
+        const mergeResult2 = await this.controller.getContentByFolderId(c.id);
+        expect(mergeResult1).toEqual(mergeResult2);
     });
 });
