@@ -87,7 +87,7 @@ export class ExplorerController {
             let removedInFs = false;
 
             const accordingFsImageIndex = fsImages.findIndex(
-                image => image.name === dbImage.name && image.extension === dbImage.suffix
+                image => image.name === dbImage.name && image.extension === dbImage.extension
             );
             if (accordingFsImageIndex < 0) {
                 removedInFs = true;
@@ -97,7 +97,7 @@ export class ExplorerController {
                 fsImages.splice(accordingFsImageIndex, 1);
             }
 
-            return new ImageDto(dbImage.name, folderPath, dbImage.suffix, false, removedInFs, dbImage.id);
+            return new ImageDto(dbImage.name, folderPath, dbImage.extension, false, removedInFs, dbImage.id);
         });
 
         // if there are elements left in foldersFromFileSystem, they are in FS but not in DB

@@ -19,7 +19,7 @@ export class Image {
     name: string;
 
     @Column()
-    suffix: string;
+    extension: string;
 
     @Column()
     originalName: string;

@@ -18,7 +18,7 @@ describe('Image Controller', function() {
     it('can save a new entity', async () => {
         const savedImage: Image = await this.controller.save({
             name: 'New Image',
-            suffix: 'png',
+            extension: 'png',
             originalName: 'original Name'
         });
 
@@ -40,11 +40,11 @@ describe('Image Controller', function() {
     });
 
     it('can update an entity', async () => {
-        await this.controller.update(1, { name: 'New Image 1', suffix: 'jpg' });
+        await this.controller.update(1, { name: 'New Image 1', extension: 'jpg' });
         const newImage: Image = await this.controller.one(1);
 
         expect(newImage.name).toBe('New Image 1');
-        expect(newImage.suffix).toBe('jpg');
+        expect(newImage.extension).toBe('jpg');
 
         expect(newImage.originalName).toBe('original Name');
     });
@@ -60,21 +60,21 @@ describe('Image Controller', function() {
         const folder = await getManager().save(getManager().create(Folder, { name: 'lorem' }));
         const image1: Image = await this.controller.save({
             name: 'New Image 1',
-            suffix: 'png',
+            extension: 'png',
             originalName: 'original Name 1',
             parentFolder: folder
         });
 
         const image2: Image = await this.controller.save({
             name: 'New Image 2',
-            suffix: 'jpg',
+            extension: 'jpg',
             originalName: 'original Name 2',
             parentFolder: folder
         });
 
         const image3: Image = await this.controller.save({
             name: 'New Image 3',
-            suffix: 'jpg',
+            extension: 'jpg',
             originalName: 'original Name 3'
             // not in lorem
         });

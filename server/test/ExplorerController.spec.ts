@@ -86,19 +86,19 @@ describe('Explorer Controller', function() {
         const imageController = new ImageController();
         const img1: Image = await imageController.save({
             name: 'img1',
-            suffix: 'jpg',
+            extension: 'jpg',
             originalName: 'original Name 1',
             parentFolder: c
         });
         const img2: Image = await imageController.save({
             name: 'img2',
-            suffix: 'PNG',
+            extension: 'PNG',
             originalName: 'original Name 2',
             parentFolder: c
         });
         const img3: Image = await imageController.save({
             name: 'img3',
-            suffix: 'jpg',
+            extension: 'jpg',
             originalName: 'original Name 3',
             parentFolder: f2 // not in C:
         });

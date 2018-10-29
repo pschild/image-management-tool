@@ -16,7 +16,7 @@ describe('Image Repository', function() {
         const image = new Image();
         image.name = 'Test';
         image.originalName = 'orig';
-        image.suffix = 'jpg';
+        image.extension = 'jpg';
         await getManager().save(image);
 
         const count = await getManager().getRepository(Image).count();
@@ -25,6 +25,6 @@ describe('Image Repository', function() {
         const readImage: Image = await getManager().getRepository(Image).findOne();
         expect(readImage.name).toBe('Test');
         expect(readImage.originalName).toBe('orig');
-        expect(readImage.suffix).toBe('jpg');
+        expect(readImage.extension).toBe('jpg');
     });
 });

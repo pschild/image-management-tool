@@ -58,14 +58,14 @@ describe('Relations', function() {
         let i1 = new Image();
         i1.name = 'Test 1';
         i1.originalName = 'orig 1';
-        i1.suffix = 'jpg';
+        i1.extension = 'jpg';
         i1.parentFolder = f1;
         await getManager().save(i1);
 
         let i2 = new Image();
         i2.name = 'Test 2';
         i2.originalName = 'orig 2';
-        i2.suffix = 'jpg';
+        i2.extension = 'jpg';
         i2.parentFolder = f2;
         await getManager().save(i2);
 
@@ -98,7 +98,7 @@ describe('Relations', function() {
         const image = new Image();
         image.name = 'Test';
         image.originalName = 'orig';
-        image.suffix = 'jpg';
+        image.extension = 'jpg';
         image.tags = [tag1];
         await getManager().save(image);
 
@@ -206,7 +206,7 @@ describe('Relations', function() {
         const image = new Image();
         image.name = 'Test';
         image.originalName = 'orig';
-        image.suffix = 'jpg';
+        image.extension = 'jpg';
         image.place = place1;
         await getManager().save(image);
 
@@ -316,7 +316,7 @@ describe('Relations', function() {
         const image = new Image();
         image.name = 'Test';
         image.originalName = 'orig';
-        image.suffix = 'jpg';
+        image.extension = 'jpg';
         image.persons = [person1];
         await getManager().save(image);
 

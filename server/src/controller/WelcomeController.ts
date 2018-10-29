@@ -37,7 +37,7 @@ export class WelcomeController {
         const image1 = new Image();
         image1.name = 'Test';
         image1.originalName = 'orig';
-        image1.suffix = 'jpg';
+        image1.extension = 'jpg';
         image1.parentFolder = folder1;
         image1.persons = [person1];
         image1.place = place1;
@@ -46,7 +46,7 @@ export class WelcomeController {
         const image2 = new Image();
         image2.name = 'Test2';
         image2.originalName = 'orig2';
-        image2.suffix = 'png';
+        image2.extension = 'png';
         image2.parentFolder = folder1;
         await getManager().save(image2);
 
