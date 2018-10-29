@@ -48,30 +48,29 @@ export class FileSystemController {
             const absolutePath = path.join(givenPath, fileName);
             const stat = await afs.stat(absolutePath);
 
-            let fileInfo;
             if (stat.isDirectory()) {
-                fileInfo = {
-                    name: fileName
+                return {
+                    name: fileName,
+                    absolutePath: absolutePath,
+                    isDirectory: true
+                };
+            } else if (stat.isFile()) {
+                const extension = path.extname(fileName);
+                return {
+                    name: path.basename(fileName, extension), // name without extension
+                    absolutePath: absolutePath,
+                    extension: extension.substring(1), // remove . at the beginning
+                    isFile: true
                 };
             } else {
-                const extension = path.extname(fileName);
-                fileInfo = {
-                    name: path.basename(fileName, extension), // name without extension
-                    ext: extension.substring(1) // remove . at the beginning
-                };
+                throw new Error(`File ${absolutePath} is neither file nor directory.`);
             }
-
-            return Object.assign(fileInfo, {
-                absolutePath: absolutePath,
-                isFile: stat.isFile(),
-                isDirectory: stat.isDirectory()
-            });
         });
         return Promise.all(filePromises);
     }
 
     private isImageFile(file: IFileDto): boolean {
         const fileExtensions = this.IMAGE_FILE_EXTENSIONS.join('|');
-        return file.ext.match(new RegExp('(' + fileExtensions + ')$', 'i')) != null;
+        return file.extension && file.extension.match(new RegExp('(' + fileExtensions + ')$', 'i')) != null;
     }
 }

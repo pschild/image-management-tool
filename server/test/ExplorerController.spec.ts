@@ -31,21 +31,21 @@ describe('Explorer Controller', function() {
             {
                 name: 'img1',
                 absolutePath: 'some/drive/img1.jpg',
-                ext: 'jpg',
+                extension: 'jpg',
                 isFile: true,
                 isDirectory: false
             },
             {
                 name: 'img2',
                 absolutePath: 'some/drive/img2.PNG',
-                ext: 'PNG',
+                extension: 'PNG',
                 isFile: true,
                 isDirectory: false
             },
             {
                 name: 'document',
                 absolutePath: 'some/drive/document.pdf',
-                ext: 'pdf',
+                extension: 'pdf',
                 isFile: true,
                 isDirectory: false
             }
@@ -132,13 +132,13 @@ describe('Explorer Controller', function() {
         const dummyContent = [...this.dummyFolderContent, {
             name: 'addedFolder',
             absolutePath: 'some/drive/addedFolder',
-            ext: '',
+            extension: '',
             isFile: false,
             isDirectory: true
         }, {
             name: 'addedImg',
             absolutePath: 'some/drive/addedImg.JPG',
-            ext: 'JPG',
+            extension: 'JPG',
             isFile: true,
             isDirectory: false
         }];
@@ -185,7 +185,7 @@ describe('Explorer Controller', function() {
 
         const c = await this.folderController.oneByName('C:');
 
-        const mergeResult1 = await this.controller.getContentByFolderPath(path.join('C:'));
+        const mergeResult1 = await this.controller.getContentByFolderPath('C:');
         const mergeResult2 = await this.controller.getContentByFolderId(c.id);
         expect(mergeResult1).toEqual(mergeResult2);
     });

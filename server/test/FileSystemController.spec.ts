@@ -12,35 +12,33 @@ describe('FileSystem Controller', function() {
             {
                 name: 'folderA',
                 absolutePath: 'some/drive/folderA',
-                ext: '',
                 isFile: false,
                 isDirectory: true
             },
             {
                 name: 'folderB',
                 absolutePath: 'some/drive/folderB',
-                ext: '',
                 isFile: false,
                 isDirectory: true
             },
             {
                 name: 'img1',
                 absolutePath: 'some/drive/img1.jpg',
-                ext: 'jpg',
+                extension: 'jpg',
                 isFile: true,
                 isDirectory: false
             },
             {
                 name: 'img2',
                 absolutePath: 'some/drive/img2.PNG',
-                ext: 'PNG',
+                extension: 'PNG',
                 isFile: true,
                 isDirectory: false
             },
             {
                 name: 'document',
                 absolutePath: 'some/drive/document.pdf',
-                ext: 'pdf',
+                extension: 'pdf',
                 isFile: true,
                 isDirectory: false
             }

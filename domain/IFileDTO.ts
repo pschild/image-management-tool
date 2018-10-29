@@ -1,7 +1,8 @@
 export interface IFileDto {
+    id?: number;
     name: string;
     absolutePath: string;
-    ext?: string;
-    isFile: boolean;
-    isDirectory: boolean;
+    extension?: string;
+    isFile?: boolean;
+    isDirectory?: boolean;
 }
