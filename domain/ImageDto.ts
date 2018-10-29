@@ -1,5 +1,5 @@
-import { IImageDto } from './IImageDto';
-import { IAddedRemovedState } from './IAddedRemovedState';
+import { IImageDto } from './interface/IImageDto';
+import { IAddedRemovedState } from './interface/IAddedRemovedState';
 
 export class ImageDto implements IImageDto, IAddedRemovedState {
     id?: number;

@@ -1,5 +1,5 @@
-import { IFolderDto } from './IFolderDto';
-import { IAddedRemovedState } from './IAddedRemovedState';
+import { IFolderDto } from './interface/IFolderDto';
+import { IAddedRemovedState } from './interface/IAddedRemovedState';
 
 export class FolderDto implements IFolderDto, IAddedRemovedState {
     id?: number;

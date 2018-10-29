@@ -1,7 +1,7 @@
 import { JsonController } from 'routing-controllers';
 import * as afs from 'async-file';
 import * as path from 'path';
-import { IFileDto } from '../../../domain/IFileDto';
+import { IFileDto } from '../../../domain/interface/IFileDto';
 import * as drivelist from 'drivelist';
 
 @JsonController()
