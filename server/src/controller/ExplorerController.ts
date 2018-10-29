@@ -4,6 +4,8 @@ import { ImageController } from './ImageController';
 import { FileSystemController } from './FileSystemController';
 import { ImageDto } from '../../../domain/ImageDto';
 import { FolderDto } from '../../../domain/FolderDto';
+import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
+import { FileSystemError } from '../../../domain/error/FileSystemError';
 
 @JsonController()
 export class ExplorerController {
@@ -13,25 +15,25 @@ export class ExplorerController {
     fileSystemController: FileSystemController = new FileSystemController();
 
     @Get('/explorer/:folderId')
-    async getContentByFolderId(@Param('folderId') folderId: number) {
+    async getContentByFolderId(@Param('folderId') folderId: number): Promise<IFolderContentDto | FileSystemError> {
         const folderPath = await this.folderController.buildPathByFolderId(folderId);
         return this.getContentByFolderPath(folderPath);
     }
 
     @Get('/explorer/path/:folderPath')
-    async getContentByFolderPath(@Param('folderPath') folderPath: string) {
+    async getContentByFolderPath(@Param('folderPath') folderPath: string): Promise<IFolderContentDto | FileSystemError> {
         let folders;
         try {
             folders = await this.getMergedFolderList(folderPath);
         } catch (error) {
-            return { error: true, message: error.message };
+            throw new FileSystemError(error.errno, error.message);
         }
 
         let images;
         try {
             images = await this.getMergedImageList(folderPath);
         } catch (error) {
-            return { error: true, message: error.message };
+            throw new FileSystemError(error.errno, error.message);
         }
 
         return { folders, images };

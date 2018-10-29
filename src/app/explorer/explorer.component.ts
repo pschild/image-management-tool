@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ExplorerService } from './explorer.service';
+import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
+import { FileSystemError } from '../../../domain/error/FileSystemError';
 
 @Component({
   selector: 'app-explorer',
@@ -9,28 +11,34 @@ import { ExplorerService } from './explorer.service';
 export class ExplorerComponent implements OnInit {
 
   currentPath = ['C:', 'Users', 'schild', 'Desktop'];
-  content: { folders: any[], images: any[] }; // TODO: put to interface
+  content: IFolderContentDto;
 
   constructor(private explorerService: ExplorerService) { }
 
   ngOnInit() {
-    this.loadContent();
+    this.loadContent(this.currentPath);
   }
 
-  loadContent() {
-    this.explorerService.getContentByPath(this.currentPath).subscribe((res) => {
-      this.content = res;
-    });
+  loadContent(path: string[]) {
+    this.explorerService.getContentByPath(path).subscribe(
+      (res: IFolderContentDto) => {
+        this.currentPath = path;
+        this.content = res;
+      },
+      (err: FileSystemError) => alert(err.message)
+    );
   }
 
   openFolder(folder) {
-    this.currentPath.push(folder.name);
-    this.loadContent();
+    const newPath = this.currentPath.slice(0);
+    newPath.push(folder.name);
+    this.loadContent(newPath);
   }
 
   navigateBack() {
-    this.currentPath.pop();
-    this.loadContent();
+    const newPath = this.currentPath.slice(0);
+    newPath.pop();
+    this.loadContent(newPath);
   }
 
 }
