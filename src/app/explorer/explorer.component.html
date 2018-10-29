@@ -5,21 +5,24 @@
 <button (click)="navigateBack()">..</button>
 
 <h2>Folders</h2>
-<ul>
-    <li *ngFor="let folder of content.folders" (click)="openFolder(folder)">
-        <span *ngIf="folder.removedInFs">!</span>
-        <span *ngIf="folder.addedInFs">?</span>
-        {{ folder.name }}
-    </li>
-</ul>
 
-<h2>Images</h2>
-<ul>
-    <li *ngFor="let image of content.images">
-        <span *ngIf="image.removedInFs">!</span>
-        <span *ngIf="image.addedInFs">?</span>
-        {{ image.name }}.{{ image.extension }}
-    </li>
-</ul>
+<div *ngIf="content$ | async as content">
+    <ul>
+        <li *ngFor="let folder of content.folders" (click)="openFolder(folder)">
+            <span *ngIf="folder.removedInFs">!</span>
+            <span *ngIf="folder.addedInFs">?</span>
+            {{ folder.name }}
+        </li>
+    </ul>
+
+    <h2>Images</h2>
+    <ul>
+        <li *ngFor="let image of content.images">
+            <span *ngIf="image.removedInFs">!</span>
+            <span *ngIf="image.addedInFs">?</span>
+            {{ image.name }}.{{ image.extension }}
+        </li>
+    </ul>
+</div>
 
 <!-- <img src="C:/users/schild/Desktop/1246566.jpg"/> -->

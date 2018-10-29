@@ -22,19 +22,22 @@ export class ExplorerController {
 
     @Get('/explorer/path/:folderPath')
     async getContentByFolderPath(@Param('folderPath') folderPath: string): Promise<IFolderContentDto | FileSystemError> {
+        /**
+         * TODO:
+         * fileSystemController.getFilesByPath is called twice:
+         *
+         * this.getMergedFolderList > fileSystemController.getFoldersByPath > fileSystemController.getFilesByPath
+         * this.getMergedImageList > fileSystemController.getFoldersByPath > fileSystemController.getFilesByPath
+         */
         let folders;
-        try {
-            folders = await this.getMergedFolderList(folderPath);
-        } catch (error) {
-            throw new FileSystemError(error.errno, error.message);
-        }
+        folders = await this.getMergedFolderList(folderPath).catch(error => {
+            throw new FileSystemError(error.code, error.message);
+        });
 
         let images;
-        try {
-            images = await this.getMergedImageList(folderPath);
-        } catch (error) {
-            throw new FileSystemError(error.errno, error.message);
-        }
+        images = await this.getMergedImageList(folderPath).catch(error => {
+            throw new FileSystemError(error.code, error.message);
+        });
 
         return { folders, images };
     }

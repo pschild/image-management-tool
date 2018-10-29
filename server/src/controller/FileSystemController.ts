@@ -44,29 +44,37 @@ export class FileSystemController {
 
     async getFilesByPath(givenPath: string): Promise<IFileDto[]> {
         const fileList = await afs.readdir(givenPath);
-        const filePromises = fileList.map(async fileName => {
+        const fileDtos = [];
+        // use for-of loop instead of map, because map is synchronous!
+        for (const fileName of fileList) {
             const absolutePath = path.join(givenPath, fileName);
-            const stat = await afs.stat(absolutePath);
+            let stat;
+            try {
+                stat = await afs.stat(absolutePath);
+            } catch (error) {
+                // skip directories whose access throws EPERM errors
+                continue;
+            }
 
             if (stat.isDirectory()) {
-                return {
+                fileDtos.push({
                     name: fileName,
                     absolutePath: absolutePath,
                     isDirectory: true
-                };
+                });
             } else if (stat.isFile()) {
                 const extension = path.extname(fileName);
-                return {
+                fileDtos.push({
                     name: path.basename(fileName, extension), // name without extension
                     absolutePath: absolutePath,
                     extension: extension.substring(1), // remove . at the beginning
                     isFile: true
-                };
+                });
             } else {
                 throw new Error(`File ${absolutePath} is neither file nor directory.`);
             }
-        });
-        return Promise.all(filePromises);
+        }
+        return fileDtos;
     }
 
     private isImageFile(file: IFileDto): boolean {

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ExplorerService } from './explorer.service';
-import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-explorer',
@@ -11,7 +12,7 @@ import { FileSystemError } from '../../../domain/error/FileSystemError';
 export class ExplorerComponent implements OnInit {
 
   currentPath = ['C:', 'Users', 'schild', 'Desktop'];
-  content: IFolderContentDto;
+  content$: Observable<any>;
 
   constructor(private explorerService: ExplorerService) { }
 
@@ -20,13 +21,17 @@ export class ExplorerComponent implements OnInit {
   }
 
   loadContent(path: string[]) {
-    this.explorerService.getContentByPath(path).subscribe(
-      (res: IFolderContentDto) => {
-        this.currentPath = path;
-        this.content = res;
-      },
-      (err: FileSystemError) => alert(err.message)
-    );
+    this.content$ = this.explorerService.getContentByPath(path)
+      .pipe(
+        tap(loadedContent => {
+          this.currentPath = path;
+          return loadedContent;
+        }),
+        catchError((error: FileSystemError) => {
+          alert(`Der Inhalt für das Verzeichnis konnte nicht geladen werden.\n\nCode: ${error.errorCode}\nFehlermeldung: ${error.message}`);
+          return of();
+        })
+      );
   }
 
   openFolder(folder) {
