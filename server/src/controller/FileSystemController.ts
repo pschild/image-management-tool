@@ -9,17 +9,15 @@ export class FileSystemController {
 
     IMAGE_FILE_EXTENSIONS: string[] = ['jpg', 'jpeg', 'png', 'gif'];
 
-    async getFoldersByPath(givenPath: string): Promise<IFileDto[]> {
-        const files: IFileDto[] = await this.getFilesByPath(givenPath);
+    filterByFolder(files: IFileDto[]): IFileDto[] {
         return files.filter((file: IFileDto) => file.isDirectory);
     }
 
-    async getImagesByPath(givenPath: string): Promise<IFileDto[]> {
-        const files: IFileDto[] = await this.getFilesByPath(givenPath);
+    filterByImage(files: IFileDto[]): IFileDto[] {
         return files.filter((file: IFileDto) => file.isFile && this.isImageFile(file));
     }
 
-    async getSystemDrives() {
+    async getSystemDrives(): Promise<any> { // TODO: fix any
         return new Promise((resolve, reject) => {
             drivelist.list((error, driveList) => {
                 if (error) {
@@ -32,7 +30,6 @@ export class FileSystemController {
                         driveDirectories.push({
                             name: mountpoint.path,
                             absolutePath: mountpoint.path,
-                            isFile: false,
                             isDirectory: true
                         });
                     });

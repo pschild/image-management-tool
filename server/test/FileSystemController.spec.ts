@@ -50,7 +50,8 @@ describe('FileSystem Controller', function() {
     });
 
     it('it can get folders by path', async () => {
-        const folders = await this.controller.getFoldersByPath('some/drive');
+        const files = await this.controller.getFilesByPath('some/drive');
+        const folders = this.controller.filterByFolder(files);
 
         expect(folders.length).toBe(2);
         expect(folders[0].name).toBe('folderA');
@@ -58,7 +59,8 @@ describe('FileSystem Controller', function() {
     });
 
     it('it can get images by path', async () => {
-        const images = await this.controller.getImagesByPath('some/drive');
+        const files = await this.controller.getFilesByPath('some/drive');
+        const images = this.controller.filterByImage(files);
 
         expect(images.length).toBe(2);
         expect(images[0].name).toBe('img1');
@@ -84,7 +86,7 @@ describe('FileSystem Controller', function() {
         expect(systemDrives[0].name).toBe('C://');
         expect(systemDrives[0].absolutePath).toBe('C://');
         expect(systemDrives[0].ext).toBeUndefined();
-        expect(systemDrives[0].isFile).toBe(false);
+        expect(systemDrives[0].isFile).toBeUndefined();
         expect(systemDrives[0].isDirectory).toBe(true);
     });
 });

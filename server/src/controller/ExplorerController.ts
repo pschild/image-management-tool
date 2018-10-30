@@ -6,6 +6,9 @@ import { ImageDto } from '../../../domain/ImageDto';
 import { FolderDto } from '../../../domain/FolderDto';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
+import { IFileDto } from '../../../domain/interface/IFileDto';
+import { Folder } from '../entity/Folder';
+import { Image } from '../entity/Image';
 
 @JsonController()
 export class ExplorerController {
@@ -22,35 +25,33 @@ export class ExplorerController {
 
     @Get('/explorer/path/:folderPath')
     async getContentByFolderPath(@Param('folderPath') folderPath: string): Promise<IFolderContentDto | FileSystemError> {
-        /**
-         * TODO:
-         * fileSystemController.getFilesByPath is called twice:
-         *
-         * this.getMergedFolderList > fileSystemController.getFoldersByPath > fileSystemController.getFilesByPath
-         * this.getMergedImageList > fileSystemController.getFoldersByPath > fileSystemController.getFilesByPath
-         */
-        let folders;
-        folders = await this.getMergedFolderList(folderPath).catch(error => {
-            throw new FileSystemError(error.code, error.message);
-        });
+        const fsFiles: IFileDto[] = await this.fileSystemController.getFilesByPath(folderPath);
+        const fsFolders: IFileDto[] = this.fileSystemController.filterByFolder(fsFiles);
+        const fsImages: IFileDto[] = this.fileSystemController.filterByImage(fsFiles);
 
-        let images;
-        images = await this.getMergedImageList(folderPath).catch(error => {
-            throw new FileSystemError(error.code, error.message);
-        });
+        const folderFromDb: Folder = await this.folderController.getFolderByPath(folderPath);
 
-        return { folders, images };
-    }
-
-    async getMergedFolderList(folderPath: string): Promise<FolderDto[]> {
-        let dbFolders = [];
-        const folderFromDb = await this.folderController.getFolderByPath(folderPath);
+        let dbFolders: Folder[] = [];
+        let dbImages: Image[] = [];
         if (folderFromDb) {
             dbFolders = await this.folderController.findDirectDescendantsByFolder(folderFromDb);
+            dbImages = await this.imageController.allByFolderId(folderFromDb.id);
         }
 
-        const fsFolders = await this.fileSystemController.getFoldersByPath(folderPath);
+        let mergedFolders: FolderDto[];
+        mergedFolders = await this.getMergedFolderList(folderPath, fsFolders, dbFolders).catch(error => {
+            throw new FileSystemError(error.code, error.message);
+        });
 
+        let mergedImages: ImageDto[];
+        mergedImages = await this.getMergedImageList(folderPath, fsImages, dbImages).catch(error => {
+            throw new FileSystemError(error.code, error.message);
+        });
+
+        return { folders: mergedFolders, images: mergedImages };
+    }
+
+    async getMergedFolderList(folderPath: string, fsFolders: IFileDto[], dbFolders: Folder[]): Promise<FolderDto[]> {
         // merge DB and FS folder lists
         const foldersInDbAndFs: FolderDto[] = dbFolders.map(dbFolder => {
             let removedInFs = false;
@@ -78,15 +79,7 @@ export class ExplorerController {
         }
     }
 
-    async getMergedImageList(folderPath: string): Promise<ImageDto[]> {
-        let dbImages = [];
-        const folderFromDb = await this.folderController.getFolderByPath(folderPath);
-        if (folderFromDb) {
-            dbImages = await this.imageController.allByFolderId(folderFromDb.id);
-        }
-
-        const fsImages = await this.fileSystemController.getImagesByPath(folderPath);
-
+    async getMergedImageList(folderPath: string, fsImages: IFileDto[], dbImages: Image[]): Promise<ImageDto[]> {
         // merge DB and FS folder lists
         const imagesInDbAndFs: ImageDto[] = dbImages.map(dbImage => {
             let removedInFs = false;

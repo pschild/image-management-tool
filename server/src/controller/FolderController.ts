@@ -22,11 +22,11 @@ export class FolderController {
         return this.repository.findOne({ name });
     }
 
-    async findDirectDescendantsByFolder(folder: Folder) {
+    async findDirectDescendantsByFolder(folder: Folder): Promise<Folder[]> {
         return await this.repository.find({ where: { parent: folder } });
     }
 
-    async findDirectDescendantsByFolderId(folderId: number) {
+    async findDirectDescendantsByFolderId(folderId: number): Promise<Folder[]> {
         const folder = await this.repository.findOne(folderId);
         return this.findDirectDescendantsByFolder(folder);
     }
