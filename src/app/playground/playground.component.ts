@@ -10,6 +10,8 @@ import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/materi
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { Select, Store } from '@ngxs/store';
+import { AppendBar, FooState } from './playground.state';
 
 @Component({
   selector: 'app-playground',
@@ -37,7 +39,15 @@ export class PlaygroundComponent implements OnInit {
   applicationVersion: string;
   greetings: string;
 
-  constructor(private http: HttpClient, private electronService: ElectronService, private dialogService: DialogService, private toastr: ToastrService) {
+  @Select(FooState) foo$: Observable<string>;
+
+  constructor(
+    private http: HttpClient,
+    private electronService: ElectronService,
+    private dialogService: DialogService,
+    private toastr: ToastrService,
+    private store: Store
+  ) {
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
       startWith(null),
       map((fruit: string | null) => fruit ? this._filter(fruit) : this.allFruits.slice()));
@@ -104,6 +114,10 @@ export class PlaygroundComponent implements OnInit {
 
   showSuccess() {
     this.toastr.success('Hello world!', 'Toastr fun!');
+  }
+
+  onAppendClick() {
+    this.store.dispatch(new AppendBar('baz'));
   }
 
 }

@@ -50,3 +50,6 @@
 </mat-form-field>
 
 <button mat-raised-button color="accent" (click)="showSuccess()">Success</button>
+
+<div>Foo is {{foo$ | async}}</div>
+<button mat-raised-button (click)="onAppendClick()">append</button>

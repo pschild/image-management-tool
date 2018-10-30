@@ -6,6 +6,7 @@ Used packages with link to their repository/homepage/API:
 * https://github.com/typestack/routing-controllers
 * https://github.com/scttcper/ngx-toastr
 * https://material.angular.io/
+* https://ngxs.gitbook.io/ngxs/
 
 # Install
 1. Run `npm install`
