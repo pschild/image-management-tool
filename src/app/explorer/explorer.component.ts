@@ -3,6 +3,9 @@ import { ExplorerService } from './explorer.service';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
+import { FolderDto } from '../../../domain/FolderDto';
+import { ImageDto } from '../../../domain/ImageDto';
 
 @Component({
   selector: 'app-explorer',
@@ -12,7 +15,7 @@ import { catchError, tap } from 'rxjs/operators';
 export class ExplorerComponent implements OnInit {
 
   currentPath = ['C:', 'Users', 'schild', 'Desktop'];
-  content$: Observable<any>;
+  content$: Observable<IFolderContentDto | FileSystemError>;
 
   constructor(private explorerService: ExplorerService) { }
 
@@ -23,18 +26,18 @@ export class ExplorerComponent implements OnInit {
   loadContent(path: string[]) {
     this.content$ = this.explorerService.getContentByPath(path)
       .pipe(
-        tap(loadedContent => {
+        tap((loadedContent: IFolderContentDto) => {
           this.currentPath = path;
           return loadedContent;
         }),
         catchError((error: FileSystemError) => {
           alert(`Der Inhalt für das Verzeichnis konnte nicht geladen werden.\n\nCode: ${error.errorCode}\nFehlermeldung: ${error.message}`);
-          return of();
+          return of(error);
         })
       );
   }
 
-  openFolder(folder) {
+  openFolder(folder: FolderDto) {
     const newPath = this.currentPath.slice(0);
     newPath.push(folder.name);
     this.loadContent(newPath);
@@ -44,6 +47,22 @@ export class ExplorerComponent implements OnInit {
     const newPath = this.currentPath.slice(0);
     newPath.pop();
     this.loadContent(newPath);
+  }
+
+  handleRemovedFolder(folder: FolderDto) {
+    console.log(`handleRemovedFolder: ${folder.name} in ${folder.absolutePath}`);
+  }
+
+  handleUntrackedFolder(folder: FolderDto) {
+    console.log(`handleUntrackedFolder: ${folder.name} in ${folder.absolutePath}`);
+  }
+
+  handleRemovedImage(image: ImageDto) {
+    console.log(`handleRemovedImage: ${image.name} in ${image.absolutePath}`);
+  }
+
+  handleUntrackedImage(image: ImageDto) {
+    console.log(`handleUntrackedImage: ${image.name} in ${image.absolutePath}`);
   }
 
 }

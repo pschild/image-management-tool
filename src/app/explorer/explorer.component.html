@@ -8,19 +8,19 @@
 
 <div *ngIf="content$ | async as content">
     <ul>
-        <li *ngFor="let folder of content.folders" (click)="openFolder(folder)">
-            <span *ngIf="folder.removedInFs">!</span>
-            <span *ngIf="folder.addedInFs">?</span>
-            {{ folder.name }}
+        <li *ngFor="let folder of content.folders">
+            <button *ngIf="folder.removedInFs" (click)="handleRemovedFolder(folder)">!</button>
+            <button *ngIf="folder.addedInFs" (click)="handleUntrackedFolder(folder)">?</button>
+            <span (click)="openFolder(folder)">{{ folder.name }}</span>
         </li>
     </ul>
 
     <h2>Images</h2>
     <ul>
         <li *ngFor="let image of content.images">
-            <span *ngIf="image.removedInFs">!</span>
-            <span *ngIf="image.addedInFs">?</span>
-            {{ image.name }}.{{ image.extension }}
+            <button *ngIf="image.removedInFs" (click)="handleRemovedImage(image)">!</button>
+            <button *ngIf="image.addedInFs" (click)="handleUntrackedImage(image)">?</button>
+            <span>{{ image.name }}.{{ image.extension }}</span>
         </li>
     </ul>
 </div>
