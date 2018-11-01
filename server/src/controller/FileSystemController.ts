@@ -27,9 +27,11 @@ export class FileSystemController {
                 const driveDirectories = [];
                 driveList.forEach(driveInfo => {
                     driveInfo.mountpoints.forEach(mountpoint => {
+                        const drivePath = mountpoint.path;
+                        const strippedPath = drivePath.replace(path.sep, ''); // strip slashes after drive letter
                         driveDirectories.push({
-                            name: mountpoint.path,
-                            absolutePath: mountpoint.path,
+                            name: strippedPath,
+                            absolutePath: strippedPath,
                             isDirectory: true
                         });
                     });

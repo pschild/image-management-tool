@@ -82,6 +82,10 @@ export class FolderController {
         return foundFolder;
     }
 
+    async findRootFolders(): Promise<Folder[]> {
+        return await this.repository.find({ where: { parent: null } });
+    }
+
     removeDotFromSystemDriveLetter(pathParts: string[]): string[] {
         // Workaround: check if we have only a system drive letter, e.g. C: or D:
         // In those cases, path.join() returns the drive letter with a dot: path.join('C:') === 'C:.'

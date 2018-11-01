@@ -18,7 +18,7 @@ export class ExplorerController {
     imageController: ImageController = new ImageController();
     fileSystemController: FileSystemController = new FileSystemController();
 
-    @Get('/explorer/:folderId')
+    @Get('/explorer/id/:folderId')
     async getContentByFolderId(@Param('folderId') folderId: number): Promise<IFolderContentDto | FileSystemError> {
         const folderPath = await this.folderController.buildPathByFolderId(folderId);
         return this.getContentByFolderPath(folderPath);
@@ -40,19 +40,35 @@ export class ExplorerController {
         }
 
         let mergedFolders: FolderDto[];
-        mergedFolders = await this.getMergedFolderList(folderPath, fsFolders, dbFolders).catch(error => {
+        mergedFolders = await this.getMergedFolderList(fsFolders, dbFolders).catch(error => {
             throw new FileSystemError(error.code, error.message);
         });
 
         let mergedImages: ImageDto[];
-        mergedImages = await this.getMergedImageList(folderPath, fsImages, dbImages).catch(error => {
+        mergedImages = await this.getMergedImageList(fsImages, dbImages).catch(error => {
             throw new FileSystemError(error.code, error.message);
         });
 
         return { folders: mergedFolders, images: mergedImages };
     }
 
-    async getMergedFolderList(folderPath: string, fsFolders: IFileDto[], dbFolders: Folder[]): Promise<FolderDto[]> {
+    @Get('/explorer/systemDrives')
+    async getSystemDrives(): Promise<IFolderContentDto | FileSystemError> {
+        const fsFolders: IFileDto[] = await this.fileSystemController.getSystemDrives();
+        const dbFolders: Folder[] = await this.folderController.findRootFolders();
+
+        let mergedFolders: FolderDto[];
+        mergedFolders = await this.getMergedFolderList(fsFolders, dbFolders).catch(error => {
+            throw new FileSystemError(error.code, error.message);
+        });
+
+        // it's not possible that images are placed beside the system drives, so we return an empty array
+        const mergedImages = [];
+
+        return { folders: mergedFolders, images: mergedImages };
+    }
+
+    async getMergedFolderList(fsFolders: IFileDto[], dbFolders: Folder[]): Promise<FolderDto[]> {
         // merge DB and FS folder lists
         const foldersInDbAndFs: FolderDto[] = [];
         for (const dbFolder of dbFolders) {
@@ -82,7 +98,7 @@ export class ExplorerController {
         }
     }
 
-    async getMergedImageList(folderPath: string, fsImages: IFileDto[], dbImages: Image[]): Promise<ImageDto[]> {
+    async getMergedImageList(fsImages: IFileDto[], dbImages: Image[]): Promise<ImageDto[]> {
         // merge DB and FS folder lists
         const imagesInDbAndFs: ImageDto[] = [];
         for (const dbImage of dbImages) {

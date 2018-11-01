@@ -116,4 +116,12 @@ describe('Folder Controller', function() {
         expect(descendantNames[0]).toBe('F1');
         expect(descendantNames[1]).toBe('F2');
     });
+
+    it('can find root folders', async () => {
+        const directChildren = await this.controller.findRootFolders();
+
+        expect(directChildren.length).toBe(2);
+        expect(directChildren[0].name).toBe('C:');
+        expect(directChildren[1].name).toBe('D:');
+    });
 });

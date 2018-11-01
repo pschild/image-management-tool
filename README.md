@@ -10,8 +10,9 @@ Used packages with link to their repository/homepage/API:
 
 # Install
 1. Run `npm install`
-2. ~~Run `.\node_modules\.bin\electron-rebuild.cmd -f -w sqlite3` to be able to use sqlite3 with Electron (see Use SQLite with Electron).~~
-3. Run `npm start` to start development version, or `npm run electron:windows` to build for windows.
+2. Run `.\node_modules\.bin\electron-builder install-app-deps` to install native modules, like sqlite3 or drive-list. See also <https://electronjs.org/docs/tutorial/using-native-node-modules>
+3. ~~Run `.\node_modules\.bin\electron-rebuild.cmd -f -w sqlite3` to be able to use sqlite3 with Electron (see Use SQLite with Electron).~~
+4. Run `npm start` to start development version, or `npm run electron:windows` to build for windows.
 
 ## Use sqlite3 with Electron
 1. Start a terminal as admin
