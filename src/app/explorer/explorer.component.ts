@@ -6,7 +6,6 @@ import { catchError, tap } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FolderDto } from '../../../domain/FolderDto';
 import { ImageDto } from '../../../domain/ImageDto';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-explorer',
@@ -18,7 +17,7 @@ export class ExplorerComponent implements OnInit {
   currentPath = ['C:', 'Users', 'schild', 'Desktop'];
   content$: Observable<IFolderContentDto | FileSystemError>;
 
-  constructor(private explorerService: ExplorerService, private sanitizer: DomSanitizer) { }
+  constructor(private explorerService: ExplorerService) { }
 
   ngOnInit() {
     this.loadContent(this.currentPath);
@@ -64,10 +63,6 @@ export class ExplorerComponent implements OnInit {
 
   handleUntrackedImage(image: ImageDto) {
     console.log(`handleUntrackedImage: ${image.absolutePath}`);
-  }
-
-  sanitize(url: string) {
-    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
 }
