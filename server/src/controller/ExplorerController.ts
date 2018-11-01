@@ -9,6 +9,7 @@ import { FileSystemError } from '../../../domain/error/FileSystemError';
 import { IFileDto } from '../../../domain/interface/IFileDto';
 import { Folder } from '../entity/Folder';
 import { Image } from '../entity/Image';
+import * as path from 'path';
 
 @JsonController()
 export class ExplorerController {
@@ -53,7 +54,8 @@ export class ExplorerController {
 
     async getMergedFolderList(folderPath: string, fsFolders: IFileDto[], dbFolders: Folder[]): Promise<FolderDto[]> {
         // merge DB and FS folder lists
-        const foldersInDbAndFs: FolderDto[] = dbFolders.map(dbFolder => {
+        const foldersInDbAndFs: FolderDto[] = [];
+        for (const dbFolder of dbFolders) {
             let removedInFs = false;
 
             const accordingFsFolderIndex = fsFolders.findIndex(folder => folder.name === dbFolder.name);
@@ -65,13 +67,14 @@ export class ExplorerController {
                 fsFolders.splice(accordingFsFolderIndex, 1);
             }
 
-            return new FolderDto(dbFolder.name, folderPath, false, removedInFs, dbFolder.id);
-        });
+            const absolutePath = await this.folderController.buildPathByFolderId(dbFolder.id);
+            foldersInDbAndFs.push(new FolderDto(dbFolder.name, absolutePath, false, removedInFs, dbFolder.id));
+        }
 
         // if there are elements left in foldersFromFileSystem, they are in FS but not in DB
         if (fsFolders.length) {
             const foldersOnlyInFs: FolderDto[] = fsFolders.map(fsFolder => {
-                return new FolderDto(fsFolder.name, folderPath, true, false);
+                return new FolderDto(fsFolder.name, fsFolder.absolutePath, true, false);
             });
             return [...foldersInDbAndFs, ...foldersOnlyInFs];
         } else {
@@ -81,7 +84,8 @@ export class ExplorerController {
 
     async getMergedImageList(folderPath: string, fsImages: IFileDto[], dbImages: Image[]): Promise<ImageDto[]> {
         // merge DB and FS folder lists
-        const imagesInDbAndFs: ImageDto[] = dbImages.map(dbImage => {
+        const imagesInDbAndFs: ImageDto[] = [];
+        for (const dbImage of dbImages) {
             let removedInFs = false;
 
             const accordingFsImageIndex = fsImages.findIndex(
@@ -95,13 +99,15 @@ export class ExplorerController {
                 fsImages.splice(accordingFsImageIndex, 1);
             }
 
-            return new ImageDto(dbImage.name, folderPath, dbImage.extension, false, removedInFs, dbImage.id);
-        });
+            const parentFolderPath = await this.folderController.buildPathByFolderId(dbImage.parentFolder.id);
+            const absolutePath = `${parentFolderPath}${path.sep}${dbImage.name}.${dbImage.extension}`;
+            imagesInDbAndFs.push(new ImageDto(dbImage.name, absolutePath, dbImage.extension, false, removedInFs, dbImage.id));
+        }
 
         // if there are elements left in foldersFromFileSystem, they are in FS but not in DB
         if (fsImages.length) {
             const imagesOnlyInFs: ImageDto[] = fsImages.map(fsImage => {
-                return new ImageDto(fsImage.name, folderPath, fsImage.extension, true, false);
+                return new ImageDto(fsImage.name, fsImage.absolutePath, fsImage.extension, true, false);
             });
             return [...imagesInDbAndFs, ...imagesOnlyInFs];
         } else {

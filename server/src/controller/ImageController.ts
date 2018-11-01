@@ -21,7 +21,7 @@ export class ImageController {
     async allByFolderId(folderId: number): Promise<Image[]> {
         return this.repository
             .createQueryBuilder('image')
-            .innerJoin('image.parentFolder', 'folder', 'folder.id = :folderId', { folderId })
+            .innerJoinAndSelect('image.parentFolder', 'folder', 'folder.id = :folderId', { folderId })
             .getMany();
     }
 
