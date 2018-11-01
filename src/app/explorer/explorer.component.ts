@@ -6,6 +6,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FolderDto } from '../../../domain/FolderDto';
 import { ImageDto } from '../../../domain/ImageDto';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-explorer',
@@ -17,7 +18,7 @@ export class ExplorerComponent implements OnInit {
   currentPath = ['C:', 'Users', 'schild', 'Desktop'];
   content$: Observable<IFolderContentDto | FileSystemError>;
 
-  constructor(private explorerService: ExplorerService) { }
+  constructor(private explorerService: ExplorerService, private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     this.loadContent(this.currentPath);
@@ -50,19 +51,23 @@ export class ExplorerComponent implements OnInit {
   }
 
   handleRemovedFolder(folder: FolderDto) {
-    console.log(`handleRemovedFolder: ${folder.name} in ${folder.absolutePath}`);
+    console.log(`handleRemovedFolder: ${folder.absolutePath}`);
   }
 
   handleUntrackedFolder(folder: FolderDto) {
-    console.log(`handleUntrackedFolder: ${folder.name} in ${folder.absolutePath}`);
+    console.log(`handleUntrackedFolder: ${folder.absolutePath}`);
   }
 
   handleRemovedImage(image: ImageDto) {
-    console.log(`handleRemovedImage: ${image.name} in ${image.absolutePath}`);
+    console.log(`handleRemovedImage: ${image.absolutePath}`);
   }
 
   handleUntrackedImage(image: ImageDto) {
-    console.log(`handleUntrackedImage: ${image.name} in ${image.absolutePath}`);
+    console.log(`handleUntrackedImage: ${image.absolutePath}`);
+  }
+
+  sanitize(url: string) {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
 }
