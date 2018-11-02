@@ -41,6 +41,10 @@ export class ExplorerComponent implements OnInit {
       );
   }
 
+  refresh() {
+    this.loadContent(this.currentPath$.getValue());
+  }
+
   openFolder(folder: FolderDto) {
     const newPath = this.currentPath$.getValue().slice(0);
     newPath.push(folder.name);
@@ -59,9 +63,7 @@ export class ExplorerComponent implements OnInit {
 
   handleUntrackedFolder(folder: FolderDto) {
     console.log(`handleUntrackedFolder: ${folder.absolutePath}`);
-    this.folderService.createByPath(folder.absolutePath).subscribe(res => {
-      console.log(res);
-    });
+    this.folderService.createByPath(folder.absolutePath).subscribe(res => this.refresh());
   }
 
   handleRemovedImage(image: ImageDto) {
