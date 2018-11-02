@@ -1,6 +1,6 @@
 <h1>Explorer</h1>
 
-<div>{{ currentPath.join('/') }}</div>
+<div *ngIf="currentPath$ | async as currentPath">{{ currentPath.join('/') }}</div>
 
 <button (click)="navigateBack()">..</button>
 

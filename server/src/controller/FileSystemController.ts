@@ -1,6 +1,7 @@
 import { JsonController } from 'routing-controllers';
 import * as afs from 'async-file';
 import * as path from 'path';
+import * as os from 'os';
 import { IFileDto } from '../../../domain/interface/IFileDto';
 import * as drivelist from 'drivelist';
 
@@ -74,6 +75,10 @@ export class FileSystemController {
             }
         }
         return fileDtos;
+    }
+
+    async getHomeDirectory() {
+        return os.homedir();
     }
 
     private isImageFile(file: IFileDto): boolean {

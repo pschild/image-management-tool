@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import * as path from 'path';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { throwError, Observable } from 'rxjs';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
 
 @Injectable()
@@ -11,7 +11,15 @@ export class ExplorerService {
 
   constructor(private http: HttpClient) { }
 
-  getSystemDrives() {
+  getHomeDirectory(): Observable<string[]> {
+    return this.http
+      .get<string>(`http://localhost:4201/explorer/homeDirectory`)
+      .pipe(
+        map((homeDirectory: string) => homeDirectory.split(path.sep))
+      );
+  }
+
+  getSystemDrives(): Observable<IFolderContentDto> {
     return this.http
       .get<IFolderContentDto>(`http://localhost:4201/explorer/systemDrives`)
       .pipe(
@@ -21,7 +29,7 @@ export class ExplorerService {
       );
   }
 
-  getContentByPath(pathParts: string[]) {
+  getContentByPath(pathParts: string[]): Observable<IFolderContentDto> {
     let url;
     if (pathParts.length > 0) {
       let joinedPath = path.join(...pathParts);

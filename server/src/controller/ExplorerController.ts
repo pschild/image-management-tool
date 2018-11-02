@@ -68,6 +68,11 @@ export class ExplorerController {
         return { folders: mergedFolders, images: mergedImages };
     }
 
+    @Get('/explorer/homeDirectory')
+    async getHomeDirectory(): Promise<string> {
+        return this.fileSystemController.getHomeDirectory();
+    }
+
     async getMergedFolderList(fsFolders: IFileDto[], dbFolders: Folder[]): Promise<FolderDto[]> {
         // merge DB and FS folder lists
         const foldersInDbAndFs: FolderDto[] = [];

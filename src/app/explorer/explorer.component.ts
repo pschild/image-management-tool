@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ExplorerService } from './explorer.service';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FolderDto } from '../../../domain/FolderDto';
@@ -14,20 +14,23 @@ import { ImageDto } from '../../../domain/ImageDto';
 })
 export class ExplorerComponent implements OnInit {
 
-  currentPath = ['C:', 'Users', 'schild', 'Desktop'];
+  currentPath$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   content$: Observable<IFolderContentDto | FileSystemError>;
 
   constructor(private explorerService: ExplorerService) { }
 
   ngOnInit() {
-    this.loadContent(this.currentPath);
+    this.explorerService.getHomeDirectory().subscribe((homeDirectory: string[]) => {
+      this.currentPath$.next(homeDirectory);
+      this.loadContent(homeDirectory);
+    });
   }
 
   loadContent(path: string[]) {
     this.content$ = this.explorerService.getContentByPath(path)
       .pipe(
         tap((loadedContent: IFolderContentDto) => {
-          this.currentPath = path;
+          this.currentPath$.next(path);
           return loadedContent;
         }),
         catchError((error: FileSystemError) => {
@@ -38,13 +41,13 @@ export class ExplorerComponent implements OnInit {
   }
 
   openFolder(folder: FolderDto) {
-    const newPath = this.currentPath.slice(0);
+    const newPath = this.currentPath$.getValue().slice(0);
     newPath.push(folder.name);
     this.loadContent(newPath);
   }
 
   navigateBack() {
-    const newPath = this.currentPath.slice(0);
+    const newPath = this.currentPath$.getValue().slice(0);
     newPath.pop();
     this.loadContent(newPath);
   }
