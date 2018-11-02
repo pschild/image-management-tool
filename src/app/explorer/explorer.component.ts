@@ -6,6 +6,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FolderDto } from '../../../domain/FolderDto';
 import { ImageDto } from '../../../domain/ImageDto';
+import { FolderService } from '../core/services/folder.service';
 
 @Component({
   selector: 'app-explorer',
@@ -17,7 +18,7 @@ export class ExplorerComponent implements OnInit {
   currentPath$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   content$: Observable<IFolderContentDto | FileSystemError>;
 
-  constructor(private explorerService: ExplorerService) { }
+  constructor(private explorerService: ExplorerService, private folderService: FolderService) { }
 
   ngOnInit() {
     this.explorerService.getHomeDirectory().subscribe((homeDirectory: string[]) => {
@@ -58,6 +59,9 @@ export class ExplorerComponent implements OnInit {
 
   handleUntrackedFolder(folder: FolderDto) {
     console.log(`handleUntrackedFolder: ${folder.absolutePath}`);
+    this.folderService.createByPath(folder.absolutePath).subscribe(res => {
+      console.log(res);
+    });
   }
 
   handleRemovedImage(image: ImageDto) {

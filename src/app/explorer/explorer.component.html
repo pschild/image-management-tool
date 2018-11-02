@@ -4,13 +4,12 @@
 
 <button (click)="navigateBack()">..</button>
 
-<h2>Folders</h2>
-
 <div *ngIf="content$ | async as content">
+    <h2>Folders</h2>
     <ul>
         <li *ngFor="let folder of content.folders">
             <button *ngIf="folder.removedInFs" (click)="handleRemovedFolder(folder)">!</button>
-            <button *ngIf="folder.addedInFs" (click)="handleUntrackedFolder(folder)">?</button>
+            <button *ngIf="folder.addedInFs" (click)="handleUntrackedFolder(folder)">+</button>
             <span (click)="openFolder(folder)">{{ folder.name }}</span>
         </li>
     </ul>
@@ -19,7 +18,7 @@
     <ul>
         <li *ngFor="let image of content.images">
             <button *ngIf="image.removedInFs" (click)="handleRemovedImage(image)">!</button>
-            <button *ngIf="image.addedInFs" (click)="handleUntrackedImage(image)">?</button>
+            <button *ngIf="image.addedInFs" (click)="handleUntrackedImage(image)">+</button>
             <img width="100" [src]="image.absolutePath  | safeUrl" />
             <span>{{ image.name }}.{{ image.extension }}</span>
         </li>
