@@ -8,14 +8,31 @@ export class ImageController {
 
     private repository = getRepository(Image);
 
-    @Get('/images')
+    @Get('/image')
     all() {
         return this.repository.find();
     }
 
-    @Get('/images/:id')
+    @Get('/image/:id')
     one(@Param('id') id: number) {
         return this.repository.findOne(id);
+    }
+
+    @Post('/image')
+    save(@Body() body: any) {
+        return this.repository.save(body);
+    }
+
+    @Put('/image/:id')
+    update(@Param('id') id: number, @Body() body: any) {
+        return this.repository.update(id, body);
+    }
+
+    @Delete('/image/:id')
+    remove(@Param('id') id: number) {
+        return this.repository.remove(
+            this.repository.create({ id })
+        );
     }
 
     async allByFolderId(folderId: number): Promise<Image[]> {
@@ -23,22 +40,5 @@ export class ImageController {
             .createQueryBuilder('image')
             .innerJoinAndSelect('image.parentFolder', 'folder', 'folder.id = :folderId', { folderId })
             .getMany();
-    }
-
-    @Post('/images')
-    save(@Body() body: any) {
-        return this.repository.save(body);
-    }
-
-    @Put('/images/:id')
-    update(@Param('id') id: number, @Body() body: any) {
-        return this.repository.update(id, body);
-    }
-
-    @Delete('/images/:id')
-    remove(@Param('id') id: number) {
-        return this.repository.remove(
-            this.repository.create({ id })
-        );
     }
 }
