@@ -38,9 +38,8 @@ export class ExplorerService {
       // In those cases, path.join() returns the drive letter with a dot: path.join('C:') === 'C:.'
       // Because this name cannot be found, remove the dot.
       // https://github.com/nodejs/node/issues/14405
-      // In addition, we need to add the path separator (e.g. \)
       if (joinedPath.match(/^[A-Z]{1}:\.$/) !== null) {
-        joinedPath = joinedPath.substr(0, 2) + path.sep; // C:. => C:\
+        joinedPath = joinedPath.substr(0, 2); // C:. => C:
       }
 
       const encodedPath = encodeURI(joinedPath);

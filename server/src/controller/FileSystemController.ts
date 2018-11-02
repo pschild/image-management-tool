@@ -43,7 +43,14 @@ export class FileSystemController {
     }
 
     async getFilesByPath(givenPath: string): Promise<IFileDto[]> {
-        const fileList = await afs.readdir(givenPath);
+        // Workaround: check if we have only a system drive letter, e.g. C: or D:
+        // In those cases, we need to add the separator (\ for windows) (C: => C:\)
+        // Otherwise, the folder cannot be found by afs.readdir(...).
+        if (givenPath.match(/^[A-Z]{1}:$/) !== null) {
+            givenPath = givenPath + path.sep; // C: => C:\
+        }
+
+        const fileList = await afs.readdir(path.normalize(givenPath));
         const fileDtos = [];
         // use for-of loop instead of map, because map is synchronous!
         for (const fileName of fileList) {
