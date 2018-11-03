@@ -1,4 +1,4 @@
-import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
 import { LoadContentByPath, NavigateToFolder, NavigateUp, RefreshContent, LoadHomeDirectory } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap, catchError } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export interface ExplorerStateModel {
         }
     }
 })
-export class ExplorerState {
+export class ExplorerState implements NgxsOnInit {
     constructor(private explorerService: ExplorerService) { }
 
     @Selector()
@@ -32,6 +32,10 @@ export class ExplorerState {
     @Selector()
     static content(state: ExplorerStateModel) {
         return state.content;
+    }
+
+    ngxsOnInit({ dispatch }: StateContext<ExplorerStateModel>) {
+        dispatch(new LoadHomeDirectory());
     }
 
     @Action(LoadHomeDirectory)

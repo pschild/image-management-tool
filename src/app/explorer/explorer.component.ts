@@ -20,9 +20,7 @@ export class ExplorerComponent implements OnInit {
 
   constructor(private folderService: FolderService, private store: Store) { }
 
-  ngOnInit() {
-    this.store.dispatch(new LoadHomeDirectory());
-  }
+  ngOnInit() {}
 
   refresh() {
     this.store.dispatch(new RefreshContent());
