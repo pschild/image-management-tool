@@ -4,12 +4,15 @@ import { ExplorerComponent } from './explorer.component';
 import { ExplorerRoutingModule } from './explorer-routing.module';
 import { ExplorerService } from './explorer.service';
 import { SharedModule } from '../shared/shared.module';
+import { NgxsModule } from '@ngxs/store';
+import { ExplorerState } from './explorer.state';
 
 @NgModule({
   imports: [
     CommonModule,
     ExplorerRoutingModule,
-    SharedModule
+    SharedModule,
+    NgxsModule.forFeature([ExplorerState])
   ],
   declarations: [
     ExplorerComponent

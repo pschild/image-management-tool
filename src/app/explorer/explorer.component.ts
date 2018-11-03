@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ExplorerService } from './explorer.service';
-import { FileSystemError } from '../../../domain/error/FileSystemError';
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FolderDto } from '../../../domain/FolderDto';
 import { ImageDto } from '../../../domain/ImageDto';
+import { Store, Select } from '@ngxs/store';
+import { NavigateToFolder, NavigateUp, RefreshContent, LoadHomeDirectory } from './explorer.actions';
+import { ExplorerState } from './explorer.state';
 import { FolderService } from '../core/services/folder.service';
 
 @Component({
@@ -15,46 +15,25 @@ import { FolderService } from '../core/services/folder.service';
 })
 export class ExplorerComponent implements OnInit {
 
-  currentPath$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
-  content$: Observable<IFolderContentDto | FileSystemError>;
+  @Select(ExplorerState.currentPath) currentPath$: Observable<string[]>;
+  @Select(ExplorerState.content) content$: Observable<IFolderContentDto>;
 
-  constructor(private explorerService: ExplorerService, private folderService: FolderService) { }
+  constructor(private folderService: FolderService, private store: Store) { }
 
   ngOnInit() {
-    this.explorerService.getHomeDirectory().subscribe((homeDirectory: string[]) => {
-      this.currentPath$.next(homeDirectory);
-      this.loadContent(homeDirectory);
-    });
-  }
-
-  loadContent(path: string[]) {
-    this.content$ = this.explorerService.getContentByPath(path)
-      .pipe(
-        tap((loadedContent: IFolderContentDto) => {
-          this.currentPath$.next(path);
-          return loadedContent;
-        }),
-        catchError((error: FileSystemError) => {
-          alert(`Der Inhalt für das Verzeichnis konnte nicht geladen werden.\n\nCode: ${error.errorCode}\nFehlermeldung: ${error.message}`);
-          return of(error);
-        })
-      );
+    this.store.dispatch(new LoadHomeDirectory());
   }
 
   refresh() {
-    this.loadContent(this.currentPath$.getValue());
+    this.store.dispatch(new RefreshContent());
   }
 
   openFolder(folder: FolderDto) {
-    const newPath = this.currentPath$.getValue().slice(0);
-    newPath.push(folder.name);
-    this.loadContent(newPath);
+    this.store.dispatch(new NavigateToFolder(folder.name));
   }
 
   navigateBack() {
-    const newPath = this.currentPath$.getValue().slice(0);
-    newPath.pop();
-    this.loadContent(newPath);
+    this.store.dispatch(new NavigateUp());
   }
 
   handleRemovedFolder(folder: FolderDto) {
