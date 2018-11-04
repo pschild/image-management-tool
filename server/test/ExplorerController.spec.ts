@@ -105,7 +105,7 @@ describe('Explorer Controller', function() {
     });
 
     it('can merge content when FS and DB are equal', async () => {
-        spyOn(FileSystemController.prototype, 'getFilesByPath').and.returnValue(this.dummyFolderContent);
+        spyOn(FileSystemController.prototype, 'getFilesByPath').and.returnValue(Promise.resolve(this.dummyFolderContent));
 
         const c = await this.folderController.oneByName('C:');
         const mergeResult = await this.controller.getContentByFolderId(c.id);
@@ -142,7 +142,7 @@ describe('Explorer Controller', function() {
             isFile: true,
             isDirectory: false
         }];
-        spyOn(FileSystemController.prototype, 'getFilesByPath').and.returnValue(dummyContent);
+        spyOn(FileSystemController.prototype, 'getFilesByPath').and.returnValue(Promise.resolve(dummyContent));
 
         const c = await this.folderController.oneByName('C:');
 
@@ -162,7 +162,7 @@ describe('Explorer Controller', function() {
 
     it('can merge content when FS contains removed elements', async () => {
         const dummyContent = this.dummyFolderContent.filter(element => element.name !== 'F1' && element.name !== 'img1');
-        spyOn(FileSystemController.prototype, 'getFilesByPath').and.returnValue(dummyContent);
+        spyOn(FileSystemController.prototype, 'getFilesByPath').and.returnValue(Promise.resolve(dummyContent));
 
         const c = await this.folderController.oneByName('C:');
 
@@ -181,7 +181,7 @@ describe('Explorer Controller', function() {
     });
 
     it('returns equal results by folder path and folder id', async () => {
-        spyOn(FileSystemController.prototype, 'getFilesByPath').and.returnValue(this.dummyFolderContent);
+        spyOn(FileSystemController.prototype, 'getFilesByPath').and.returnValue(Promise.resolve(this.dummyFolderContent));
 
         const c = await this.folderController.oneByName('C:');
 
