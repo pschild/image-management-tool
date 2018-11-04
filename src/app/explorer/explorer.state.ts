@@ -1,9 +1,10 @@
 import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
-import { LoadContentByPath, NavigateToFolder, NavigateUp, RefreshContent, LoadHomeDirectory, LoadContentFailed } from './explorer.actions';
+import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, LoadContentFailed, CreateFolderByPath } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap, catchError } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
+import { FolderDto } from '../../../domain/FolderDto';
 
 export interface ExplorerStateModel {
     currentPath: string[];
@@ -54,22 +55,38 @@ export class ExplorerState implements NgxsOnInit {
             );
     }
 
+    @Action(CreateFolderByPath)
+    createFolderByPath({ getState, patchState }: StateContext<ExplorerStateModel>, action: CreateFolderByPath) {
+        return this.explorerService.createFolderByPath(action.path)
+            .pipe(
+                tap((createdFolder: FolderDto) => {
+                    const state = getState();
+                    const newFolderState: FolderDto[] = state.content.folders.map((folder: FolderDto) => {
+                        if (folder.name === createdFolder.name) {
+                            folder.addedInFs = false;
+                        }
+                        return folder;
+                    });
+                    patchState({
+                        content: {
+                            folders: newFolderState,
+                            images: state.content.images
+                        }
+                    });
+                })
+            );
+    }
+
     @Action(NavigateToFolder)
     navigateToFolder({ getState, dispatch }: StateContext<ExplorerStateModel>, action: NavigateToFolder) {
         const state = getState();
         dispatch(new LoadContentByPath([...state.currentPath, action.folderName]));
     }
 
-    @Action(NavigateUp)
-    navigateUp({ getState, dispatch }: StateContext<ExplorerStateModel>) {
+    @Action(NavigateBack)
+    navigateBack({ getState, dispatch }: StateContext<ExplorerStateModel>) {
         const state = getState();
         state.currentPath.pop();
-        dispatch(new LoadContentByPath(state.currentPath));
-    }
-
-    @Action(RefreshContent)
-    refreshContent({ getState, dispatch }: StateContext<ExplorerStateModel>) {
-        const state = getState();
         dispatch(new LoadContentByPath(state.currentPath));
     }
 

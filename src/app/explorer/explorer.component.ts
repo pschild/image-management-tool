@@ -4,9 +4,8 @@ import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FolderDto } from '../../../domain/FolderDto';
 import { ImageDto } from '../../../domain/ImageDto';
 import { Store, Select } from '@ngxs/store';
-import { NavigateToFolder, NavigateUp, RefreshContent, LoadHomeDirectory } from './explorer.actions';
+import { NavigateToFolder, NavigateBack, CreateFolderByPath } from './explorer.actions';
 import { ExplorerState } from './explorer.state';
-import { FolderService } from '../core/services/folder.service';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
 import { filter } from 'rxjs/operators';
 
@@ -21,7 +20,7 @@ export class ExplorerComponent implements OnInit {
   @Select(ExplorerState.content) content$: Observable<IFolderContentDto>;
   @Select(ExplorerState.error) error$: Observable<FileSystemError>;
 
-  constructor(private folderService: FolderService, private store: Store) { }
+  constructor(private store: Store) { }
 
   ngOnInit() {
     this.error$
@@ -37,16 +36,12 @@ export class ExplorerComponent implements OnInit {
       });
   }
 
-  refresh() {
-    this.store.dispatch(new RefreshContent());
-  }
-
   openFolder(folder: FolderDto) {
     this.store.dispatch(new NavigateToFolder(folder.name));
   }
 
   navigateBack() {
-    this.store.dispatch(new NavigateUp());
+    this.store.dispatch(new NavigateBack());
   }
 
   handleRemovedFolder(folder: FolderDto) {
@@ -55,7 +50,7 @@ export class ExplorerComponent implements OnInit {
 
   handleUntrackedFolder(folder: FolderDto) {
     console.log(`handleUntrackedFolder: ${folder.absolutePath}`);
-    this.folderService.createByPath(folder.absolutePath).subscribe(res => this.refresh());
+    this.store.dispatch(new CreateFolderByPath(folder.absolutePath));
   }
 
   handleRemovedImage(image: ImageDto) {

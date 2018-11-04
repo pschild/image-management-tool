@@ -9,17 +9,18 @@ export class LoadContentByPath {
     constructor(public path: string[]) { }
 }
 
+export class CreateFolderByPath {
+    static readonly type = '[Explorer] CreateFolder';
+    constructor(public path: string) { }
+}
+
 export class NavigateToFolder {
     static readonly type = '[Explorer] NavigateToFolder';
     constructor(public folderName: string) { }
 }
 
-export class NavigateUp {
-    static readonly type = '[Explorer] NavigateUp';
-}
-
-export class RefreshContent {
-    static readonly type = '[Explorer] RefreshContent';
+export class NavigateBack {
+    static readonly type = '[Explorer] NavigateBack';
 }
 
 export class LoadContentFailed {

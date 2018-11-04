@@ -1,4 +1,4 @@
-import { JsonController, Get, Param } from 'routing-controllers';
+import { JsonController, Get, Param, Post, Body } from 'routing-controllers';
 import { FolderController } from './FolderController';
 import { ImageController } from './ImageController';
 import { FileSystemController } from './FileSystemController';
@@ -71,6 +71,11 @@ export class ExplorerController {
     @Get('/explorer/homeDirectory')
     async getHomeDirectory(): Promise<string> {
         return this.fileSystemController.getHomeDirectory();
+    }
+
+    @Post('/explorer/folder')
+    createByPath(@Body() body: {path: string}): Promise<Folder> {
+        return this.folderController.getFolderByPath(decodeURI(body.path), true);
     }
 
     async getMergedFolderList(fsFolders: IFileDto[], dbFolders: Folder[]): Promise<FolderDto[]> {

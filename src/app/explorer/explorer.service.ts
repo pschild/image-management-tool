@@ -5,6 +5,7 @@ import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { catchError, map } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
+import { FolderDto } from '../../../domain/FolderDto';
 
 @Injectable()
 export class ExplorerService {
@@ -55,5 +56,9 @@ export class ExplorerService {
           return throwError(<FileSystemError>errorResponse.error);
         })
       );
+  }
+
+  createFolderByPath(folderPath: string): Observable<FolderDto> {
+    return this.http.post<FolderDto>(`http://localhost:4201/explorer/folder`, { path: folderPath });
   }
 }

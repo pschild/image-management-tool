@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Post, Body } from 'routing-controllers';
+import { JsonController, Get, Param } from 'routing-controllers';
 import { getRepository } from 'typeorm';
 import { Folder } from '../entity/Folder';
 import * as path from 'path';
@@ -16,11 +16,6 @@ export class FolderController {
     @Get('/folder/:id')
     one(@Param('id') id: number) {
         return this.repository.findOne(id);
-    }
-
-    @Post('/folder')
-    createByPath(@Body() body: {path: string}): Promise<Folder> {
-        return this.getFolderByPath(decodeURI(body.path), true);
     }
 
     oneByName(name: string) {
