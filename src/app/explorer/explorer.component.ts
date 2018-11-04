@@ -46,6 +46,9 @@ export class ExplorerComponent implements OnInit {
 
   handleRemovedFolder(folder: FolderDto) {
     console.log(`handleRemovedFolder: ${folder.absolutePath}`);
+    this.dialogService.showOpenFolderDialog((filePaths: string[], bookmarks: string[]) => {
+      console.log(filePaths);
+    });
   }
 
   handleUntrackedFolder(folder: FolderDto) {

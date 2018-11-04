@@ -60,12 +60,12 @@ export class PlaygroundComponent implements OnInit {
       .subscribe((args) => {
         this.greetings = args.toString();
       });
-
-    this.dialogService.selectedFilePaths.subscribe(x => console.log(x));
   }
 
   openDialog() {
-    this.dialogService.showOpenFolderDialog(true);
+    this.dialogService.showOpenFolderDialog((filePaths: string[], bookmarks: string[]) => {
+      console.log(filePaths);
+    }, true);
   }
 
   openContextMenu(event) {
