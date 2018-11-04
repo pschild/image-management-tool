@@ -1,3 +1,5 @@
+import { FileSystemError } from '../../../domain/error/FileSystemError';
+
 export class LoadHomeDirectory {
     static readonly type = '[Explorer] LoadHomeDirectory';
 }
@@ -18,4 +20,9 @@ export class NavigateUp {
 
 export class RefreshContent {
     static readonly type = '[Explorer] RefreshContent';
+}
+
+export class LoadContentFailed {
+    static readonly type = '[Explorer] LoadContentFailed';
+    constructor(public error: FileSystemError) { }
 }

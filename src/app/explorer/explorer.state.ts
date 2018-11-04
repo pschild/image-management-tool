@@ -1,14 +1,14 @@
 import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
-import { LoadContentByPath, NavigateToFolder, NavigateUp, RefreshContent, LoadHomeDirectory } from './explorer.actions';
+import { LoadContentByPath, NavigateToFolder, NavigateUp, RefreshContent, LoadHomeDirectory, LoadContentFailed } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap, catchError } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
-import { of } from 'rxjs';
 
 export interface ExplorerStateModel {
     currentPath: string[];
     content: IFolderContentDto;
+    error: FileSystemError;
 }
 
 @State<ExplorerStateModel>({
@@ -18,7 +18,8 @@ export interface ExplorerStateModel {
         content: {
             folders: [],
             images: []
-        }
+        },
+        error: null
     }
 })
 export class ExplorerState implements NgxsOnInit {
@@ -32,6 +33,11 @@ export class ExplorerState implements NgxsOnInit {
     @Selector()
     static content(state: ExplorerStateModel) {
         return state.content;
+    }
+
+    @Selector()
+    static error(state: ExplorerStateModel) {
+        return state.error;
     }
 
     ngxsOnInit({ dispatch }: StateContext<ExplorerStateModel>) {
@@ -68,7 +74,7 @@ export class ExplorerState implements NgxsOnInit {
     }
 
     @Action(LoadContentByPath)
-    loadContent({ getState, setState }: StateContext<ExplorerStateModel>, action: LoadContentByPath) {
+    loadContent({ getState, setState, dispatch }: StateContext<ExplorerStateModel>, action: LoadContentByPath) {
         return this.explorerService.getContentByPath(action.path)
             .pipe(
                 tap((loadedContent: IFolderContentDto) => {
@@ -83,14 +89,17 @@ export class ExplorerState implements NgxsOnInit {
                     });
                 }),
                 catchError((error: FileSystemError) => {
-                    // TODO: dispatch ErrorAction and subscribe to that in component => Style Guide?
-                    alert(`
-                        Der Inhalt für das Verzeichnis konnte nicht geladen werden.
-                        \n\n
-                        Code: ${error.errorCode}\nFehlermeldung: ${error.message}
-                    `);
-                    return of(error);
+                    return dispatch(new LoadContentFailed(error));
                 })
             );
+    }
+
+    @Action(LoadContentFailed)
+    loadContentFailed({ getState, setState }: StateContext<ExplorerStateModel>, action: LoadContentFailed) {
+        const state = getState();
+        setState({
+            ...state,
+            error: action.error
+        });
     }
 }

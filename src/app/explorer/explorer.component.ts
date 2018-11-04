@@ -7,6 +7,8 @@ import { Store, Select } from '@ngxs/store';
 import { NavigateToFolder, NavigateUp, RefreshContent, LoadHomeDirectory } from './explorer.actions';
 import { ExplorerState } from './explorer.state';
 import { FolderService } from '../core/services/folder.service';
+import { FileSystemError } from '../../../domain/error/FileSystemError';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-explorer',
@@ -17,10 +19,23 @@ export class ExplorerComponent implements OnInit {
 
   @Select(ExplorerState.currentPath) currentPath$: Observable<string[]>;
   @Select(ExplorerState.content) content$: Observable<IFolderContentDto>;
+  @Select(ExplorerState.error) error$: Observable<Error>;
 
   constructor(private folderService: FolderService, private store: Store) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.error$
+      .pipe(
+        filter((error: FileSystemError) => error !== null)
+      )
+      .subscribe((error: FileSystemError) => {
+        alert(`
+            Der Inhalt für das Verzeichnis konnte nicht geladen werden.
+            \n\n
+            Code: ${error.errorCode}\nFehlermeldung: ${error.message}
+        `);
+      });
+  }
 
   refresh() {
     this.store.dispatch(new RefreshContent());
