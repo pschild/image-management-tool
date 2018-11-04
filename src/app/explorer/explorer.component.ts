@@ -19,7 +19,7 @@ export class ExplorerComponent implements OnInit {
 
   @Select(ExplorerState.currentPath) currentPath$: Observable<string[]>;
   @Select(ExplorerState.content) content$: Observable<IFolderContentDto>;
-  @Select(ExplorerState.error) error$: Observable<Error>;
+  @Select(ExplorerState.error) error$: Observable<FileSystemError>;
 
   constructor(private folderService: FolderService, private store: Store) { }
 
