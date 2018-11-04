@@ -91,13 +91,11 @@ export class ExplorerState implements NgxsOnInit {
     }
 
     @Action(LoadContentByPath)
-    loadContent({ getState, setState, dispatch }: StateContext<ExplorerStateModel>, action: LoadContentByPath) {
+    loadContent({ patchState, dispatch }: StateContext<ExplorerStateModel>, action: LoadContentByPath) {
         return this.explorerService.getContentByPath(action.path)
             .pipe(
                 tap((loadedContent: IFolderContentDto) => {
-                    const state = getState();
-                    setState({
-                        ...state,
+                    patchState({
                         content: {
                             folders: loadedContent.folders,
                             images: loadedContent.images
@@ -112,10 +110,8 @@ export class ExplorerState implements NgxsOnInit {
     }
 
     @Action(LoadContentFailed)
-    loadContentFailed({ getState, setState }: StateContext<ExplorerStateModel>, action: LoadContentFailed) {
-        const state = getState();
-        setState({
-            ...state,
+    loadContentFailed({ patchState }: StateContext<ExplorerStateModel>, action: LoadContentFailed) {
+        patchState({
             error: action.error
         });
     }
