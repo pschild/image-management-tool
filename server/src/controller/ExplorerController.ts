@@ -26,7 +26,10 @@ export class ExplorerController {
 
     @Get('/explorer/path/:folderPath')
     async getContentByFolderPath(@Param('folderPath') folderPath: string): Promise<IFolderContentDto | FileSystemError> {
-        const fsFiles: IFileDto[] = await this.fileSystemController.getFilesByPath(folderPath);
+        const fsFiles: IFileDto[] = await this.fileSystemController.getFilesByPath(folderPath).catch(error => {
+            throw new FileSystemError(error.code, error.message);
+        });
+
         const fsFolders: IFileDto[] = this.fileSystemController.filterByFolder(fsFiles);
         const fsImages: IFileDto[] = this.fileSystemController.filterByImage(fsFiles);
 
@@ -39,15 +42,8 @@ export class ExplorerController {
             dbImages = await this.imageController.allByFolderId(folderFromDb.id);
         }
 
-        let mergedFolders: FolderDto[];
-        mergedFolders = await this.getMergedFolderList(fsFolders, dbFolders).catch(error => {
-            throw new FileSystemError(error.code, error.message);
-        });
-
-        let mergedImages: ImageDto[];
-        mergedImages = await this.getMergedImageList(fsImages, dbImages).catch(error => {
-            throw new FileSystemError(error.code, error.message);
-        });
+        const mergedFolders: FolderDto[] = await this.getMergedFolderList(fsFolders, dbFolders);
+        const mergedImages: ImageDto[] = await this.getMergedImageList(fsImages, dbImages);
 
         return { folders: mergedFolders, images: mergedImages };
     }

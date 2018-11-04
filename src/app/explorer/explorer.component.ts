@@ -8,6 +8,7 @@ import { NavigateToFolder, NavigateBack, CreateFolderByPath } from './explorer.a
 import { ExplorerState } from './explorer.state';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
 import { filter } from 'rxjs/operators';
+import { DialogService } from '../core/services/dialog.service';
 
 @Component({
   selector: 'app-explorer',
@@ -20,7 +21,7 @@ export class ExplorerComponent implements OnInit {
   @Select(ExplorerState.content) content$: Observable<IFolderContentDto>;
   @Select(ExplorerState.error) error$: Observable<FileSystemError>;
 
-  constructor(private store: Store) { }
+  constructor(private store: Store, private dialogService: DialogService) { }
 
   ngOnInit() {
     this.error$
@@ -28,11 +29,10 @@ export class ExplorerComponent implements OnInit {
         filter((error: FileSystemError) => error !== null)
       )
       .subscribe((error: FileSystemError) => {
-        alert(`
-            Der Inhalt für das Verzeichnis konnte nicht geladen werden.
-            \n\n
-            Code: ${error.errorCode}\nFehlermeldung: ${error.message}
-        `);
+        this.dialogService.showErrorBox(
+          'Es ist ein Fehler aufgetreten',
+          `Der Inhalt für das Verzeichnis konnte nicht geladen werden.\nCode: ${error.errorCode}\nFehlermeldung: ${error.message}`
+        );
       });
   }
 
