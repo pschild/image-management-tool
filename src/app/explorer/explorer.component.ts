@@ -4,7 +4,7 @@ import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FolderDto } from '../../../domain/FolderDto';
 import { ImageDto } from '../../../domain/ImageDto';
 import { Store, Select } from '@ngxs/store';
-import { NavigateToFolder, NavigateBack, CreateFolderByPath } from './explorer.actions';
+import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder } from './explorer.actions';
 import { ExplorerState } from './explorer.state';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
 import { filter } from 'rxjs/operators';
@@ -46,9 +46,29 @@ export class ExplorerComponent implements OnInit {
 
   handleRemovedFolder(folder: FolderDto) {
     console.log(`handleRemovedFolder: ${folder.absolutePath}`);
-    this.dialogService.showOpenFolderDialog((filePaths: string[], bookmarks: string[]) => {
-      console.log(filePaths);
-    });
+    this.dialogService.showMessageBox(
+      `Ordner suchen`,
+      `Der Ordner ${folder.name} wurde nicht mehr im System gefunden.
+      Falls er verschoben wurde, können Sie einen neuen Ort bestimmen.
+      Falls er entfernt wurde, können Sie aus der Datenbank entfernen.`,
+      [
+        { id: 0, label: 'Suchen' },
+        { id: 1, label: 'Löschen' },
+        { id: 2, label: 'Abbrechen' }
+      ],
+      (response: number) => {
+        if (response === 0) {
+          this.dialogService.showOpenFolderDialog((filePaths: string[], bookmarks: string[]) => {
+            if (filePaths && filePaths.length) {
+              const newFilePath = filePaths[0];
+              this.store.dispatch(new RelocateFolder(folder.absolutePath, newFilePath));
+            }
+          });
+        } else if (response === 1) {
+          console.log('Ordner löschen');
+        }
+      }
+    );
   }
 
   handleUntrackedFolder(folder: FolderDto) {

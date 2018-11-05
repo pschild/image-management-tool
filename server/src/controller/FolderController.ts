@@ -1,4 +1,4 @@
-import { JsonController, Get, Param } from 'routing-controllers';
+import { JsonController, Get, Param, Put, Body } from 'routing-controllers';
 import { getRepository } from 'typeorm';
 import { Folder } from '../entity/Folder';
 import * as path from 'path';
@@ -16,6 +16,15 @@ export class FolderController {
     @Get('/folder/:id')
     one(@Param('id') id: number) {
         return this.repository.findOne(id);
+    }
+
+    @Put('/folder/:id')
+    updateById(@Param('id') id: number, @Body() body: any) {
+        return this.repository.update(id, body);
+    }
+
+    update(folder: Folder) {
+        return this.repository.save(folder);
     }
 
     oneByName(name: string) {

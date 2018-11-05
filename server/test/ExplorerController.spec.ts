@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import * as path from 'path';
 import { setupTestConnection, closeTestConnection } from './utils/test-utils';
 import { ExplorerController } from '../src/controller/ExplorerController';
-import { getManager } from 'typeorm';
+import { getManager, getRepository, getConnection } from 'typeorm';
 import { Folder } from '../src/entity/Folder';
 import { FolderController } from '../src/controller/FolderController';
 import { ImageController } from '../src/controller/ImageController';
@@ -14,6 +14,7 @@ describe('Explorer Controller', function() {
         await setupTestConnection();
         this.controller = new ExplorerController();
         this.folderController = new FolderController();
+        this.folderRepository = getRepository(Folder);
 
         this.dummyFolderContent = [
             {
@@ -57,6 +58,12 @@ describe('Explorer Controller', function() {
     });
 
     beforeEach(async () => {
+        await getConnection()
+            .createQueryBuilder()
+            .delete()
+            .from(Folder)
+            .execute();
+
         /**
          * Create the following structure:
          *
@@ -188,5 +195,70 @@ describe('Explorer Controller', function() {
         const mergeResult1 = await this.controller.getContentByFolderPath('C:');
         const mergeResult2 = await this.controller.getContentByFolderId(c.id);
         expect(mergeResult1).toEqual(mergeResult2);
+    });
+
+    it('can relocate a renamed folder', async () => {
+        const oldF2 = await this.folderRepository.findOne({ name: 'F2' }, { relations: ['parent', 'children'] });
+
+        await this.controller.relocateFolder({ oldPath: 'C:\\F2', newPath: 'C:\\F2a' });
+
+        const newF2 = await this.folderRepository.findOne({ id: oldF2.id }, { relations: ['parent', 'children'] });
+
+        expect(oldF2.id).toBe(newF2.id);
+        expect(newF2.name).toBe('F2a');
+        expect(oldF2.parent).toEqual(newF2.parent);
+        expect(oldF2.children).toEqual(newF2.children);
+    });
+
+    it('can relocate a moved (to existing folder) folder', async () => {
+        const oldF2 = await this.folderRepository.findOne({ name: 'F2' }, { relations: ['parent', 'children'] });
+
+        await this.controller.relocateFolder({ oldPath: 'C:\\F2', newPath: 'D:\\F4\\F5\\F2' });
+
+        const newF2 = await this.folderRepository.findOne({ id: oldF2.id }, { relations: ['parent', 'children'] });
+
+        expect(oldF2.id).toBe(newF2.id);
+        expect(oldF2.name).toBe(newF2.name);
+        expect(newF2.parent.name).toBe('F5');
+        expect(oldF2.children).toEqual(newF2.children);
+    });
+
+    it('can relocate a renamed and moved (to existing folder) folder', async () => {
+        const oldF2 = await this.folderRepository.findOne({ name: 'F2' }, { relations: ['parent', 'children'] });
+
+        await this.controller.relocateFolder({ oldPath: 'C:\\F2', newPath: 'D:\\F4\\F5\\F2a' });
+
+        const newF2 = await this.folderRepository.findOne({ id: oldF2.id }, { relations: ['parent', 'children'] });
+
+        expect(oldF2.id).toBe(newF2.id);
+        expect(newF2.name).toBe('F2a');
+        expect(newF2.parent.name).toBe('F5');
+        expect(oldF2.children).toEqual(newF2.children);
+    });
+
+    it('can relocate a renamed and moved (to new folder) folder', async () => {
+        const oldF2 = await this.folderRepository.findOne({ name: 'F2' }, { relations: ['parent', 'children'] });
+
+        await this.controller.relocateFolder({ oldPath: 'C:\\F2', newPath: 'D:\\F4\\foo\\bar\\F2a' });
+
+        const newF2 = await this.folderRepository.findOne({ id: oldF2.id }, { relations: ['parent', 'children'] });
+
+        expect(oldF2.id).toBe(newF2.id);
+        expect(newF2.name).toBe('F2a');
+        expect(newF2.parent.name).toBe('bar');
+        expect(oldF2.children).toEqual(newF2.children);
+    });
+
+    it('can relocated a renamed folder with no parent', async () => {
+        const oldC = await this.folderRepository.findOne({ name: 'C:' }, { relations: ['parent', 'children'] });
+
+        await this.controller.relocateFolder({ oldPath: 'C:', newPath: 'Y:' });
+
+        const newC = await this.folderRepository.findOne({ id: oldC.id }, { relations: ['parent', 'children'] });
+
+        expect(oldC.id).toBe(newC.id);
+        expect(newC.name).toBe('Y:');
+        expect(newC.parent).toBe(null);
+        expect(oldC.children).toEqual(newC.children);
     });
 });

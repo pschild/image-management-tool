@@ -1,10 +1,11 @@
 import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
-import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, LoadContentFailed, CreateFolderByPath } from './explorer.actions';
+import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, LoadContentFailed, CreateFolderByPath, RelocateFolder, RefreshContent } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap, catchError } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
 import { FolderDto } from '../../../domain/FolderDto';
+import { IFolderDto } from '../../../domain/interface/IFolderDto';
 
 export interface ExplorerStateModel {
     currentPath: string[];
@@ -90,6 +91,11 @@ export class ExplorerState implements NgxsOnInit {
         dispatch(new LoadContentByPath(state.currentPath));
     }
 
+    @Action(RefreshContent)
+    refreshContent({ getState, dispatch }: StateContext<ExplorerStateModel>) {
+        dispatch(new LoadContentByPath(getState().currentPath));
+    }
+
     @Action(LoadContentByPath)
     loadContent({ patchState, dispatch }: StateContext<ExplorerStateModel>, action: LoadContentByPath) {
         return this.explorerService.getContentByPath(action.path)
@@ -114,5 +120,16 @@ export class ExplorerState implements NgxsOnInit {
         patchState({
             error: action.error
         });
+    }
+
+    @Action(RelocateFolder)
+    relocateFolder({ dispatch }: StateContext<ExplorerStateModel>, action: RelocateFolder) {
+        return this.explorerService.relocateFolder(action.oldPath, action.newPath)
+            .pipe(
+                tap((relocatedFolder: IFolderDto) => {
+                    alert(`Success`); // TODO: dispatch RelocateFolderSuccess
+                    return dispatch(new RefreshContent());
+                })
+            );
     }
 }

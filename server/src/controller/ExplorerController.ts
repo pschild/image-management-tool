@@ -74,6 +74,26 @@ export class ExplorerController {
         return this.folderController.getFolderByPath(decodeURI(body.path), true);
     }
 
+    @Post('/explorer/relocate/folder')
+    async relocateFolder(@Body() body: {oldPath: string, newPath: string}): Promise<Folder> {
+        const oldPath: string = decodeURI(body.oldPath);
+        const newPath: string = decodeURI(body.newPath);
+
+        const newPathParts: string[] = newPath.split(path.sep);
+        const newFolderName = newPathParts.pop();
+
+        let newParent: Folder = null;
+        if (newPathParts.length > 0) {
+            const newParentPath = newPathParts.join(path.sep);
+            newParent = await this.folderController.getFolderByPath(newParentPath, true);
+        }
+
+        const oldFolder: Folder = await this.folderController.getFolderByPath(oldPath);
+        oldFolder.name = newFolderName;
+        oldFolder.parent = newParent;
+        return await this.folderController.update(oldFolder);
+    }
+
     async getMergedFolderList(fsFolders: IFileDto[], dbFolders: Folder[]): Promise<FolderDto[]> {
         // merge DB and FS folder lists
         const foldersInDbAndFs: FolderDto[] = [];

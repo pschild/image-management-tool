@@ -23,7 +23,16 @@ export class NavigateBack {
     static readonly type = '[Explorer] NavigateBack';
 }
 
+export class RefreshContent {
+    static readonly type = '[Explorer] RefreshContent';
+}
+
 export class LoadContentFailed {
     static readonly type = '[Explorer] LoadContentFailed';
     constructor(public error: FileSystemError) { }
+}
+
+export class RelocateFolder {
+    static readonly type = '[Explorer] RelocateFolder';
+    constructor(public oldPath: string, public newPath: string) { }
 }

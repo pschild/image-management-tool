@@ -42,9 +42,12 @@ export class DialogService {
     this.electronService.remote.dialog.showErrorBox(title, content);
   }
 
-  showMessageBox(message: string) {
-    this.electronService.remote.dialog.showMessageBox({
-      message: message
-    });
+  showMessageBox(
+    title: string,
+    message: string,
+    buttons: {id: number, label: string}[],
+    callback?: (response: number, checkboxChecked: boolean) => void
+  ) {
+    this.electronService.remote.dialog.showMessageBox({ title, message, buttons: buttons.map(b => b.label) }, callback);
   }
 }
