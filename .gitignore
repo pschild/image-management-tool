@@ -12,6 +12,9 @@ server/**/*.js
 domain/**/*.js
 *.js.map
 
+# secret files
+.env
+
 # dependencies
 /node_modules
 

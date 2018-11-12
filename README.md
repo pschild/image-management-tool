@@ -44,6 +44,9 @@ If `"releaseType"` in `electron-builder.json` is set to `"draft"` or not set at 
 
 # Develop
 
+Run `npm start` to start development version (start client and server).
+Run `npm run server:start` to start the server only.
+
 ## Test
 Jasmine will be used to run test suites.  
 You can run tests for server with `npm run server:test`. Test specs are located in `server/test`.  

@@ -6,6 +6,9 @@ import 'reflect-metadata';
 import { createConnection, getConnectionOptions } from 'typeorm';
 import { createExpressServer } from 'routing-controllers';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 // config
 const SERVER_PORT = 4201;
 const WORKING_DIR = '.image-management-tool';
