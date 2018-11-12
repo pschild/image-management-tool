@@ -8,7 +8,9 @@
   </mat-card-content>
 </mat-card>
 
-<button mat-raised-button color="primary" (click)="openDialog()">Durchsuchen...</button>
+<button mat-raised-button color="primary" (click)="openFolderDialog()">Durchsuchen...</button>
+<br/>
+<button mat-raised-button color="primary" (click)="openFileDialog()"><mat-icon>crop</mat-icon> Bilder schneiden</button>
 
 <mat-menu #appMenu="matMenu">
   <button mat-menu-item>Settings</button>
@@ -53,3 +55,13 @@
 
 <div>Foo is {{foo$ | async}}</div>
 <button mat-raised-button (click)="onAppendClick()">append</button>
+
+<br/>
+
+<mat-form-field>
+  <input matInput type="color" placeholder="Farbe" value="#00ff00">
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput type="number" placeholder="Nummer" value="42">
+</mat-form-field>

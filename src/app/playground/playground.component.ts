@@ -62,10 +62,22 @@ export class PlaygroundComponent implements OnInit {
       });
   }
 
-  openDialog() {
+  openFolderDialog() {
     this.dialogService.showOpenFolderDialog((filePaths: string[], bookmarks: string[]) => {
       console.log(filePaths);
     }, true);
+  }
+
+  openFileDialog() {
+    this.dialogService.showOpenFileDialog((filePaths: string[], bookmarks: string[]) => {
+      if (filePaths && filePaths.length) {
+        const chosenFilePath = filePaths[0];
+        this.http.get(`${AppConfig.serverBaseUrl}/cropImage/${encodeURI(chosenFilePath)}`)
+          .subscribe((args) => {
+            console.log(args);
+          });
+      }
+    });
   }
 
   openContextMenu(event) {

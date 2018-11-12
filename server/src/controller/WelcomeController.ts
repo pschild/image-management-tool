@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { JsonController, Get, Param } from 'routing-controllers';
 import { Folder } from '../entity/Folder';
 import { Image } from '../entity/Image';
@@ -5,6 +6,8 @@ import { Tag } from '../entity/Tag';
 import { getManager } from 'typeorm';
 import { Person } from '../entity/Person';
 import { Place } from '../entity/Place';
+import * as afs from 'async-file';
+import { get, post } from 'request-promise';
 
 @JsonController()
 export class WelcomeController {
@@ -57,6 +60,47 @@ export class WelcomeController {
 
         const trees = await getManager().getTreeRepository(Folder).findTrees();
         return trees;
+    }
+
+    @Get('/cropImage/:filePath')
+    async cropImage(@Param('filePath') filePath: string): Promise<any> {
+        const formData = {
+            file: {
+                value: afs.createReadStream(filePath),
+                options: {
+                    filename: path.basename(filePath)
+                }
+            }
+        };
+
+        const cropResult = await post(`${process.env.CROP_SERVICE_URL}`, {
+            formData: formData,
+            json: true
+        }).catch(error => {
+            throw new Error(error.message);
+        });
+
+        for (const croppedImage of cropResult.croppedImages) {
+            await get(croppedImage.uri)
+                    .pipe(afs.createWriteStream(path.join(path.dirname(filePath), croppedImage.name)))
+                    .on('close', () => console.log(`saved ${croppedImage.name}!`));
+        }
+
+        // const removeUploadFolderResult = await get({
+        //     uri: `${process.env.CROP_SERVICE_URL}`,
+        //     qs: {
+        //         action: 'removeUploadFolder',
+        //         folderName: cropResult.uploadFolderName
+        //     }
+        // }).catch(error => {
+        //     throw new Error(error.message);
+        // });
+
+        // if (!removeUploadFolderResult.success) {
+        //     throw new Error('Upload folder could not be removed');
+        // }
+
+        return cropResult;
     }
 }
 
