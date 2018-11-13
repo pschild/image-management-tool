@@ -7,7 +7,6 @@ import { createConnection, getConnectionOptions } from 'typeorm';
 import { createExpressServer } from 'routing-controllers';
 
 import * as dotenv from 'dotenv';
-dotenv.config();
 
 // config
 const SERVER_PORT = 4201;
@@ -21,6 +20,7 @@ if (!fs.existsSync(workingDirPath)) {
 }
 
 export const startServer = async (electronAppPath: string) => {
+    dotenv.config({ path: path.resolve(electronAppPath, '.env') });
     const connectionOptions = await getConnectionOptions();
     // overwrite path to database
     Object.assign(connectionOptions, { database: path.join(workingDirPath, DB_NAME) });
