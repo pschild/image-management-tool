@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ElectronService } from '../core/services/electron.service';
 import { DialogService } from '../core/services/dialog.service';
@@ -7,7 +7,7 @@ import { MatMenuTrigger } from '@angular/material';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { Select, Store } from '@ngxs/store';
@@ -29,6 +29,7 @@ export class PlaygroundComponent implements OnInit {
   filteredFruits: Observable<string[]>;
   fruits: string[] = ['Lemon'];
   allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
+  croppedImages$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
   @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
 
@@ -46,7 +47,8 @@ export class PlaygroundComponent implements OnInit {
     private electronService: ElectronService,
     private dialogService: DialogService,
     private toastr: ToastrService,
-    private store: Store
+    private store: Store,
+    private zone: NgZone
   ) {
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
       startWith(null),
@@ -73,8 +75,10 @@ export class PlaygroundComponent implements OnInit {
       if (filePaths && filePaths.length) {
         const chosenFilePath = filePaths[0];
         this.http.get(`${AppConfig.serverBaseUrl}/cropImage/${encodeURI(chosenFilePath)}`)
-          .subscribe((args) => {
-            console.log(args);
+          .subscribe((result: any) => {
+            this.zone.run(() => {
+              this.croppedImages$.next(result.croppedImages);
+            });
           });
       }
     });

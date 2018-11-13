@@ -12,6 +12,12 @@
 <br/>
 <button mat-raised-button color="primary" (click)="openFileDialog()"><mat-icon>crop</mat-icon> Bilder schneiden</button>
 
+<div *ngIf="croppedImages$ | async as croppedImages">
+  <span *ngFor="let croppedImage of croppedImages">
+    <img width="100" [src]="croppedImage.uri"/>
+  </span>
+</div>
+
 <mat-menu #appMenu="matMenu">
   <button mat-menu-item>Settings</button>
   <button mat-menu-item>Help</button>
