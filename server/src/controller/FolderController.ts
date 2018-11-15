@@ -2,6 +2,7 @@ import { JsonController, Get, Param, Put, Body } from 'routing-controllers';
 import { getRepository } from 'typeorm';
 import { Folder } from '../entity/Folder';
 import * as path from 'path';
+import { PathHelper } from '../util/PathHelper';
 
 @JsonController()
 export class FolderController {
@@ -65,14 +66,14 @@ export class FolderController {
     }
 
     async getFolderByPath(givenPath: string, createIfNotExist: boolean = false): Promise<Folder> {
-        let pathParts = givenPath.split(path.sep);
-        pathParts = this.removeDotFromSystemDriveLetter(pathParts);
+        const pathParts = givenPath.split(path.sep);
 
         let parent: Folder = null;
         let foundFolder: Folder;
         // analyze the given path from beginning to end: try to find each folder in database by name and parent folder
         // optional: if parameter createIfNotExist is set to true, missing folders will be created automatically
-        for (const pathName of pathParts) {
+        for (let pathName of pathParts) {
+            pathName = PathHelper.getAsName(pathName); // Workaround: ensure we get sth like C: when pathName is drive letter
             foundFolder = await this.repository.findOne({ name: pathName, parent: parent });
             if (foundFolder) {
                 parent = foundFolder;
@@ -93,16 +94,5 @@ export class FolderController {
 
     async findRootFolders(): Promise<Folder[]> {
         return await this.repository.find({ where: { parent: null } });
-    }
-
-    removeDotFromSystemDriveLetter(pathParts: string[]): string[] {
-        // Workaround: check if we have only a system drive letter, e.g. C: or D:
-        // In those cases, path.join() returns the drive letter with a dot: path.join('C:') === 'C:.'
-        // Because this name cannot be found in database, remove the dot.
-        // https://github.com/nodejs/node/issues/14405
-        if (pathParts.length && pathParts[0].match(/^[A-Z]{1}:\.$/) !== null) {
-            pathParts[0] = pathParts[0].substr(0, 2); // C:. => C:
-        }
-        return pathParts;
     }
 }

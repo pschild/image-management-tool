@@ -34,16 +34,7 @@ export class ExplorerService {
   getContentByPath(pathParts: string[]): Observable<IFolderContentDto> {
     let url;
     if (pathParts.length > 0) {
-      let joinedPath = path.join(...pathParts);
-
-      // Workaround: check if we have only a system drive letter, e.g. C: or D:
-      // In those cases, path.join() returns the drive letter with a dot: path.join('C:') === 'C:.'
-      // Because this name cannot be found, remove the dot.
-      // https://github.com/nodejs/node/issues/14405
-      if (joinedPath.match(/^[A-Z]{1}:\.$/) !== null) {
-        joinedPath = joinedPath.substr(0, 2); // C:. => C:
-      }
-
+      const joinedPath = path.join(...pathParts);
       const encodedPath = encodeURI(joinedPath);
       url = `http://localhost:4201/explorer/path/${encodedPath}`;
     } else {

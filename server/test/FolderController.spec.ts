@@ -47,14 +47,6 @@ describe('Folder Controller', function() {
         const f6 = await getManager().save(getManager().create(Folder, { name: 'F6', parent: f5 }));
     });
 
-    it('can remove the dot from system drive letters', () => {
-        expect(this.controller.removeDotFromSystemDriveLetter(['C:.'])).toEqual(['C:']);
-        expect(this.controller.removeDotFromSystemDriveLetter(['c:.'])).toEqual(['c:.']);
-        expect(this.controller.removeDotFromSystemDriveLetter(['AB:.'])).toEqual(['AB:.']);
-        expect(this.controller.removeDotFromSystemDriveLetter(['C:.', 'subfolder'])).toEqual(['C:', 'subfolder']);
-        expect(this.controller.removeDotFromSystemDriveLetter(['C:.', 'subfolder.'])).toEqual(['C:', 'subfolder.']);
-    });
-
     it('can build a path by folder id', async () => {
         const c = await this.repository.findOne({ name: 'C:' });
         const pathOfC = await this.controller.buildPathByFolderId(c.id);

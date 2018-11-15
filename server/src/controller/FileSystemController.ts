@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { IFileDto } from '../../../domain/interface/IFileDto';
 import * as drivelist from 'drivelist';
+import { PathHelper } from '../util/PathHelper';
 
 @JsonController()
 export class FileSystemController {
@@ -43,14 +44,9 @@ export class FileSystemController {
     }
 
     async getFilesByPath(givenPath: string): Promise<IFileDto[]> {
-        // Workaround: check if we have only a system drive letter, e.g. C: or D:
-        // In those cases, we need to add the separator (\ for windows) (C: => C:\)
-        // Otherwise, the folder cannot be found by afs.readdir(...).
-        if (givenPath.match(/^[A-Z]{1}:$/) !== null) {
-            givenPath = givenPath + path.sep; // C: => C:\
-        }
+        givenPath = PathHelper.getAsDirectory(givenPath); // Workaround: ensure we get sth like C:\\ when pathName is drive letter
 
-        const fileList = await afs.readdir(path.normalize(givenPath));
+        const fileList = await afs.readdir(givenPath);
         const fileDtos = [];
         // use for-of loop instead of map, because map is synchronous!
         for (const fileName of fileList) {
