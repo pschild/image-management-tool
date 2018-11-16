@@ -50,7 +50,11 @@ $autoBackgroundColor = true;
 $imageAreaColor = "#ff0000";
 $gridSize = 100;
 $maxImages = 10;
+
 $fuzzPercent = 0.06;
+if ($_POST["fuzzValue"] !== "") {
+    $fuzzPercent = $_POST["fuzzValue"] / 100;
+}
 
 $im = new Imagick($originalImagePath);
 
@@ -70,10 +74,10 @@ copy($tempFolderPath . "out.png", $tempFolderPath . "in.png");
 // Step 1: Make the background color transparent
 
 $im = new Imagick($tempFolderPath . "in.png");
+$fuzz = $fuzzPercent * $im->getQuantumRange()["quantumRangeLong"];
 
 $im->borderImage($backgroundColor, 1, 1);
 
-$fuzz = $fuzzPercent * $im->getQuantumRange()["quantumRangeLong"];
 $im->transparentPaintImage($backgroundColor, 0.0, $fuzz, false);
 
 $im->shaveImage(1, 1);
@@ -84,7 +88,6 @@ $im->writeImage($tempFolderPath . "out1.png");
 
 $im = new Imagick($tempFolderPath . "out1.png");
 
-$fuzz = $fuzzPercent * $im->getQuantumRange()["quantumRangeLong"];
 $im->opaquePaintImage(new ImagickPixel("transparent"), $imageAreaColor, $fuzz, true);
 
 $im->writeImage($tempFolderPath . "tmp2.png");
@@ -124,7 +127,6 @@ for ($i = 1; $i <= $maxImages; $i++) {
     if ($x !== null && $y !== null) {
         // Step 4: If a red pixel was found at position (x,y), begin flood-filling from this position with white color
 
-        $fuzz = $fuzzPercent * $im->getQuantumRange()["quantumRangeLong"];
         $im->floodFillPaintImage("#ffffff", $fuzz, $imageAreaColor, $x, $y, false);
 
         $im->writeImage($tempFolderPath . "tmp3.png");
@@ -133,7 +135,6 @@ for ($i = 1; $i <= $maxImages; $i++) {
 
         $im = new Imagick($tempFolderPath . "tmp3.png");
 
-        $fuzz = $fuzzPercent * $im->getQuantumRange()["quantumRangeLong"];
         $im->transparentPaintImage("#ffffff", 0.0, $fuzz, true);
         $im->setImageBackgroundColor("#000000");
         $im = $im->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
@@ -167,8 +168,9 @@ for ($i = 1; $i <= $maxImages; $i++) {
         $mask->scaleImage($originalWidth, 0);
 
         $orig->compositeImage($mask, imagick::COMPOSITE_MULTIPLY, 0, 0);
+        $orig->shaveImage(1, 1);
         $orig->trimImage(0);
-        $orig->deskewImage(0.5);
+        //$orig->deskewImage(0.5);
 
         $orig->writeImage($uploadDir . "/" . $originalImageBaseName . "_crop" . $i . ".jpg");
 
@@ -180,8 +182,6 @@ for ($i = 1; $i <= $maxImages; $i++) {
         // Step 9: Remove the identified area from step 5 from the image with all image areas, so that it won't be detected twice
 
         $im = new Imagick($tempFolderPath . "tmp3.png");
-
-        $fuzz = $fuzzPercent * $im->getQuantumRange()["quantumRangeLong"];
         $im->transparentPaintImage("#ffffff", 0.0, $fuzz, false);
 
         $im->writeImage($tempFolderPath . "tmp2.png");
