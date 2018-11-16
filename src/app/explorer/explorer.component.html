@@ -19,7 +19,7 @@
         <li *ngFor="let image of content.images">
             <button *ngIf="image.removedInFs" (click)="handleRemovedImage(image)">!</button>
             <button *ngIf="image.addedInFs" (click)="handleUntrackedImage(image)">+</button>
-            <img width="100" [src]="image.absolutePath  | safeUrl" />
+            <img width="100" [src]="image.absolutePath | safeUrl" />
             <span>{{ image.name }}.{{ image.extension }}</span>
         </li>
     </ul>
