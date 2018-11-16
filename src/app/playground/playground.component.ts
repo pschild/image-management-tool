@@ -29,7 +29,9 @@ export class PlaygroundComponent implements OnInit {
   filteredFruits: Observable<string[]>;
   fruits: string[] = ['Lemon'];
   allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
-  croppedImages$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  croppedImagePaths$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  croppedImagesLoading = false;
+  fuzzValue = 6;
 
   @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
 
@@ -74,12 +76,20 @@ export class PlaygroundComponent implements OnInit {
     this.dialogService.showOpenFileDialog((filePaths: string[], bookmarks: string[]) => {
       if (filePaths && filePaths.length) {
         const chosenFilePath = filePaths[0];
-        this.http.get(`${AppConfig.serverBaseUrl}/cropImage/${encodeURI(chosenFilePath)}`)
-          .subscribe((result: any) => {
-            this.zone.run(() => {
-              this.croppedImages$.next(result.croppedImages);
-            });
+
+        this.zone.run(() => {
+          this.croppedImagesLoading = true;
+        });
+
+        this.http.post(`${AppConfig.serverBaseUrl}/cropImage`, {
+          filePath: chosenFilePath,
+          fuzzValue: this.fuzzValue
+        }).subscribe((result: any) => {
+          this.zone.run(() => {
+            this.croppedImagesLoading = false;
+            this.croppedImagePaths$.next(result.downloadPaths);
           });
+        });
       }
     });
   }

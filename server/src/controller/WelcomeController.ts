@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { JsonController, Get, Param } from 'routing-controllers';
+import { JsonController, Get, Param, Post, Body } from 'routing-controllers';
 import { Folder } from '../entity/Folder';
 import { Image } from '../entity/Image';
 import { Tag } from '../entity/Tag';
@@ -62,15 +62,16 @@ export class WelcomeController {
         return trees;
     }
 
-    @Get('/cropImage/:filePath')
-    async cropImage(@Param('filePath') filePath: string): Promise<any> {
+    @Post('/cropImage')
+    async cropImage(@Body() data: any): Promise<any> {
         const formData = {
             file: {
-                value: afs.createReadStream(filePath),
+                value: afs.createReadStream(data.filePath),
                 options: {
-                    filename: path.basename(filePath)
+                    filename: path.basename(data.filePath)
                 }
-            }
+            },
+            fuzzValue: data.fuzzValue
         };
 
         const cropResult = await post(`${process.env.CROP_SERVICE_URL}`, {
@@ -80,27 +81,37 @@ export class WelcomeController {
             throw new Error(error.message);
         });
 
+        cropResult.downloadPaths = [];
         for (const croppedImage of cropResult.croppedImages) {
-            await get(croppedImage.uri)
-                    .pipe(afs.createWriteStream(path.join(path.dirname(filePath), croppedImage.name)))
-                    .on('close', () => console.log(`saved ${croppedImage.name}!`));
+            const downloadPath = await this.downloadImage(croppedImage.uri, data.filePath, croppedImage.name);
+            cropResult.downloadPaths.push(downloadPath);
         }
 
-        // const removeUploadFolderResult = await get({
-        //     uri: `${process.env.CROP_SERVICE_URL}`,
-        //     qs: {
-        //         action: 'removeUploadFolder',
-        //         folderName: cropResult.uploadFolderName
-        //     }
-        // }).catch(error => {
-        //     throw new Error(error.message);
-        // });
+        const removeUploadFolderResult = await get({
+            uri: `${process.env.CROP_SERVICE_URL}`,
+            qs: {
+                action: 'removeUploadFolder',
+                folderName: cropResult.uploadFolderName
+            },
+            json: true
+        }).catch(error => {
+            throw new Error(error.message);
+        });
 
-        // if (!removeUploadFolderResult.success) {
-        //     throw new Error('Upload folder could not be removed');
-        // }
+        if (!removeUploadFolderResult.success) {
+            throw new Error('Upload folder could not be removed');
+        }
 
         return cropResult;
     }
-}
 
+    async downloadImage(url, directory, name) {
+        return new Promise<string>(async resolve => {
+            await get(url)
+                .pipe(afs.createWriteStream(
+                    path.join(path.dirname(directory), name)
+                ))
+                .on('close', () => resolve(path.join(path.dirname(directory), name)));
+        });
+    }
+}

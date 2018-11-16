@@ -10,12 +10,21 @@
 
 <button mat-raised-button color="primary" (click)="openFolderDialog()">Durchsuchen...</button>
 <br/>
+Toleranz:
+<mat-slider thumbLabel [max]="100" [min]="0" [step]="1" [(ngModel)]="fuzzValue" style="width: 500px;"></mat-slider>
+<span>{{ fuzzValue }}%</span>
+<br/>
 <button mat-raised-button color="primary" (click)="openFileDialog()"><mat-icon>crop</mat-icon> Bilder schneiden</button>
+<br/>
+<br/>
 
-<div *ngIf="croppedImages$ | async as croppedImages">
-  <span *ngFor="let croppedImage of croppedImages">
-    <img width="100" [src]="croppedImage.uri"/>
+<div *ngIf="croppedImagePaths$ | async as croppedImagePaths">
+  <span *ngFor="let path of croppedImagePaths">
+    <img width="100" [src]="path | safeUrl"/>
   </span>
+</div>
+<div *ngIf="croppedImagesLoading">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </div>
 
 <mat-menu #appMenu="matMenu">
