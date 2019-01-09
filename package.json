@@ -41,6 +41,7 @@
   "dependencies": {
     "@nestjs/common": "^5.5.0",
     "@nestjs/core": "^5.5.0",
+    "@nestjs/typeorm": "^5.2.2",
     "@ngxs/store": "^3.2.0",
     "@types/express": "^4.16.0",
     "@types/sqlite3": "^3.1.3",
