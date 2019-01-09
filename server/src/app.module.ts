@@ -4,7 +4,7 @@ import { WelcomeModule } from './welcome/welcome.module';
 import { DatabaseModule } from './database.module';
 
 export class AppModule {
-    static forRoot(config: any): DynamicModule {
+    static forRoot(config: any): DynamicModule { // TODO: interface for config
         return {
             module: AppModule,
             imports: [

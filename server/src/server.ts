@@ -24,11 +24,13 @@ export const startServer = async (electronAppPath: string) => {
     dotenv.config({ path: path.resolve(electronAppPath, '.env') });
 
     // await createConnection(connectionOptions);
-    const app = await NestFactory.create(AppModule.forRoot({
-        databaseName: DB_NAME,
-        workingDirPath,
-        electronAppPath
-    }));
+    const app = await NestFactory.create(
+        AppModule.forRoot({         // TODO: interface for config
+            databaseName: DB_NAME,  // TODO: constant instead of passing as param
+            workingDirPath,
+            electronAppPath
+        })
+    );
     await app.listen(SERVER_PORT, () => {
         console.log(`Server started at port ${SERVER_PORT}`);
     });
