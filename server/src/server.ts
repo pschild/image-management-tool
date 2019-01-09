@@ -22,16 +22,13 @@ if (!fs.existsSync(workingDirPath)) {
 
 export const startServer = async (electronAppPath: string) => {
     dotenv.config({ path: path.resolve(electronAppPath, '.env') });
-    const connectionOptions = await getConnectionOptions();
-    // overwrite path to database
-    Object.assign(connectionOptions, { database: path.join(workingDirPath, DB_NAME) });
-    // overwrite paths to entities, migrations and subscribers
-    Object.assign(connectionOptions, { entities: [path.join(electronAppPath, 'server/src/entity/**/*.js')] });
-    Object.assign(connectionOptions, { migrations: [path.join(electronAppPath, 'server/src/migration/**/*.js')] });
-    Object.assign(connectionOptions, { subscribers: [path.join(electronAppPath, 'server/src/subscriber/**/*.js')] });
 
-    await createConnection(connectionOptions);
-    const app = await NestFactory.create(AppModule);
+    // await createConnection(connectionOptions);
+    const app = await NestFactory.create(AppModule.forRoot({
+        databaseName: DB_NAME,
+        workingDirPath,
+        electronAppPath
+    }));
     await app.listen(SERVER_PORT, () => {
         console.log(`Server started at port ${SERVER_PORT}`);
     });

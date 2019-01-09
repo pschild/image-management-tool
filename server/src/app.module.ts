@@ -1,13 +1,17 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule } from '@nestjs/common';
 import { ExplorerModule } from './explorer/explorer.module';
 import { WelcomeModule } from './welcome/welcome.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from './database.module';
 
-@Module({
-    imports: [
-        /*TypeOrmModule.forRoot(),*/
-        WelcomeModule,
-        ExplorerModule
-    ]
-})
-export class AppModule { }
+export class AppModule {
+    static forRoot(config: any): DynamicModule {
+        return {
+            module: AppModule,
+            imports: [
+                DatabaseModule.forRoot(config),
+                WelcomeModule,
+                ExplorerModule
+            ]
+        };
+    }
+}
