@@ -4,9 +4,10 @@ import * as path from 'path';
 
 import 'reflect-metadata';
 import { createConnection, getConnectionOptions } from 'typeorm';
-import { createExpressServer } from 'routing-controllers';
 
 import * as dotenv from 'dotenv';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
 
 // config
 const SERVER_PORT = 4201;
@@ -29,14 +30,9 @@ export const startServer = async (electronAppPath: string) => {
     Object.assign(connectionOptions, { migrations: [path.join(electronAppPath, 'server/src/migration/**/*.js')] });
     Object.assign(connectionOptions, { subscribers: [path.join(electronAppPath, 'server/src/subscriber/**/*.js')] });
 
-    createConnection(connectionOptions).then(connection => {
-        const app = createExpressServer({
-            controllers: [__dirname + '/controller/*.js'],
-            cors: true
-         });
-
-        app.listen(SERVER_PORT, () => {
-            console.log(`Server started at port ${SERVER_PORT}`);
-        });
+    await createConnection(connectionOptions);
+    const app = await NestFactory.create(AppModule);
+    await app.listen(SERVER_PORT, () => {
+        console.log(`Server started at port ${SERVER_PORT}`);
     });
 };
