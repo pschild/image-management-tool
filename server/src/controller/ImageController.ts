@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Body, Post, Delete, Put } from 'routing-controllers';
+/*import { JsonController, Get, Param, Body, Post, Delete, Put } from 'routing-controllers';
 import { getRepository } from 'typeorm';
 import { Image } from '../entity/Image';
 import { Folder } from '../entity/Folder';
@@ -41,4 +41,4 @@ export class ImageController {
             .innerJoinAndSelect('image.parentFolder', 'folder', 'folder.id = :folderId', { folderId })
             .getMany();
     }
-}
+}*/

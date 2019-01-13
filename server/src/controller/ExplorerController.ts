@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Post, Body } from 'routing-controllers';
+/*import { JsonController, Get, Param, Post, Body } from 'routing-controllers';
 import { FolderController } from './FolderController';
 import { ImageController } from './ImageController';
 import { FileSystemController } from './FileSystemController';
@@ -156,4 +156,4 @@ export class ExplorerController {
             return imagesInDbAndFs;
         }
     }
-}
+}*/

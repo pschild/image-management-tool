@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Put, Body } from 'routing-controllers';
+/*import { JsonController, Get, Param, Put, Body } from 'routing-controllers';
 import { getRepository } from 'typeorm';
 import { Folder } from '../entity/Folder';
 import * as path from 'path';
@@ -95,4 +95,4 @@ export class FolderController {
     async findRootFolders(): Promise<Folder[]> {
         return await this.repository.find({ where: { parent: null } });
     }
-}
+}*/

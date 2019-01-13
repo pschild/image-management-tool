@@ -1,4 +1,4 @@
-import { JsonController } from 'routing-controllers';
+/*import { JsonController } from 'routing-controllers';
 import * as afs from 'async-file';
 import * as path from 'path';
 import * as os from 'os';
@@ -88,4 +88,4 @@ export class FileSystemController {
         const fileExtensions = this.IMAGE_FILE_EXTENSIONS.join('|');
         return file.extension && file.extension.match(new RegExp('(' + fileExtensions + ')$', 'i')) != null;
     }
-}
+}*/

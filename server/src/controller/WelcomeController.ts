@@ -1,4 +1,4 @@
-import * as path from 'path';
+/*import * as path from 'path';
 import { JsonController, Get, Param, Post, Body } from 'routing-controllers';
 import { Folder } from '../entity/Folder';
 import { Image } from '../entity/Image';
@@ -114,4 +114,4 @@ export class WelcomeController {
                 .on('close', () => resolve(path.join(path.dirname(directory), name)));
         });
     }
-}
+}*/
