@@ -33,7 +33,8 @@
     "electron:windows": "npm run build:prod && npx electron-builder build --windows",
     "electron:mac": "npm run build:prod && npx electron-builder build --mac",
     "server:start": "npm run electron:serve-tsc && node server/src/startServer.js",
-    "server:test": "tsc -p tsconfig.server.json && jasmine --config=server/test/jasmine.json",
+    "server:test": "jest",
+    "server:test_old": "tsc -p tsconfig.server.json && jasmine --config=server/test/jasmine.json",
     "publish:windows": "npm run server:test && npm run electron:windows -- -p always",
     "test": "npm run postinstall:web && npm run server:test && ng test",
     "e2e": "npm run postinstall:web && ng e2e"
@@ -77,8 +78,10 @@
     "@angular/platform-browser": "7.0.1",
     "@angular/platform-browser-dynamic": "7.0.1",
     "@angular/router": "7.0.1",
+    "@nestjs/testing": "^5.5.0",
     "@types/jasmine": "2.8.7",
     "@types/jasminewd2": "2.0.3",
+    "@types/jest": "^23.3.12",
     "@types/node": "8.9.4",
     "@types/request": "^2.48.1",
     "@types/request-promise": "^4.1.42",
@@ -89,6 +92,7 @@
     "electron-reload": "1.2.5",
     "jasmine-core": "3.1.0",
     "jasmine-spec-reporter": "4.2.1",
+    "jest": "^23.6.0",
     "karma": "2.0.2",
     "karma-chrome-launcher": "2.2.0",
     "karma-coverage-istanbul-reporter": "2.0.0",
@@ -98,11 +102,26 @@
     "npx": "10.2.0",
     "protractor": "5.3.2",
     "rimraf": "^2.6.2",
+    "ts-jest": "^23.10.5",
     "ts-node": "6.0.3",
     "tslint": "5.10.0",
     "typescript": "3.1.3",
     "wait-on": "2.1.0",
     "webdriver-manager": "12.0.6",
     "zone.js": "0.8.26"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "server/src",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node"
   }
 }

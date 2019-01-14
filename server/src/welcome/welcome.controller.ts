@@ -13,7 +13,7 @@ export class WelcomeController {
 
     @Get('greet/:name')
     greet(@Param('name') name: string): string {
-        return this.welcomeService.genereateGreeting(name);
+        return this.welcomeService.generateGreeting(name);
     }
 
     @Get('dbtest')

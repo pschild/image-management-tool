@@ -11,7 +11,7 @@ export class WelcomeService {
         private readonly folderRepository: Repository<Folder>
     ) { }
 
-    genereateGreeting(name: string): any {
+    generateGreeting(name: string): any {
         return {
             greets: `Hello, ${name}`
         };
