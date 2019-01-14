@@ -2,6 +2,10 @@ import * as path from 'path';
 import { getConnectionOptions } from 'typeorm';
 
 export const ormOptions = async (databaseName: string, appHomeDirPath: string, electronAppPath: string) => {
+    if (!databaseName) {
+        throw new Error(`No database name was defined. Define DB_NAME property in your .env file.`);
+    }
+
     const connectionOptions = await getConnectionOptions();
     // overwrite the dynamic config parts
     Object.assign(connectionOptions, {
