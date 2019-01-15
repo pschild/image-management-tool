@@ -7,12 +7,14 @@ import { Place } from '../entity/Place';
 import { Person } from '../entity/Person';
 import { Image } from '../entity/Image';
 import { ConfigModule } from '../config/config.module';
+import { Connection } from 'typeorm';
 
 describe('WelcomeService', () => {
+    let connection: Connection;
     let welcomeService: WelcomeService;
 
-    beforeEach(async () => {
-        const module = await Test.createTestingModule({
+    beforeAll(async () => {
+        const module = await Test.createTestingModule({ // TODO: move to own file
             imports: [
                 ConfigModule.forRoot({ // TODO: move to own file
                     appHomeDirPath: '.',
@@ -29,18 +31,23 @@ describe('WelcomeService', () => {
             providers: [WelcomeService]
         }).compile();
 
+        connection = module.get<Connection>(Connection);
         welcomeService = module.get<WelcomeService>(WelcomeService);
+    });
+
+    afterAll(async () => {
+        await connection.close(); // TODO: move to own file
     });
 
     describe('generateGreeting', () => {
         it('should generate greeting', async () => {
-            expect(welcomeService.generateGreeting('asd')).toEqual({greets: 'Hello, asd'});
+            expect(welcomeService.generateGreeting('John Doe')).toEqual({greets: 'Hello, John Doe'});
         });
     });
 
-    /*describe('findAllFolders', () => {
+    describe('findAllFolders', () => {
         it('should find all folders', async () => {
-            expect(welcomeService.findAllFolders()).toEqual([]);
+            expect(await welcomeService.findAllFolders()).toEqual([]);
         });
-    });*/
+    });
 });

@@ -14,10 +14,9 @@ describe('WelcomeController', () => {
     let connection: Connection;
     let manager: EntityManager;
     let welcomeController: WelcomeController;
-    let welcomeService: WelcomeService;
 
-    beforeEach(async () => {
-        const module = await Test.createTestingModule({
+    beforeAll(async () => {
+        const module = await Test.createTestingModule({ // TODO: move to own file
             imports: [
                 ConfigModule.forRoot({ // TODO: move to own file
                     appHomeDirPath: '.',
@@ -36,15 +35,14 @@ describe('WelcomeController', () => {
         }).compile();
 
         welcomeController = module.get<WelcomeController>(WelcomeController);
-        welcomeService = module.get<WelcomeService>(WelcomeService);
         connection = module.get<Connection>(Connection);
         manager = module.get<EntityManager>(EntityManager);
 
-        const c = await manager.save(manager.create(Folder, { name: 'C:' }));
+        await manager.save(manager.create(Folder, { name: 'C:' }));
     });
 
     afterAll(async () => {
-        await connection.close();
+        await connection.close(); // TODO: move to own file
     });
 
     describe('findAllFolders', () => {
