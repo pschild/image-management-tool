@@ -1,13 +1,15 @@
-/*import { JsonController } from 'routing-controllers';
-import * as afs from 'async-file';
+import { Injectable } from '@nestjs/common';
 import * as path from 'path';
+import * as afs from 'async-file';
 import * as os from 'os';
 import { IFileDto } from '../../../domain/interface/IFileDto';
 import * as drivelist from 'drivelist';
-import { PathHelper } from '../util/PathHelper';
+import { PathHelperService } from '../util/pathHelper.service';
 
-@JsonController()
-export class FileSystemController {
+@Injectable()
+export class FileSystemService {
+
+    constructor(private readonly pathHelperService: PathHelperService) { }
 
     IMAGE_FILE_EXTENSIONS: string[] = ['jpg', 'jpeg', 'png', 'gif'];
 
@@ -44,7 +46,8 @@ export class FileSystemController {
     }
 
     async getFilesByPath(givenPath: string): Promise<IFileDto[]> {
-        givenPath = PathHelper.getAsDirectory(givenPath); // Workaround: ensure we get sth like C:\\ when pathName is drive letter
+        // Workaround: ensure we get sth like C:\\ when pathName is drive letter
+        givenPath = this.pathHelperService.getAsDirectory(givenPath);
 
         const fileList = await afs.readdir(givenPath);
         const fileDtos = [];
@@ -88,4 +91,4 @@ export class FileSystemController {
         const fileExtensions = this.IMAGE_FILE_EXTENSIONS.join('|');
         return file.extension && file.extension.match(new RegExp('(' + fileExtensions + ')$', 'i')) != null;
     }
-}*/
+}

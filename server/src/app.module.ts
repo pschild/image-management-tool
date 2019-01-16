@@ -6,7 +6,7 @@ import { ConfigModule } from './config/config.module';
 import { IAppConfig } from './config/IAppConfig';
 import { ImageModule } from './image/image.module';
 import { FolderModule } from './folder/folder.module';
-import { PathHelperService } from './util/pathHelper.service';
+import { FileSystemModule } from './fileSystem/fileSystem.module';
 
 export class AppModule {
     static forRoot(config: IAppConfig): DynamicModule {
@@ -17,6 +17,7 @@ export class AppModule {
                 DatabaseModule,
                 ImageModule,
                 FolderModule,
+                FileSystemModule,
                 WelcomeModule,
                 ExplorerModule
             ]

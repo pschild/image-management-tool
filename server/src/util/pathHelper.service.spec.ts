@@ -2,7 +2,7 @@ import { PathHelperService } from './pathHelper.service';
 import 'jest-extended';
 import { Test } from '@nestjs/testing';
 
-describe('pathHelperServiceService', () => {
+describe('PathHelperService', () => {
     let pathHelperService: PathHelperService;
 
     beforeAll(async () => {
