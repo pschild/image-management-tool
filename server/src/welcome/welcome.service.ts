@@ -8,7 +8,7 @@ export class WelcomeService {
 
     constructor(
         @InjectRepository(Folder)
-        private readonly folderRepository: Repository<Folder>
+        private readonly repository: Repository<Folder>
     ) { }
 
     generateGreeting(name: string): any {
@@ -18,6 +18,6 @@ export class WelcomeService {
     }
 
     async findAllFolders(): Promise<Folder[]> {
-        return this.folderRepository.find();
+        return this.repository.find();
     }
 }

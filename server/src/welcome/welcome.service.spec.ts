@@ -31,7 +31,7 @@ describe('WelcomeService', () => {
         it('should find all folders', async () => {
             const loadedFolders = await welcomeService.findAllFolders();
 
-            expect(loadedFolders).toBeArrayOfSize(1);
+            expect(loadedFolders).toBeArrayOfSize(8);
             expect(loadedFolders[0].id).toBeGreaterThanOrEqual(1);
             expect(loadedFolders[0].name).toBe('C:');
             expect(loadedFolders[0].dateAdded).toBeValidDate();
