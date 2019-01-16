@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ExplorerService } from './explorer.service';
 import { ExplorerController } from './explorer.controller';
+import { FileSystemModule } from '../fileSystem/fileSystem.module';
+import { FolderModule } from '../folder/folder.module';
+import { ImageModule } from '../image/image.module';
+import { ExplorerService } from './explorer.service';
 
 @Module({
-    imports: [],
+    imports: [
+        FileSystemModule,
+        FolderModule,
+        ImageModule
+    ],
     controllers: [ExplorerController],
     providers: [ExplorerService]
 })

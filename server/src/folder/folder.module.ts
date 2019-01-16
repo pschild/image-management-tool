@@ -11,6 +11,7 @@ import { UtilModule } from '../util/util.module';
         UtilModule
     ],
     controllers: [FolderController],
-    providers: [FolderService]
+    providers: [FolderService],
+    exports: [FolderService]
 })
 export class FolderModule { }
