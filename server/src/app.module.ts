@@ -4,6 +4,7 @@ import { WelcomeModule } from './welcome/welcome.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from './config/config.module';
 import { IAppConfig } from './config/IAppConfig';
+import { ImageModule } from './image/image.module';
 
 export class AppModule {
     static forRoot(config: IAppConfig): DynamicModule {
@@ -12,6 +13,7 @@ export class AppModule {
             imports: [
                 ConfigModule.forRoot(config),
                 DatabaseModule,
+                ImageModule,
                 WelcomeModule,
                 ExplorerModule
             ]
