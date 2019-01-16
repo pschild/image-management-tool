@@ -9,6 +9,7 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "types": ["node", "express", "jest", "sqlite3", "request", "request-promise"],
     "lib": [
       "es2017",
       "es2016",
@@ -18,7 +19,7 @@
   },
   "include": [
     "main.ts",
-    "server/src/**/*"
+    "server/**/*"
   ],
   "exclude": [
     "node_modules",
