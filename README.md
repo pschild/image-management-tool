@@ -22,6 +22,11 @@ Used packages with link to their repository/homepage/API:
 5. Restart terminal (so that changed PATH is available)
 6. ~~`$ .\node_modules\.bin\electron-rebuild.cmd -f -w sqlite3`~~
 
+## Troubleshooting
+* `Error: The specified module could not be found. C:\...\node_modules\drivelist\build\Release\drivelist.node`
+  * Admin terminal: `npm --add-python-to-path='true' --debug install --global --vs2015 windows-build-tools`
+  * `.\node_modules\.bin\electron-rebuild.cmd -f -w drivelist`
+
 # Publish
 1. Generate a GitHub access token by going to <https://github.com/settings/tokens/new>.  The access token should have the `repo` scope/permission.  Once you have the token, assign it to an environment variable
 
