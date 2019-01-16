@@ -34,7 +34,6 @@
     "electron:mac": "npm run build:prod && npx electron-builder build --mac",
     "server:start": "npm run electron:serve-tsc && node server/src/startServer.js",
     "server:test": "jest",
-    "server:test_old": "tsc -p tsconfig.server.json && jasmine --config=server/test/jasmine.json",
     "publish:windows": "npm run server:test && npm run electron:windows -- -p always",
     "test": "npm run postinstall:web && npm run server:test && ng test",
     "e2e": "npm run postinstall:web && ng e2e"
@@ -93,6 +92,7 @@
     "jasmine-core": "3.1.0",
     "jasmine-spec-reporter": "4.2.1",
     "jest": "^23.6.0",
+    "jest-extended": "^0.11.0",
     "karma": "2.0.2",
     "karma-chrome-launcher": "2.2.0",
     "karma-coverage-istanbul-reporter": "2.0.0",

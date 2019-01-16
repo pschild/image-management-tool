@@ -1,42 +1,24 @@
-import { Test } from '@nestjs/testing';
 import { WelcomeService } from './welcome.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Folder } from '../entity/Folder';
-import { Tag } from '../entity/Tag';
-import { Place } from '../entity/Place';
-import { Person } from '../entity/Person';
-import { Image } from '../entity/Image';
-import { ConfigModule } from '../config/config.module';
 import { Connection } from 'typeorm';
+import { createTestModule, createTestData } from '../../test/utils/test-utils';
+import 'jest-extended';
 
 describe('WelcomeService', () => {
     let connection: Connection;
     let welcomeService: WelcomeService;
 
     beforeAll(async () => {
-        const module = await Test.createTestingModule({ // TODO: move to own file
-            imports: [
-                ConfigModule.forRoot({ // TODO: move to own file
-                    appHomeDirPath: '.',
-                    electronAppPath: '.'
-                }),
-                TypeOrmModule.forRoot({ // TODO: move to own file
-                    type: 'sqlite',
-                    database: ':memory:',
-                    synchronize: true,
-                    entities: [Tag, Image, Place, Person, Folder]
-                }),
-                TypeOrmModule.forFeature([Folder])
-            ],
+        const module = await createTestModule({
             providers: [WelcomeService]
-        }).compile();
-
+        });
         connection = module.get<Connection>(Connection);
         welcomeService = module.get<WelcomeService>(WelcomeService);
+
+        await createTestData();
     });
 
     afterAll(async () => {
-        await connection.close(); // TODO: move to own file
+        await connection.close();
     });
 
     describe('generateGreeting', () => {
@@ -47,7 +29,14 @@ describe('WelcomeService', () => {
 
     describe('findAllFolders', () => {
         it('should find all folders', async () => {
-            expect(await welcomeService.findAllFolders()).toEqual([]);
+            const loadedFolders = await welcomeService.findAllFolders();
+
+            expect(loadedFolders).toBeArrayOfSize(1);
+            expect(loadedFolders[0].id).toBeGreaterThanOrEqual(1);
+            expect(loadedFolders[0].name).toBe('C:');
+            expect(loadedFolders[0].dateAdded).toBeValidDate();
+            expect(loadedFolders[0].children).toBeUndefined();
+            expect(loadedFolders[0].parent).toBeUndefined();
         });
     });
 });
