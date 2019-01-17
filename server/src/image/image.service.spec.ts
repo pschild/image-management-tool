@@ -24,15 +24,15 @@ describe('ImageService', () => {
     describe('create', () => {
         it('should save an image', async () => {
             const result = await imageService.create({
-                name: 'dummy-image-6',
-                originalName: 'orig-image-6',
+                name: 'dummy-image-99',
+                originalName: 'orig-image-99',
                 extension: 'png'
             });
 
             expect(result).toBeDefined();
-            expect(result.id).toBe(6);
-            expect(result.name).toBe('dummy-image-6');
-            expect(result.originalName).toBe('orig-image-6');
+            expect(result.id).toBeGreaterThan(1);
+            expect(result.name).toBe('dummy-image-99');
+            expect(result.originalName).toBe('orig-image-99');
             expect(result.extension).toBe('png');
             expect(result.description).toBeNull();
             expect(result.dateAdded).toBeValidDate();
@@ -41,13 +41,13 @@ describe('ImageService', () => {
 
     describe('findOne', () => {
         it('should find image by id', async () => {
-            const result = await imageService.findOne(6);
+            const result = await imageService.findOne(1);
 
             expect(result).toBeDefined();
-            expect(result.id).toBe(6);
-            expect(result.name).toBe('dummy-image-6');
-            expect(result.originalName).toBe('orig-image-6');
-            expect(result.extension).toBe('png');
+            expect(result.id).toBe(1);
+            expect(result.name).toBe('dummy-image-1');
+            expect(result.originalName).toBe('orig-image-1');
+            expect(result.extension).toBe('jpg');
             expect(result.description).toBeNull();
             expect(result.dateAdded).toBeValidDate();
         });
@@ -58,7 +58,7 @@ describe('ImageService', () => {
             const result = await imageService.findAll();
 
             expect(result).toBeDefined();
-            expect(result).toBeArrayOfSize(6);
+            expect(result).toBeArrayOfSize(8);
         });
     });
 
@@ -89,7 +89,7 @@ describe('ImageService', () => {
             expect(loadedImage.id).toBe(6);
             expect(loadedImage.name).toBe('dummy-image-6-new');
             expect(loadedImage.originalName).toBe('orig-image-6');
-            expect(loadedImage.extension).toBe('png');
+            expect(loadedImage.extension).toBe('jpg');
             expect(loadedImage.description).toBe('description-image-6');
             expect(loadedImage.dateAdded).toBeValidDate();
         });

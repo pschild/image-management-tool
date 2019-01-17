@@ -39,10 +39,10 @@ export const createTestData = async () => {
      * Create the following structure:
      *
      * ROOT
-     *  |- C:       [i1]
-     *  |--- F1     [i2, i3]
-     *  |--- F2
-     *  |------ F3  [i4, i5]
+     *  |- C:       [dummy-image-1.jpg]
+     *  |--- F1     [dummy-image-2.PNG, dummy-image-3.gif]
+     *  |--- F2     [dummy-image-4.jpeg, dummy-image-5.TIFF]
+     *  |------ F3  [dummy-image-6.jpg, dummy-image-7.png]
      *  |- D:
      *  |--- F4
      *  |------ F5
@@ -62,6 +62,8 @@ export const createTestData = async () => {
     const i1 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-1', originalName: 'orig-image-1', extension: 'jpg', parentFolder: c }));
     const i2 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-2', originalName: 'orig-image-2', extension: 'PNG', parentFolder: f1 }));
     const i3 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-3', originalName: 'orig-image-3', extension: 'gif', parentFolder: f1 }));
-    const i4 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-4', originalName: 'orig-image-4', extension: 'jpeg', parentFolder: f3 }));
-    const i5 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-5', originalName: 'orig-image-5', extension: 'TIFF', parentFolder: f3 }));
+    const i4 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-4', originalName: 'orig-image-4', extension: 'jpeg', parentFolder: f2 }));
+    const i5 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-5', originalName: 'orig-image-5', extension: 'TIFF', parentFolder: f2 }));
+    const i6 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-6', originalName: 'orig-image-6', extension: 'jpg', parentFolder: f3 }));
+    const i7 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-7', originalName: 'orig-image-7', extension: 'png', parentFolder: f3 }));
 };

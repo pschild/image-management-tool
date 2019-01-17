@@ -13,12 +13,12 @@ export class FolderService {
         private readonly pathHelperService: PathHelperService
     ) { }
 
-    findOne(id: number): Promise<Folder> {
-        return this.repository.findOne(id);
+    findOne(id: number, withRelations: boolean = false): Promise<Folder> {
+        return this.repository.findOne(id, { relations: withRelations ? ['parent', 'children'] : [] });
     }
 
-    findOneByName(name: string): Promise<Folder> {
-        return this.repository.findOne({ name });
+    findOneByName(name: string, withRelations: boolean = false): Promise<Folder> {
+        return this.repository.findOne({ name }, { relations: withRelations ? ['parent', 'children'] : [] });
     }
 
     findDirectDescendantsByFolder(folder: Folder): Promise<Folder[]> {

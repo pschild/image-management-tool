@@ -83,16 +83,16 @@ describe('FileSystemService', () => {
         it('should return system drives', async () => {
             jest.spyOn(drivelist, 'list').mockImplementation(callbackFn => {
                 callbackFn(null, [
-                    { mountpoints: [{ path: 'C://' }] },
-                    { mountpoints: [{ path: 'D://' }] }
+                    { mountpoints: [{ path: 'C:\\' }] },
+                    { mountpoints: [{ path: 'D:\\' }] }
                 ]);
             });
 
             const systemDrives = await fileSystemService.getSystemDrives();
             expect(drivelist.list).toHaveBeenCalled();
             expect(systemDrives).toBeArrayOfSize(2);
-            expect(systemDrives[0].name).toBe('C://');
-            expect(systemDrives[0].absolutePath).toBe('C://');
+            expect(systemDrives[0].name).toBe('C:');
+            expect(systemDrives[0].absolutePath).toBe('C:');
             expect(systemDrives[0].ext).toBeUndefined();
             expect(systemDrives[0].isFile).toBeUndefined();
             expect(systemDrives[0].isDirectory).toBeTrue();
