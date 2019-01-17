@@ -22,7 +22,7 @@ export class WelcomeController {
         return this.welcomeService.findAllFolders();
     }
 
-    @Post('/cropImage')
+    @Post('cropImage')
     async cropImage(@Body() data: any): Promise<any> {
         const formData = {
             file: {

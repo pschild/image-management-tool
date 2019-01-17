@@ -86,7 +86,7 @@ export class PlaygroundComponent implements OnInit {
           this.croppedImagesLoading = true;
         });
 
-        this.http.post(`${AppConfig.serverBaseUrl}/cropImage`, {
+        this.http.post(`${AppConfig.serverBaseUrl}/welcome/cropImage`, {
           filePath: chosenFilePath,
           fuzzValue: this.fuzzValue
         }).subscribe((result: any) => {
