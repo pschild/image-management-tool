@@ -23,7 +23,7 @@ describe('WelcomeService', () => {
 
     describe('generateGreeting', () => {
         it('should generate greeting', async () => {
-            expect(welcomeService.generateGreeting('John Doe')).toEqual({greets: 'Hello, John Doe'});
+            expect(welcomeService.generateGreeting('John Doe')).toBe('Hello, John Doe');
         });
     });
 

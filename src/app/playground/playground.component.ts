@@ -60,9 +60,9 @@ export class PlaygroundComponent implements OnInit {
   ngOnInit() {
     this.applicationVersion = this.electronService.getApplicationVersion();
 
-    this.http.get(`${AppConfig.serverBaseUrl}/welcome/greet/philippe`)
+    this.http.get(`${AppConfig.serverBaseUrl}/welcome/greet/philippe`, {responseType: 'text'})
       .subscribe((result: any) => {
-        this.greetings = result.greets;
+        this.greetings = result;
       });
 
       this.http.get(`${AppConfig.serverBaseUrl}/welcome/dbtest`)

@@ -14,10 +14,8 @@ export class WelcomeService {
         private readonly repository: Repository<Folder>
     ) { }
 
-    generateGreeting(name: string): any {
-        return {
-            greets: `Hello, ${name}`
-        };
+    generateGreeting(name: string): string {
+        return `Hello, ${name}`;
     }
 
     async findAllFolders(): Promise<Folder[]> {

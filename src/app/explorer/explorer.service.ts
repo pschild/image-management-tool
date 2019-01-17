@@ -15,7 +15,7 @@ export class ExplorerService {
 
   getHomeDirectory(): Observable<string[]> {
     return this.http
-      .get<string>(`http://localhost:4201/explorer/homeDirectory`)
+      .get(`http://localhost:4201/explorer/homeDirectory`, {responseType: 'text'})
       .pipe(
         map((homeDirectory: string) => homeDirectory.split(path.sep))
       );
