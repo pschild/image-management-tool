@@ -1,4 +1,4 @@
-import { PathHelperService } from './pathHelper.service';
+import { PathHelperService } from './path-helper.service';
 import 'jest-extended';
 import { Test } from '@nestjs/testing';
 

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PathHelperService } from './pathHelper.service';
+import { PathHelperService } from './path-helper/path-helper.service';
 
 @Module({
     providers: [PathHelperService],

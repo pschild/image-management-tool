@@ -1,12 +1,12 @@
 import { Controller, Get, Param, Post, Body } from '@nestjs/common';
-import { FileSystemService } from '../fileSystem/fileSystem.service';
+import { FileSystemService } from '../fileSystem/file-system.service';
 import { FolderService } from '../folder/folder.service';
 import { ImageService } from '../image/image.service';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
 import { IFileDto } from '../../../domain/interface/IFileDto';
-import { Folder } from '../entity/Folder';
-import { Image } from '../entity/Image';
+import { Folder } from '../entity/folder.entity';
+import { Image } from '../entity/image.entity';
 import { FolderDto } from '../../../domain/FolderDto';
 import { ImageDto } from '../../../domain/ImageDto';
 import { ExplorerService } from './explorer.service';

@@ -2,9 +2,9 @@ import { Connection, UpdateResult } from 'typeorm';
 import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import { FolderService } from './folder.service';
 import 'jest-extended';
-import { PathHelperService } from '../util/pathHelper.service';
+import { PathHelperService } from '../util/path-helper/path-helper.service';
 import * as path from 'path';
-import { Folder } from '../entity/Folder';
+import { Folder } from '../entity/folder.entity';
 
 describe('FolderService', () => {
     let connection: Connection;

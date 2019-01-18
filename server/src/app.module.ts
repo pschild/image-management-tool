@@ -6,7 +6,7 @@ import { ConfigModule } from './config/config.module';
 import { IAppConfig } from './config/IAppConfig';
 import { ImageModule } from './image/image.module';
 import { FolderModule } from './folder/folder.module';
-import { FileSystemModule } from './fileSystem/fileSystem.module';
+import { FileSystemModule } from './fileSystem/file-system.module';
 
 export class AppModule {
     static forRoot(config: IAppConfig): DynamicModule {

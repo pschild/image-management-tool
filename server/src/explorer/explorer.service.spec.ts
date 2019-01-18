@@ -3,11 +3,11 @@ import { ExplorerService } from './explorer.service';
 import { FolderDto } from '../../../domain/FolderDto';
 import { createTestModule } from '../../test/utils/test-utils';
 import { FolderService } from '../folder/folder.service';
-import { PathHelperService } from '../util/pathHelper.service';
-import { Folder } from '../entity/Folder';
+import { PathHelperService } from '../util/path-helper/path-helper.service';
+import { Folder } from '../entity/folder.entity';
 import { IFileDto } from '../../../domain/interface/IFileDto';
 import { ImageDto } from '../../../domain/ImageDto';
-import { Image } from '../entity/Image';
+import { Image } from '../entity/image.entity';
 
 describe('ExplorerService', () => {
     let explorerService: ExplorerService;

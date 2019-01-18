@@ -1,8 +1,8 @@
-import { Tag } from '../../src/entity/Tag';
-import { Image } from '../../src/entity/Image';
-import { Place } from '../../src/entity/Place';
-import { Person } from '../../src/entity/Person';
-import { Folder } from '../../src/entity/Folder';
+import { Tag } from '../../src/entity/tag.entity';
+import { Image } from '../../src/entity/image.entity';
+import { Place } from '../../src/entity/place.entity';
+import { Person } from '../../src/entity/person.entity';
+import { Folder } from '../../src/entity/folder.entity';
 import { IAppConfig } from '../../src/config/IAppConfig';
 import { ConnectionOptions, getRepository } from 'typeorm';
 import { ConfigModule } from '../../src/config/config.module';

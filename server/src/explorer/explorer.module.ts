@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ExplorerController } from './explorer.controller';
-import { FileSystemModule } from '../fileSystem/fileSystem.module';
+import { FileSystemModule } from '../fileSystem/file-system.module';
 import { FolderModule } from '../folder/folder.module';
 import { ImageModule } from '../image/image.module';
 import { ExplorerService } from './explorer.service';

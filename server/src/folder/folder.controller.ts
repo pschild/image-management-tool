@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { FolderService } from './folder.service';
-import { Folder } from '../entity/Folder';
+import { Folder } from '../entity/folder.entity';
 import { UpdateResult } from 'typeorm';
 
 @Controller('folder')

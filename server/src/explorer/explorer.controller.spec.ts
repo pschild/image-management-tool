@@ -4,13 +4,13 @@ import 'jest-extended';
 import { ExplorerService } from './explorer.service';
 import { ExplorerController } from './explorer.controller';
 import { FolderService } from '../folder/folder.service';
-import { PathHelperService } from '../util/pathHelper.service';
-import { FileSystemService } from '../fileSystem/fileSystem.service';
+import { PathHelperService } from '../util/path-helper/path-helper.service';
+import { FileSystemService } from '../fileSystem/file-system.service';
 import { ImageService } from '../image/image.service';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FileSystemError } from '../../../domain/error/FileSystemError';
 import * as drivelist from 'drivelist';
-import { Folder } from '../entity/Folder';
+import { Folder } from '../entity/folder.entity';
 
 describe('ExplorerController', () => {
     let connection: Connection;

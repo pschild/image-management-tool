@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Folder } from '../entity/Folder';
+import { Folder } from '../entity/folder.entity';
 import { get } from 'request-promise';
 import * as path from 'path';
 import * as afs from 'async-file';

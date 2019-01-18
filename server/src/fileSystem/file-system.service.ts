@@ -4,7 +4,7 @@ import * as afs from 'async-file';
 import * as os from 'os';
 import { IFileDto } from '../../../domain/interface/IFileDto';
 import * as drivelist from 'drivelist';
-import { PathHelperService } from '../util/pathHelper.service';
+import { PathHelperService } from '../util/path-helper/path-helper.service';
 
 @Injectable()
 export class FileSystemService {

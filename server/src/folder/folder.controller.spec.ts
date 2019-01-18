@@ -3,8 +3,8 @@ import { Connection, UpdateResult } from 'typeorm';
 import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import { FolderController } from './folder.controller';
 import { FolderService } from './folder.service';
-import { Folder } from '../entity/Folder';
-import { PathHelperService } from '../util/pathHelper.service';
+import { Folder } from '../entity/folder.entity';
+import { PathHelperService } from '../util/path-helper/path-helper.service';
 
 describe('FolderController', () => {
     let connection: Connection;

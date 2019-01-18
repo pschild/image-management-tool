@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { FileSystemService } from './fileSystem.service';
+import { FileSystemService } from './file-system.service';
 import { UtilModule } from '../util/util.module';
 
 @Module({

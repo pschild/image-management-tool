@@ -1,6 +1,6 @@
 import 'jest-extended';
 import { Test } from '@nestjs/testing';
-import { FileSystemService } from './fileSystem.service';
+import { FileSystemService } from './file-system.service';
 import { UtilModule } from '../util/util.module';
 import * as drivelist from 'drivelist';
 import * as os from 'os';

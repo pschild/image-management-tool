@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { FolderService } from '../folder/folder.service';
 import { IFileDto } from '../../../domain/interface/IFileDto';
-import { Folder } from '../entity/Folder';
+import { Folder } from '../entity/folder.entity';
 import { FolderDto } from '../../../domain/FolderDto';
-import { Image } from '../entity/Image';
+import { Image } from '../entity/image.entity';
 import { ImageDto } from '../../../domain/ImageDto';
 import * as path from 'path';
 

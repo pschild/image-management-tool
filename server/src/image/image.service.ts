@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult, DeepPartial } from 'typeorm';
-import { Image } from '../entity/Image';
+import { Image } from '../entity/image.entity';
 
 @Injectable()
 export class ImageService {

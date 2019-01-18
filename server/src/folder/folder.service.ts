@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult, DeepPartial } from 'typeorm';
-import { Folder } from '../entity/Folder';
+import { Folder } from '../entity/folder.entity';
 import * as path from 'path';
-import { PathHelperService } from '../util/pathHelper.service';
+import { PathHelperService } from '../util/path-helper/path-helper.service';
 
 @Injectable()
 export class FolderService {

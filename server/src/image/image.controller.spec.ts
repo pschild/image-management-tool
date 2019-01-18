@@ -1,7 +1,7 @@
 import { Connection, UpdateResult } from 'typeorm';
 import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import 'jest-extended';
-import { Image } from '../entity/Image';
+import { Image } from '../entity/image.entity';
 import { ImageController } from './image.controller';
 import { ImageService } from './image.service';
 

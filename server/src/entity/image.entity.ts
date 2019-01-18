@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
-import { Folder } from './Folder';
-import { Tag } from './Tag';
-import { Person } from './Person';
-import { Place } from './Place';
+import { Folder } from './folder.entity';
+import { Tag } from './tag.entity';
+import { Person } from './person.entity';
+import { Place } from './place.entity';
 
 @Entity()
 export class Image {

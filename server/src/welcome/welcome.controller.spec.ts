@@ -3,7 +3,7 @@ import { WelcomeService } from './welcome.service';
 import { Connection } from 'typeorm';
 import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import 'jest-extended';
-import { Folder } from '../entity/Folder';
+import { Folder } from '../entity/folder.entity';
 
 describe('WelcomeController', () => {
     let connection: Connection;
