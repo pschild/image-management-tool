@@ -1,0 +1,14 @@
+import { BusinessException } from './business.exception';
+
+export class FileSystemException extends BusinessException {
+    public errno: string;
+
+    constructor(userMessageOrConfig: string | { status?: number; userMessage: string; technicalMessage?: string; errno?: string; }) {
+        if (typeof userMessageOrConfig === 'string') {
+            super(undefined, userMessageOrConfig);
+        } else {
+            super(userMessageOrConfig.status, userMessageOrConfig.userMessage, userMessageOrConfig.technicalMessage);
+            this.errno = userMessageOrConfig.errno;
+        }
+    }
+}

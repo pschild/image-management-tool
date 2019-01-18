@@ -8,9 +8,9 @@ import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FileSystemService } from '../fileSystem/file-system.service';
 import { ImageService } from '../image/image.service';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
-import { FileSystemError } from '../../../domain/error/FileSystemError';
 import * as drivelist from 'drivelist';
 import { Folder } from '../entity/folder.entity';
+import { FileSystemException } from '../../../domain/exception/file-system.exception';
 
 describe('ExplorerController', () => {
     let connection: Connection;
@@ -69,7 +69,7 @@ describe('ExplorerController', () => {
         it('should return a correctly merged result', async () => {
             const f2 = await folderService.findOneByName('F2');
             const f2Path = await folderService.buildPathByFolderId(f2.id);
-            const result: IFolderContentDto | FileSystemError = await explorerController.getContentByFolderPath(f2Path);
+            const result: IFolderContentDto | FileSystemException = await explorerController.getContentByFolderPath(f2Path);
             const mergeResult = result as IFolderContentDto;
 
             expect(mergeResult.folders).toBeDefined();
@@ -99,7 +99,7 @@ describe('ExplorerController', () => {
                 ]);
             });
 
-            const result: IFolderContentDto | FileSystemError = await explorerController.getSystemDrives();
+            const result: IFolderContentDto | FileSystemException = await explorerController.getSystemDrives();
             const mergeResult = result as IFolderContentDto;
 
             expect(mergeResult.folders).toBeDefined();

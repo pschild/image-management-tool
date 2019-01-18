@@ -3,14 +3,14 @@ import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, L
 import { ExplorerService } from './explorer.service';
 import { tap, catchError } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
-import { FileSystemError } from '../../../domain/error/FileSystemError';
 import { FolderDto } from '../../../domain/FolderDto';
 import { IFolderDto } from '../../../domain/interface/IFolderDto';
+import { FileSystemException } from '../../../domain/exception/file-system.exception';
 
 export interface ExplorerStateModel {
     currentPath: string[];
     content: IFolderContentDto;
-    error: FileSystemError;
+    error: FileSystemException;
 }
 
 @State<ExplorerStateModel>({
@@ -109,7 +109,7 @@ export class ExplorerState implements NgxsOnInit {
                         currentPath: action.path // currentPath is set only when loading content is successful
                     });
                 }),
-                catchError((error: FileSystemError) => {
+                catchError((error: FileSystemException) => {
                     return dispatch(new LoadContentFailed(error));
                 })
             );
