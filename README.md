@@ -26,6 +26,9 @@ Used packages with link to their repository/homepage/API:
 * `Error: The specified module could not be found. C:\...\node_modules\drivelist\build\Release\drivelist.node`
   * Admin terminal: `npm --add-python-to-path='true' --debug install --global --vs2015 windows-build-tools`
   * `.\node_modules\.bin\electron-rebuild.cmd -f -w drivelist`
+* `Error: GitHub Personal Access Token is not set, neither programmatically, nor using env "GH_TOKEN"`
+  * On Windows, run in powershell: `[Environment]::SetEnvironmentVariable("GH_TOKEN","<YOUR_TOKEN_HERE>","User")`
+  * Restart PowerShell/IDE
 
 # Publish
 1. Generate a GitHub access token by going to <https://github.com/settings/tokens/new>.  The access token should have the `repo` scope/permission.  Once you have the token, assign it to an environment variable
