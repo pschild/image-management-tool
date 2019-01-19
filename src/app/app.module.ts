@@ -1,5 +1,5 @@
 import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -13,6 +13,7 @@ import { SharedModule } from './shared/shared.module';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxsModule } from '@ngxs/store';
 import { GestureConfig } from '@angular/material';
+import { GlobalErrorHandler } from './error-handler';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,13 @@ import { GestureConfig } from '@angular/material';
   ],
   providers: [
     // https://github.com/angular/material2/issues/4278
-    { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }
+    {
+      provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler
+    }
   ],
   bootstrap: [AppComponent]
 })

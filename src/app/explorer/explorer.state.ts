@@ -1,16 +1,14 @@
 import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
-import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, LoadContentFailed, CreateFolderByPath, RelocateFolder, RefreshContent } from './explorer.actions';
+import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, CreateFolderByPath, RelocateFolder, RefreshContent } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
-import { tap, catchError } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FolderDto } from '../../../domain/FolderDto';
 import { IFolderDto } from '../../../domain/interface/IFolderDto';
-import { FileSystemException } from '../../../domain/exception/file-system.exception';
 
 export interface ExplorerStateModel {
     currentPath: string[];
     content: IFolderContentDto;
-    error: FileSystemException;
 }
 
 @State<ExplorerStateModel>({
@@ -20,8 +18,7 @@ export interface ExplorerStateModel {
         content: {
             folders: [],
             images: []
-        },
-        error: null
+        }
     }
 })
 export class ExplorerState implements NgxsOnInit {
@@ -35,11 +32,6 @@ export class ExplorerState implements NgxsOnInit {
     @Selector()
     static content(state: ExplorerStateModel) {
         return state.content;
-    }
-
-    @Selector()
-    static error(state: ExplorerStateModel) {
-        return state.error;
     }
 
     ngxsOnInit({ dispatch }: StateContext<ExplorerStateModel>) {
@@ -108,18 +100,8 @@ export class ExplorerState implements NgxsOnInit {
                         },
                         currentPath: action.path // currentPath is set only when loading content is successful
                     });
-                }),
-                catchError((error: FileSystemException) => {
-                    return dispatch(new LoadContentFailed(error));
                 })
             );
-    }
-
-    @Action(LoadContentFailed)
-    loadContentFailed({ patchState }: StateContext<ExplorerStateModel>, action: LoadContentFailed) {
-        patchState({
-            error: action.error
-        });
     }
 
     @Action(RelocateFolder)

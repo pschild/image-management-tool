@@ -6,7 +6,6 @@ import { catchError, map } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 import { FolderDto } from '../../../domain/FolderDto';
 import { IFolderDto } from '../../../domain/interface/IFolderDto';
-import { FileSystemException } from '../../../domain/exception/file-system.exception';
 
 @Injectable()
 export class ExplorerService {
@@ -26,7 +25,7 @@ export class ExplorerService {
       .get<IFolderContentDto>(`http://localhost:4201/explorer/systemDrives`)
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
-          return throwError(<FileSystemException>errorResponse.error);
+          return throwError(errorResponse.error);
         })
       );
   }
@@ -45,7 +44,7 @@ export class ExplorerService {
       .get<IFolderContentDto>(url)
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
-          return throwError(<FileSystemException>errorResponse.error);
+          return throwError(errorResponse.error);
         })
       );
   }
