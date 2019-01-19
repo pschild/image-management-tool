@@ -47,7 +47,9 @@ describe('ExplorerController', () => {
             isFile: true,
             isDirectory: false
         }]);
+    });
 
+    beforeEach(async () => {
         await createTestData();
     });
 

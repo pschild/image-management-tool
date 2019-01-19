@@ -18,7 +18,9 @@ describe('ImageController', () => {
         connection = module.get<Connection>(Connection);
         imageController = module.get<ImageController>(ImageController);
         imageService = module.get<ImageService>(ImageService);
+    });
 
+    beforeEach(async () => {
         await createTestData();
     });
 

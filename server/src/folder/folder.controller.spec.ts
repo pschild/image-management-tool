@@ -19,7 +19,9 @@ describe('FolderController', () => {
         connection = module.get<Connection>(Connection);
         folderController = module.get<FolderController>(FolderController);
         folderService = module.get<FolderService>(FolderService);
+    });
 
+    beforeEach(async () => {
         await createTestData();
     });
 

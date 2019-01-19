@@ -22,6 +22,10 @@ describe('WelcomeController', () => {
         await createTestData();
     });
 
+    beforeEach(async () => {
+        await createTestData();
+    });
+
     afterAll(async () => {
         await connection.close();
     });

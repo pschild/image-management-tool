@@ -13,7 +13,9 @@ describe('ImageService', () => {
         });
         connection = module.get<Connection>(Connection);
         imageService = module.get<ImageService>(ImageService);
+    });
 
+    beforeEach(async () => {
         await createTestData();
     });
 
@@ -58,7 +60,7 @@ describe('ImageService', () => {
             const result = await imageService.findAll();
 
             expect(result).toBeDefined();
-            expect(result).toBeArrayOfSize(8);
+            expect(result).toBeArrayOfSize(7);
         });
     });
 

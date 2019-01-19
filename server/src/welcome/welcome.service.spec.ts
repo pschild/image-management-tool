@@ -13,7 +13,9 @@ describe('WelcomeService', () => {
         });
         connection = module.get<Connection>(Connection);
         welcomeService = module.get<WelcomeService>(WelcomeService);
+    });
 
+    beforeEach(async () => {
         await createTestData();
     });
 
