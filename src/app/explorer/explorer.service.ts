@@ -6,6 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 import { FolderDto } from '../../../domain/FolderDto';
 import { IFolderDto } from '../../../domain/interface/IFolderDto';
+import { ImageDto } from '../../../domain/ImageDto';
 
 @Injectable()
 export class ExplorerService {
@@ -51,6 +52,10 @@ export class ExplorerService {
 
   createFolderByPath(folderPath: string): Observable<FolderDto> {
     return this.http.post<FolderDto>(`http://localhost:4201/explorer/folder`, { path: folderPath });
+  }
+
+  createImageByPath(absolutePath: string, name: string, extension: string): Observable<ImageDto> {
+    return this.http.post<ImageDto>(`http://localhost:4201/explorer/image`, { absolutePath, name, extension });
   }
 
   relocateFolder(oldPath: string, newPath: string): Observable<IFolderDto> {

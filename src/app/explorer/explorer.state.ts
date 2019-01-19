@@ -1,10 +1,11 @@
 import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
-import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, CreateFolderByPath, RelocateFolder, RefreshContent } from './explorer.actions';
+import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, CreateFolderByPath, RelocateFolder, RefreshContent, CreateImageByPath } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { FolderDto } from '../../../domain/FolderDto';
 import { IFolderDto } from '../../../domain/interface/IFolderDto';
+import { ImageDto } from '../../../domain/ImageDto';
 
 export interface ExplorerStateModel {
     currentPath: string[];
@@ -64,6 +65,28 @@ export class ExplorerState implements NgxsOnInit {
                         content: {
                             folders: newFolderState,
                             images: state.content.images
+                        }
+                    });
+                })
+            );
+    }
+
+    @Action(CreateImageByPath)
+    createImageByPath({ getState, patchState }: StateContext<ExplorerStateModel>, action: CreateImageByPath) {
+        return this.explorerService.createImageByPath(action.absolutePath, action.name, action.extension)
+            .pipe(
+                tap((createdImage: ImageDto) => {
+                    const state = getState();
+                    const newImageState: ImageDto[] = state.content.images.map((image: ImageDto) => {
+                        if (image.name === createdImage.name) {
+                            image.addedInFs = false;
+                        }
+                        return image;
+                    });
+                    patchState({
+                        content: {
+                            folders: state.content.folders,
+                            images: newImageState
                         }
                     });
                 })

@@ -14,6 +14,11 @@ export class CreateFolderByPath {
     constructor(public path: string) { }
 }
 
+export class CreateImageByPath {
+    static readonly type = '[Explorer] CreateImage';
+    constructor(public absolutePath: string, public name: string, public extension: string) { }
+}
+
 export class NavigateToFolder {
     static readonly type = '[Explorer] NavigateToFolder';
     constructor(public folderName: string) { }

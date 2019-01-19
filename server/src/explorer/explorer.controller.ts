@@ -87,6 +87,19 @@ export class ExplorerController {
         return this.folderService.getFolderByPath(decodeURI(body.path), true);
     }
 
+    @Post('image')
+    async createImageByPath(@Body() body: {absolutePath: string; name: string; extension: string; }): Promise<Image> {
+        const absolutePathParts = body.absolutePath.split(path.sep);
+        absolutePathParts.pop();
+
+        const image = new Image();
+        image.name = body.name;
+        image.originalName = body.name;
+        image.extension = body.extension;
+        image.parentFolder = await this.folderService.getFolderByPath(absolutePathParts.join(path.sep), true);
+        return this.imageService.create(image);
+    }
+
     @Post('relocate/folder')
     async relocateFolder(@Body() body: {oldPath: string, newPath: string}): Promise<Folder> {
         const oldPath: string = decodeURI(body.oldPath);
