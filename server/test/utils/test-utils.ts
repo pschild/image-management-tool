@@ -4,7 +4,7 @@ import { Place } from '../../src/entity/place.entity';
 import { Person } from '../../src/entity/person.entity';
 import { Folder } from '../../src/entity/folder.entity';
 import { IAppConfig } from '../../src/config/IAppConfig';
-import { ConnectionOptions, getRepository } from 'typeorm';
+import { ConnectionOptions, getRepository, getManager } from 'typeorm';
 import { ConfigModule } from '../../src/config/config.module';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -34,7 +34,16 @@ export const createTestModule = async (moduleConfig: { controllers?: Type<any>[]
     }).compile();
 };
 
+const resetDatabase = async () => {
+    await getRepository(Folder).query(`DELETE FROM folder;`);
+    await getManager().query(`DELETE FROM SQLITE_SEQUENCE WHERE name='folder';`);
+    await getRepository(Image).query(`DELETE FROM image;`);
+    await getManager().query(`DELETE FROM SQLITE_SEQUENCE WHERE name='image';`);
+};
+
 export const createTestData = async () => {
+    await resetDatabase();
+
     /**
      * Create the following structure:
      *

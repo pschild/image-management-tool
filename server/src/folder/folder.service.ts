@@ -14,11 +14,11 @@ export class FolderService {
     ) { }
 
     findOne(id: number, withRelations: boolean = false): Promise<Folder> {
-        return this.repository.findOne(id, { relations: withRelations ? ['parent', 'children'] : [] });
+        return this.repository.findOne(id, { relations: withRelations ? ['parent', 'children', 'images'] : [] });
     }
 
     findOneByName(name: string, withRelations: boolean = false): Promise<Folder> {
-        return this.repository.findOne({ name }, { relations: withRelations ? ['parent', 'children'] : [] });
+        return this.repository.findOne({ name }, { relations: withRelations ? ['parent', 'children', 'images'] : [] });
     }
 
     findDirectDescendantsByFolder(folder: Folder): Promise<Folder[]> {

@@ -5,18 +5,23 @@ import 'jest-extended';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import * as path from 'path';
 import { Folder } from '../entity/folder.entity';
+import { ImageService } from '../image/image.service';
 
 describe('FolderService', () => {
     let connection: Connection;
     let folderService: FolderService;
+    let imageService: ImageService;
 
     beforeAll(async () => {
         const module = await createTestModule({
-            providers: [FolderService, PathHelperService]
+            providers: [FolderService, PathHelperService, ImageService]
         });
         connection = module.get<Connection>(Connection);
         folderService = module.get<FolderService>(FolderService);
+        imageService = module.get<ImageService>(ImageService);
+    });
 
+    beforeEach(async () => {
         await createTestData();
     });
 
@@ -103,20 +108,20 @@ describe('FolderService', () => {
             const result = await folderService.findAll();
 
             expect(result).toBeDefined();
-            expect(result).toBeArrayOfSize(9);
+            expect(result).toBeArrayOfSize(8);
         });
     });
 
     describe('update', () => {
         it('should update a folder', async () => {
-            const result = await folderService.update(9, {
+            const result = await folderService.update(1, {
                 name: 'dummy-folder-new'
             });
 
             expect(result).toBeDefined();
             expect(result instanceof UpdateResult).toBeTrue();
 
-            const loadedFolder = await folderService.findOne(9);
+            const loadedFolder = await folderService.findOne(1);
             expect(loadedFolder).toBeDefined();
             expect(loadedFolder.name).toBe('dummy-folder-new');
             expect(loadedFolder.dateAdded).toBeValidDate();
@@ -124,12 +129,50 @@ describe('FolderService', () => {
     });
 
     describe('remove', () => {
-        it('should remove a folder', async () => {
-            const result = await folderService.remove(9);
+        it('should remove a folder having no children', async () => {
+            const result = await folderService.remove(1);
             expect(result).toBeDefined();
 
-            const loadedFolder = await folderService.findOne(9);
+            const loadedFolder = await folderService.findOne(1);
             expect(loadedFolder).toBeUndefined();
+        });
+
+        it('should cascade folder removal to contained folders', async () => {
+            const f2 = await folderService.findOneByName('F2', true);
+            expect(f2).toBeDefined();
+            expect(f2.children).toBeArrayOfSize(1);
+            expect(f2.children[0].name).toBe('F3');
+
+            const f3 = await folderService.findOneByName('F3', true);
+            expect(f3).toBeDefined();
+            expect(f3.children).toBeArrayOfSize(0);
+
+            await folderService.remove(f2.id);
+
+            const f2AfterRemoval = await folderService.findOneByName('F2');
+            expect(f2AfterRemoval).toBeUndefined();
+
+            const f3AfterRemoval = await folderService.findOneByName('F3');
+            expect(f3AfterRemoval).toBeUndefined();
+        });
+
+        it('should cascade folder removal to contained images', async () => {
+            const f2 = await folderService.findOneByName('F2', true);
+            expect(f2).toBeDefined();
+            expect(f2.images).toBeArrayOfSize(2);
+            expect(f2.images.map(image => image.name)).toEqual(['dummy-image-4', 'dummy-image-5']);
+
+            const f3 = await folderService.findOneByName('F3', true);
+            expect(f3.images).toBeArrayOfSize(2);
+            expect(f3.images.map(image => image.name)).toEqual(['dummy-image-6', 'dummy-image-7']);
+
+            await folderService.remove(f2.id);
+
+            const imagesOfF2 = await imageService.findAllByFolderId(f2.id);
+            expect(imagesOfF2).toBeArrayOfSize(0);
+
+            const imagesOfF3 = await imageService.findAllByFolderId(f3.id);
+            expect(imagesOfF3).toBeArrayOfSize(0);
         });
     });
 
