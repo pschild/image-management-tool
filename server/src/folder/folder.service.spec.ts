@@ -205,15 +205,23 @@ describe('FolderService', () => {
             foundFolder = await folderService.getFolderByPath(pathOfUnknownFolder);
             expect(foundFolder).toBeUndefined();
         });
+    });
 
-        it('should get an unknown folder by its path and create it', async () => {
+    describe('createFolderByPath', () => {
+        it('should create an unknown folder by its path', async () => {
             const pathOfUnknownFolderCreate = path.join('C:', 'F2', 'F3', 'foo', 'bar');
-            const foundFolder = await folderService.getFolderByPath(pathOfUnknownFolderCreate, true);
+            const foundFolder = await folderService.createFolderByPath(pathOfUnknownFolderCreate);
 
             expect(foundFolder).toBeDefined();
             expect(foundFolder.id).toBeGreaterThanOrEqual(1);
             expect(foundFolder.name).toBe('bar');
             expect(foundFolder.parent.name).toBe('foo');
+        });
+    });
+
+    describe('test', () => {
+        it('xx', async () => {
+            expect(folderService.test()).toBe(42);
         });
     });
 });

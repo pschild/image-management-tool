@@ -76,30 +76,56 @@ export class FolderService {
         return pathParts.reverse().join(path.sep);
     }
 
-    async getFolderByPath(givenPath: string, createIfNotExist: boolean = false): Promise<Folder> {
+    async createFolderByPath(givenPath: string): Promise<Folder> {
         const pathParts = givenPath.split(path.sep);
 
         let parent: Folder = null;
         let foundFolder: Folder;
-        // analyze the given path from beginning to end: try to find each folder in database by name and parent folder
-        // optional: if parameter createIfNotExist is set to true, missing folders will be created automatically
+        // Analyze the given path from beginning to end: try to find each folder in database by name and parent folder
+        // Missing folders will be created automatically
         for (let pathName of pathParts) {
             pathName = this.pathHelperService.getAsName(pathName); // Workaround: ensure we get sth like C: when pathName is drive letter
             foundFolder = await this.repository.findOne({ name: pathName, parent: parent });
             if (foundFolder) {
                 parent = foundFolder;
             } else {
-                if (createIfNotExist) {
-                    const newFolder = new Folder();
-                    newFolder.name = pathName;
-                    newFolder.parent = parent;
-                    foundFolder = await this.repository.save(newFolder);
-                    parent = foundFolder;
-                } else {
-                    return undefined;
-                }
+                const newFolder = new Folder();
+                newFolder.name = pathName;
+                newFolder.parent = parent;
+                foundFolder = await this.repository.save(newFolder);
+                parent = foundFolder;
             }
         }
         return foundFolder;
+    }
+
+    async getFolderByPath(givenPath: string): Promise<Folder> {
+        const pathParts = givenPath.split(path.sep);
+
+        let parent: Folder = null;
+        let foundFolder: Folder;
+        // Analyze the given path from beginning to end: try to find each folder in database by name and parent folder
+        for (let pathName of pathParts) {
+            pathName = this.pathHelperService.getAsName(pathName); // Workaround: ensure we get sth like C: when pathName is drive letter
+            foundFolder = await this.repository.findOne({ name: pathName, parent: parent });
+            if (foundFolder) {
+                parent = foundFolder;
+            } else {
+                return undefined;
+            }
+        }
+        return foundFolder;
+    }
+
+    async getFolderOrCreateByPath(givenPath: string): Promise<Folder> {
+        let folder = this.getFolderByPath(givenPath);
+        if (!folder) {
+            folder = this.createFolderByPath(givenPath);
+        }
+        return folder;
+    }
+
+    test() {
+        return 42;
     }
 }

@@ -84,19 +84,20 @@ export class ExplorerController {
 
     @Post('folder')
     createByPath(@Body() body: {path: string}): Promise<Folder> {
-        return this.folderService.getFolderByPath(decodeURI(body.path), true);
+        return this.folderService.createFolderByPath(decodeURI(body.path));
     }
 
     @Post('image')
     async createImageByPath(@Body() body: {absolutePath: string; name: string; extension: string; }): Promise<Image> {
         const absolutePathParts = body.absolutePath.split(path.sep);
-        absolutePathParts.pop();
+        const parentFolderPathParts = absolutePathParts.slice(0, -1);
+        const parentFolder = await this.folderService.getFolderOrCreateByPath(parentFolderPathParts.join(path.sep));
 
         const image = new Image();
         image.name = body.name;
         image.originalName = body.name;
         image.extension = body.extension;
-        image.parentFolder = await this.folderService.getFolderByPath(absolutePathParts.join(path.sep), true);
+        image.parentFolder = parentFolder;
         return this.imageService.create(image);
     }
 
@@ -111,7 +112,7 @@ export class ExplorerController {
         let newParent: Folder = null;
         if (newPathParts.length > 0) {
             const newParentPath = newPathParts.join(path.sep);
-            newParent = await this.folderService.getFolderByPath(newParentPath, true);
+            newParent = await this.folderService.getFolderOrCreateByPath(newParentPath);
         }
 
         const oldFolder: Folder = await this.folderService.getFolderByPath(oldPath);
