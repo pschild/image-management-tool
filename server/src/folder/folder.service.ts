@@ -124,8 +124,4 @@ export class FolderService {
         }
         return folder;
     }
-
-    test() {
-        return 42;
-    }
 }

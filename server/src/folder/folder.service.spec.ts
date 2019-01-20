@@ -218,10 +218,4 @@ describe('FolderService', () => {
             expect(foundFolder.parent.name).toBe('foo');
         });
     });
-
-    describe('test', () => {
-        it('xx', async () => {
-            expect(folderService.test()).toBe(42);
-        });
-    });
 });
