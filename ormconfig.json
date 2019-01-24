@@ -5,13 +5,13 @@
    "migrationsRun": true,
    "logging": false,
    "entities": [
-      "server/src/entity/**/*.js"
+      "<OVERWRITTEN>"
    ],
    "migrations": [
-      "server/src/migration/**/*.js"
+      "<OVERWRITTEN>"
    ],
    "subscribers": [
-      "server/src/subscriber/**/*.js"
+      "<OVERWRITTEN>"
    ],
    "cli": {
       "entitiesDir": "server/src/entity",

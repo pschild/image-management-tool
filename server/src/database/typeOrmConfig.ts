@@ -10,9 +10,9 @@ export const ormOptions = async (databaseName: string, appHomeDirPath: string, e
     // overwrite the dynamic config parts
     Object.assign(connectionOptions, {
         database: path.join(appHomeDirPath, databaseName),
-        entities: [path.join(electronAppPath, 'server/src/entity/**/*.js')],
-        migrations: [path.join(electronAppPath, 'server/src/migration/**/*.js')],
-        subscribers: [path.join(electronAppPath, 'server/src/subscriber/**/*.js')]
+        entities: [path.join(electronAppPath, 'server/src/entity/**/*.{ts,js}')],
+        migrations: [path.join(electronAppPath, 'server/src/migration/**/*.{ts,js}')],
+        subscribers: [path.join(electronAppPath, 'server/src/subscriber/**/*.{ts,js}')]
     });
     return connectionOptions;
 };
