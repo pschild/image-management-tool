@@ -13,27 +13,27 @@ export class DialogService {
 
   constructor(private electronService: ElectronService) { }
 
-  showOpenFolderDialog(callback: (filePaths: string[], bookmarks: string[]) => void, allowMultiple: boolean = false) {
+  showOpenFolderDialog(callback: (filePaths: string[], bookmarks: string[]) => void, allowMultiple: boolean = false, defaultPath?: string) {
     const properties = [];
     properties.push('openDirectory');
     if (allowMultiple) {
       properties.push('multiSelections');
     }
-    this.showOpenDialog(properties, callback);
+    this.showOpenDialog(properties, callback, defaultPath);
   }
 
-  showOpenFileDialog(callback: (filePaths: string[], bookmarks: string[]) => void, allowMultiple: boolean = false) {
+  showOpenFileDialog(callback: (filePaths: string[], bookmarks: string[]) => void, allowMultiple: boolean = false, defaultPath?: string) {
     const properties = [];
     properties.push('openFile');
     if (allowMultiple) {
       properties.push('multiSelections');
     }
-    this.showOpenDialog(properties, callback);
+    this.showOpenDialog(properties, callback, defaultPath);
   }
 
-  private showOpenDialog(properties, callback: (filePaths: string[], bookmarks: string[]) => void) {
+  private showOpenDialog(properties: any[], callback: (filePaths: string[], bookmarks: string[]) => void, defaultPath?: string) {
     this.electronService.remote.dialog.showOpenDialog(
-      { properties: properties, filters: DialogService.FILTERS },
+      { defaultPath, properties, filters: DialogService.FILTERS },
       callback
     );
   }

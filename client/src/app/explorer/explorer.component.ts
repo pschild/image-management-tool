@@ -50,7 +50,7 @@ export class ExplorerComponent implements OnInit {
               const newFilePath = filePaths[0];
               this.store.dispatch(new RelocateFolder(folder.absolutePath, newFilePath));
             }
-          });
+          }, false, folder.absolutePath);
         } else if (response === 1) {
           console.log('Ordner löschen');
         }
