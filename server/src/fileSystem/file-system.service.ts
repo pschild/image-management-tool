@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import * as path from 'path';
 import * as afs from 'async-file';
 import * as os from 'os';
-import { IFileDto } from '../../../domain/interface/IFileDto';
 import * as drivelist from 'drivelist';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
+import { IFileDto } from '../../../shared/interface/IFileDto';
 
 @Injectable()
 export class FileSystemService {

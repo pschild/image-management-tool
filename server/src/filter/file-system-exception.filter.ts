@@ -1,5 +1,5 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
-import { FileSystemException } from '../../../domain/exception/file-system.exception';
+import { FileSystemException } from '../../../shared/exception/file-system.exception';
 
 @Catch(FileSystemException)
 export class FileSystemExceptionFilter implements ExceptionFilter {

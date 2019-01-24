@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { FolderService } from '../folder/folder.service';
-import { IFileDto } from '../../../domain/interface/IFileDto';
 import { Folder } from '../entity/folder.entity';
-import { FolderDto } from '../../../domain/FolderDto';
 import { Image } from '../entity/image.entity';
-import { ImageDto } from '../../../domain/ImageDto';
 import * as path from 'path';
+import { IFileDto } from '../../../shared/interface/IFileDto';
+import { FolderDto } from '../../../shared/FolderDto';
+import { ImageDto } from '../../../shared/ImageDto';
 
 @Injectable()
 export class ExplorerService {

@@ -2,19 +2,13 @@ import { app, BrowserWindow, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as path from 'path';
 import * as url from 'url';
-import { startServer } from './server/src/server';
+import { startServer } from '../server/src/server';
 
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
 function createWindow() {
-
-  // start the server
-  // Pass the current appPath of electron to the server, so that paths for TypeORM can be set dynamically but correctly on server side.
-  // This is a workaround for now. It's necessary, because when built for production the paths defined in server/ormconfig.json don't point
-  // to the correct entities/migrations/subscribers.
-  startServer(app.getAppPath());
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -30,17 +24,23 @@ function createWindow() {
     }
   });
 
+  // load localhost URL when in development mode (--serve param, app.isPackaged === false)
   if (serve) {
     require('electron-reload')(__dirname, {
-      electron: require(`${__dirname}/node_modules/electron`)
+      electron: require(path.join(__dirname, '..', 'node_modules', 'electron'))
     });
     win.loadURL('http://localhost:4200');
+    startServer('.');
+
+    // load index.html when in production mode (no param, app.isPackaged === true)
   } else {
+    // app.getAppPath() => <PROJECT_ROOT>\release\win-unpacked\resources\app.asar
     win.loadURL(url.format({
-      pathname: path.join(__dirname, 'dist/index.html'),
+      pathname: path.join(app.getAppPath(), 'client', 'index.html'),
       protocol: 'file:',
       slashes: true
     }));
+    startServer(app.getAppPath());
   }
 
   win.webContents.openDevTools();

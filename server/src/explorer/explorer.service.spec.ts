@@ -1,13 +1,13 @@
 import 'jest-extended';
 import { ExplorerService } from './explorer.service';
-import { FolderDto } from '../../../domain/FolderDto';
 import { createTestModule } from '../../test/utils/test-utils';
 import { FolderService } from '../folder/folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { Folder } from '../entity/folder.entity';
-import { IFileDto } from '../../../domain/interface/IFileDto';
-import { ImageDto } from '../../../domain/ImageDto';
 import { Image } from '../entity/image.entity';
+import { IFileDto } from '../../../shared/interface/IFileDto';
+import { FolderDto } from '../../../shared/FolderDto';
+import { ImageDto } from '../../../shared/ImageDto';
 
 describe('ExplorerService', () => {
     let explorerService: ExplorerService;

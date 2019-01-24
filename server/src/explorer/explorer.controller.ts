@@ -2,16 +2,16 @@ import { Controller, Get, Param, Post, Body, UseFilters } from '@nestjs/common';
 import { FileSystemService } from '../fileSystem/file-system.service';
 import { FolderService } from '../folder/folder.service';
 import { ImageService } from '../image/image.service';
-import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
-import { IFileDto } from '../../../domain/interface/IFileDto';
 import { Folder } from '../entity/folder.entity';
 import { Image } from '../entity/image.entity';
-import { FolderDto } from '../../../domain/FolderDto';
-import { ImageDto } from '../../../domain/ImageDto';
 import { ExplorerService } from './explorer.service';
 import * as path from 'path';
 import { FileSystemExceptionFilter } from '../filter/file-system-exception.filter';
-import { FileSystemException } from '../../../domain/exception/file-system.exception';
+import { IFolderContentDto } from '../../../shared/interface/IFolderContentDto';
+import { FileSystemException } from '../../../shared/exception/file-system.exception';
+import { IFileDto } from '../../../shared/interface/IFileDto';
+import { FolderDto } from '../../../shared/FolderDto';
+import { ImageDto } from '../../../shared/ImageDto';
 
 @Controller('explorer')
 @UseFilters(FileSystemExceptionFilter)

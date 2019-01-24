@@ -2,42 +2,46 @@
   "appId": "com.github.pschild.imagemanagementtool",
   "productName": "Image Management Tool",
   "directories": {
-    "output": "release/"
+    "output": "release"
   },
   "files": [
-      "**/*",
-      "!*.ts",
-      "!*.code-workspace",
-      "!LICENSE.md",
-      "!package.json",
-      "!package-lock.json",
-      "!src/",
-      "!e2e/",
-      "!hooks/",
-      "!.angular-cli.json",
-      "!_config.yml",
-      "!karma.conf.js",
-      "!tsconfig.json",
-      "!tslint.json"
+    {
+      "from": "dist/client",
+      "to": "client"
+    },
+    {
+      "from": "dist/server",
+      "to": "server"
+    },
+    {
+      "from": "dist/electron",
+      "to": "electron"
+    },
+    {
+      "from": "dist/shared",
+      "to": "shared"
+    },
+    ".env",
+    "ormconfig.json"
   ],
   "nsis": {
     "oneClick": false,
     "allowToChangeInstallationDirectory": true
   },
   "win": {
-    "icon": "dist",
+    "icon": "dist/client",
     "target": [
       "nsis"
     ]
   },
   "mac": {
-    "icon": "dist",
+    "icon": "dist/client",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "dist",
+    "icon": "dist/client",
     "target": [
       "AppImage"
     ]

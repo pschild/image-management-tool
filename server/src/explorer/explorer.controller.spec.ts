@@ -7,10 +7,10 @@ import { FolderService } from '../folder/folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FileSystemService } from '../fileSystem/file-system.service';
 import { ImageService } from '../image/image.service';
-import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import * as drivelist from 'drivelist';
 import { Folder } from '../entity/folder.entity';
-import { FileSystemException } from '../../../domain/exception/file-system.exception';
+import { IFolderContentDto } from '../../../shared/interface/IFolderContentDto';
+import { FileSystemException } from '../../../shared/exception/file-system.exception';
 
 describe('ExplorerController', () => {
     let connection: Connection;

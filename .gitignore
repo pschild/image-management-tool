@@ -9,7 +9,7 @@
 /main.js
 src/**/*.js
 server/**/*.js
-domain/**/*.js
+shared/**/*.js
 *.js.map
 
 # secret files
