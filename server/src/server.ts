@@ -16,11 +16,11 @@ if (!fs.existsSync(appHomeDirPath)) {
     fs.mkdirSync(appHomeDirPath);
 }
 
-export const startServer = async (electronAppPath: string) => {
+export const startServer = async (appRootPath: string) => {
     const app = await NestFactory.create(
         AppModule.forRoot({
             appHomeDirPath,
-            electronAppPath
+            appRootPath
         })
     );
     await app.listen(SERVER_PORT, () => {

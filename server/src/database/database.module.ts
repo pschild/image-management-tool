@@ -12,7 +12,7 @@ import { ConfigService } from '../config/config.service';
                 return ormOptions(
                     configService.get('DB_NAME'),
                     configService.getAppHomeDirPath(),
-                    configService.getElectronAppPath()
+                    configService.getAppRootPath()
                 );
             }
         })

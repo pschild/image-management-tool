@@ -7,19 +7,19 @@ import { IAppConfig } from './IAppConfig';
 export class ConfigService {
 
     private readonly appHomeDirPath: string;
-    private readonly electronAppPath: string;
+    private readonly appRootPath: string;
 
     private readonly envConfig: { [key: string]: string };
 
     constructor(config: IAppConfig) {
-        const envContent = dotenv.config({ path: path.resolve(config.electronAppPath, '.env') });
+        const envContent = dotenv.config({ path: path.resolve(config.appRootPath, '.env') });
         if (!envContent || !envContent.parsed) {
-            throw new Error(`.env file could not be found at location "${config.electronAppPath}/.env"`);
+            throw new Error(`.env file could not be found at location "${config.appRootPath}/.env"`);
         }
         this.envConfig = envContent.parsed;
 
         this.appHomeDirPath = config.appHomeDirPath;
-        this.electronAppPath = config.electronAppPath;
+        this.appRootPath = config.appRootPath;
     }
 
     get(key: string): string {
@@ -30,7 +30,7 @@ export class ConfigService {
         return this.appHomeDirPath;
     }
 
-    getElectronAppPath(): string {
-        return this.electronAppPath;
+    getAppRootPath(): string {
+        return this.appRootPath;
     }
 }

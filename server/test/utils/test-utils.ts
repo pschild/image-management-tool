@@ -19,7 +19,7 @@ const defaultConnectionOptions: ConnectionOptions = {
 
 const defaultConfigOptions: IAppConfig = {
     appHomeDirPath: '.',
-    electronAppPath: '.'
+    appRootPath: '.'
 };
 
 export const createTestModule = async (moduleConfig: { controllers?: Type<any>[], providers?: Provider[] }) => {
