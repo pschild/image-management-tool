@@ -8,6 +8,7 @@ import { Image } from '../entity/image.entity';
 import { IFileDto } from '../../../shared/interface/IFileDto';
 import { FolderDto } from '../../../shared/FolderDto';
 import { ImageDto } from '../../../shared/ImageDto';
+import { DuplicateFileException } from '../../../shared/exception/duplicate-file.exception';
 
 describe('ExplorerService', () => {
     let explorerService: ExplorerService;
@@ -152,6 +153,46 @@ describe('ExplorerService', () => {
             expect(result.map(folderDto => folderDto.addedInFs)).toEqual([false, false]);
             expect(result.map(folderDto => folderDto.removedInFs)).toEqual([false, true]);
         });
+
+        it('should throw an exception when a duplicate folder is detected', async () => {
+            const fs = [{
+                name: 'F1',
+                absolutePath: 'some/drive/F1',
+                isFile: false,
+                isDirectory: true
+            }, {
+                name: 'F2',
+                absolutePath: 'some/drive/F2',
+                isFile: false,
+                isDirectory: true
+            }];
+
+            const db = [{
+                id: 1,
+                name: 'F1',
+                children: [],
+                parent: null,
+                images: [],
+                dateAdded: new Date()
+            }, {
+                id: 2,
+                name: 'F1',
+                children: [],
+                parent: null,
+                images: [],
+                dateAdded: new Date()
+            }];
+
+            let thrownError;
+            try {
+                await explorerService.getMergedFolderList(fs, db);
+            } catch (error) {
+                thrownError = error;
+            }
+            expect(thrownError).toBeInstanceOf(DuplicateFileException);
+            expect(thrownError.status).toBe(500);
+            expect(thrownError.userMessage).toBe('Found duplicate folder(s): F1');
+        });
     });
 
     describe('getMergedImageList', () => {
@@ -199,6 +240,74 @@ describe('ExplorerService', () => {
             expect(result.map(imageDto => imageDto.extension)).toEqual(['jpg', 'PNG']);
             expect(result.map(imageDto => imageDto.addedInFs)).toEqual([false, false]);
             expect(result.map(imageDto => imageDto.removedInFs)).toEqual([false, true]);
+        });
+
+        it('should throw an exception when a duplicate image is detected', async () => {
+            const fs = [{
+                name: 'img1',
+                absolutePath: 'some/drive/img1.jpg',
+                extension: 'jpg',
+                isFile: true,
+                isDirectory: false
+            }, {
+                name: 'img2',
+                absolutePath: 'some/drive/img2.PNG',
+                extension: 'PNG',
+                isFile: true,
+                isDirectory: false
+            }];
+
+            const db = [{
+                id: 1,
+                name: 'img1',
+                originalName: 'original Name 1',
+                extension: 'jpg',
+                dateAdded: new Date(),
+                description: 'Some Description 1',
+                dateFrom: new Date(),
+                dateTo: new Date(),
+                parentFolder: {
+                    id: 1,
+                    name: 'F1',
+                    children: [],
+                    parent: null,
+                    images: [],
+                    dateAdded: new Date()
+                },
+                persons: [],
+                tags: [],
+                place: null
+            }, {
+                id: 2,
+                name: 'img1',
+                originalName: 'original Name 2',
+                extension: 'jpg',
+                dateAdded: new Date(),
+                description: 'Some Description 2',
+                dateFrom: new Date(),
+                dateTo: new Date(),
+                parentFolder: {
+                    id: 1,
+                    name: 'F1',
+                    children: [],
+                    parent: null,
+                    images: [],
+                    dateAdded: new Date()
+                },
+                persons: [],
+                tags: [],
+                place: null
+            }];
+
+            let thrownError;
+            try {
+                await explorerService.getMergedImageList(fs, db);
+            } catch (error) {
+                thrownError = error;
+            }
+            expect(thrownError).toBeInstanceOf(DuplicateFileException);
+            expect(thrownError.status).toBe(500);
+            expect(thrownError.userMessage).toBe('Found duplicate image(s): img1.jpg');
         });
     });
 });

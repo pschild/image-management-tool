@@ -6,6 +6,7 @@ import * as path from 'path';
 import { IFileDto } from '../../../shared/interface/IFileDto';
 import { FolderDto } from '../../../shared/FolderDto';
 import { ImageDto } from '../../../shared/ImageDto';
+import { DuplicateFileException } from '../../../shared/exception/duplicate-file.exception';
 
 @Injectable()
 export class ExplorerService {
@@ -31,15 +32,24 @@ export class ExplorerService {
             foldersInDbAndFs.push(new FolderDto(dbFolder.name, absolutePath, false, removedInFs, dbFolder.id));
         }
 
+        let resultList: FolderDto[] = [];
         // if there are elements left in foldersFromFileSystem, they are in FS but not in DB
         if (fsFolders.length) {
             const foldersOnlyInFs: FolderDto[] = fsFolders.map(fsFolder => {
                 return new FolderDto(fsFolder.name, fsFolder.absolutePath, true, false);
             });
-            return [...foldersInDbAndFs, ...foldersOnlyInFs];
+            resultList = [...foldersInDbAndFs, ...foldersOnlyInFs];
         } else {
-            return foldersInDbAndFs;
+            resultList = foldersInDbAndFs;
         }
+
+        // find duplicates
+        const duplicates = this.findDuplicates(resultList.map(i => i.name));
+        if (duplicates.length) {
+            throw new DuplicateFileException(`Found duplicate folder(s): ${duplicates.join(',')}`);
+        }
+
+        return resultList;
     }
 
     async getMergedImageList(fsImages: IFileDto[], dbImages: Image[]): Promise<ImageDto[]> {
@@ -64,14 +74,27 @@ export class ExplorerService {
             imagesInDbAndFs.push(new ImageDto(dbImage.name, absolutePath, dbImage.extension, false, removedInFs, dbImage.id));
         }
 
+        let resultList: ImageDto[] = [];
         // if there are elements left in foldersFromFileSystem, they are in FS but not in DB
         if (fsImages.length) {
             const imagesOnlyInFs: ImageDto[] = fsImages.map(fsImage => {
                 return new ImageDto(fsImage.name, fsImage.absolutePath, fsImage.extension, true, false);
             });
-            return [...imagesInDbAndFs, ...imagesOnlyInFs];
+            resultList = [...imagesInDbAndFs, ...imagesOnlyInFs];
         } else {
-            return imagesInDbAndFs;
+            resultList = imagesInDbAndFs;
         }
+
+        // find duplicates
+        const duplicates = this.findDuplicates(resultList.map(i => `${i.name}.${i.extension}`));
+        if (duplicates.length) {
+            throw new DuplicateFileException(`Found duplicate image(s): ${duplicates.join(',')}`);
+        }
+
+        return resultList;
+    }
+
+    findDuplicates(list: string[]): string[] {
+        return list.filter((item, index) => list.indexOf(item) !== index);
     }
 }
