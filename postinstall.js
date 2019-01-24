@@ -12,5 +12,6 @@ fs.readFile(f_angular, 'utf8', function (err, data) {
 
   fs.writeFile(f_angular, result, 'utf8', function (err) {
     if (err) return console.log(err);
+    console.log(`Angular Build successfully prepared for running with Electron.`);
   });
 });

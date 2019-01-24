@@ -32,7 +32,8 @@
     "electron:serve": "wait-on http-get://localhost:4200/ && electron ./electron/ --serve",
     "electron:compile": "tsc -p electron/tsconfig.electron.json",
     "electron:build:windows": "npm run build && npx electron-builder build --windows --config ./electron/electron-builder.json",
-    "postinstall": "npx electron-builder install-app-deps"
+    "postinstall": "npm run postinstall:electron && npx electron-builder install-app-deps",
+    "postinstall:electron": "node postinstall"
   },
   "dependencies": {
     "@nestjs/common": "^5.5.0",

@@ -6,10 +6,6 @@
 /out-tsc
 /app-builds
 /release
-/main.js
-src/**/*.js
-server/**/*.js
-shared/**/*.js
 *.js.map
 
 # secret files
@@ -48,9 +44,9 @@ testem.log
 package-lock.json
 
 # e2e
-/e2e/*.js
-!/e2e/protractor.conf.js
-/e2e/*.map
+/client/e2e/*.js
+!/client/e2e/protractor.conf.js
+/client/e2e/*.map
 
 # System Files
 .DS_Store
