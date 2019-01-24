@@ -2,10 +2,10 @@ import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
 import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, CreateFolderByPath, RelocateFolder, RefreshContent, CreateImageByPath } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap } from 'rxjs/operators';
-import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
-import { FolderDto } from '../../../domain/FolderDto';
-import { IFolderDto } from '../../../domain/interface/IFolderDto';
-import { ImageDto } from '../../../domain/ImageDto';
+import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDto';
+import { FolderDto } from '../../../../shared/FolderDto';
+import { ImageDto } from '../../../../shared/ImageDto';
+import { IFolderDto } from '../../../../shared/interface/IFolderDto';
 
 export interface ExplorerStateModel {
     currentPath: string[];

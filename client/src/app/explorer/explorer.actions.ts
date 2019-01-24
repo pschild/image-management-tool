@@ -1,4 +1,4 @@
-import { FileSystemException } from '../../../domain/exception/file-system.exception';
+import { FileSystemException } from '../../../../shared/exception/file-system.exception';
 
 export class LoadHomeDirectory {
     static readonly type = '[Explorer] LoadHomeDirectory';

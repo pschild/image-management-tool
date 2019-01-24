@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
-import { FolderDto } from '../../../domain/FolderDto';
-import { ImageDto } from '../../../domain/ImageDto';
 import { Store, Select } from '@ngxs/store';
 import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder, CreateImageByPath } from './explorer.actions';
 import { ExplorerState } from './explorer.state';
 import { DialogService } from '../core/services/dialog.service';
+import { FolderDto } from '../../../../shared/FolderDto';
+import { ImageDto } from '../../../../shared/ImageDto';
+import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDto';
 
 @Component({
   selector: 'app-explorer',

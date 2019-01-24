@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import * as path from 'path';
-import { IFolderContentDto } from '../../../domain/interface/IFolderContentDto';
 import { catchError, map } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
-import { FolderDto } from '../../../domain/FolderDto';
-import { IFolderDto } from '../../../domain/interface/IFolderDto';
-import { ImageDto } from '../../../domain/ImageDto';
+import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDto';
+import { FolderDto } from '../../../../shared/FolderDto';
+import { ImageDto } from '../../../../shared/ImageDto';
+import { IFolderDto } from '../../../../shared/interface/IFolderDto';
 
 @Injectable()
 export class ExplorerService {
