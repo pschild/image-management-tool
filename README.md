@@ -10,9 +10,15 @@ Used packages with link to their repository/homepage/API:
 
 # Install
 1. Run `npm install`
-2. Run `.\node_modules\.bin\electron-builder install-app-deps` to install native modules, like sqlite3 or drive-list. See also <https://electronjs.org/docs/tutorial/using-native-node-modules>
+2. ~~Run `.\node_modules\.bin\electron-builder install-app-deps` to install native modules, like sqlite3 or drive-list. See also <https://electronjs.org/docs/tutorial/using-native-node-modules>~~
 3. ~~Run `.\node_modules\.bin\electron-rebuild.cmd -f -w sqlite3` to be able to use sqlite3 with Electron (see Use SQLite with Electron).~~
-4. Run `npm start` to start development version, or `npm run electron:windows` to build for windows.
+4. Run one of the following commands:
+   1. `npm start` to start a locally running client in Electron (development mode). The server will be started automatically.
+   2. `npm run client:test` to run tests for client (not available yet)
+   3. `npm run server:start` to start a locally running server only (development mode)
+   4. `npm run server:test` to run tests for server
+   5. `npm run electron:build:windows` to build the app for Windows
+   6. `npm run publish:windows` to publish a new version to GitHub (adjust the version in `package.json`)
 
 ## Use sqlite3 with Electron
 1. Start a terminal as admin
@@ -52,12 +58,12 @@ If `"releaseType"` in `electron-builder.json` is set to `"draft"` or not set at 
 
 # Develop
 
-Run `npm start` to start development version (start client and server).
+Run `npm start` to start development version (start client in Electron, server will be started automatically).
 Run `npm run server:start` to start the server only.
 
 ## Test
-Jasmine will be used to run test suites.  
-You can run tests for server with `npm run server:test`. Test specs are located in `server/test`.  
+Jest will be used to run test suites.  
+You can run tests for server with `npm run server:test`.  
 Tests for client are not available yet.
 
 ## Create migration files
