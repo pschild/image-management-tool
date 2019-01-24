@@ -1,6 +1,6 @@
 {
   "name": "image-management-tool",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Image Management Tool by Philippe Schild",
   "homepage": "https://github.com/pschild/image-management-tool",
   "author": {
@@ -15,13 +15,15 @@
   "main": "electron/main.js",
   "private": false,
   "scripts": {
-    "clean": "rimraf release dist",
+    "postinstall": "npm run postinstall:electron && npx electron-builder install-app-deps",
+    "postinstall:electron": "node postinstall",
     "ng": "ng",
     "start": "npm-run-all -p client:serve electron:serve",
     "build": "npm-run-all clean client:build:prod electron:compile server:compile",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "clean": "rimraf release dist",
     "client:serve": "cd client && ng serve",
     "client:build": "cd client && ng build",
     "client:build:prod": "cd client && ng build --prod",
@@ -32,8 +34,7 @@
     "electron:serve": "wait-on http-get://localhost:4200/ && electron ./electron/ --serve",
     "electron:compile": "tsc -p electron/tsconfig.electron.json",
     "electron:build:windows": "npm run build && npx electron-builder build --windows --config ./electron/electron-builder.json",
-    "postinstall": "npm run postinstall:electron && npx electron-builder install-app-deps",
-    "postinstall:electron": "node postinstall"
+    "publish:windows": "npm run server:test && npm run electron:build:windows -- -p always"
   },
   "dependencies": {
     "@nestjs/common": "^5.5.0",
