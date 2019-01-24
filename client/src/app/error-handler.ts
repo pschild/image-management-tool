@@ -9,9 +9,12 @@ export class GlobalErrorHandler implements ErrorHandler {
     handleError(error: any) {
         const dialogService = this.injector.get(DialogService);
         if (error.userMessage) {
-            dialogService.showErrorBox('FileSystemException', `Es ist ein Fehler aufgetreten: ${error.userMessage}`);
+            dialogService.showErrorBox('Fehler', `Es ist ein Fehler aufgetreten: ${error.userMessage}`);
         } else {
-            dialogService.showErrorBox('Unbekannter Fehler', `Es ist ein unbekannter Fehler aufgetreten: ${error}`);
+            dialogService.showErrorBox(
+                'Unbekannter Fehler',
+                `Es ist ein unbekannter Fehler aufgetreten: ${error.message || error.toString()}`
+            );
         }
     }
 }

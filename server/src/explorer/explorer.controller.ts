@@ -6,15 +6,16 @@ import { Folder } from '../entity/folder.entity';
 import { Image } from '../entity/image.entity';
 import { ExplorerService } from './explorer.service';
 import * as path from 'path';
-import { FileSystemExceptionFilter } from '../filter/file-system-exception.filter';
 import { IFolderContentDto } from '../../../shared/interface/IFolderContentDto';
 import { FileSystemException } from '../../../shared/exception/file-system.exception';
 import { IFileDto } from '../../../shared/interface/IFileDto';
 import { FolderDto } from '../../../shared/FolderDto';
 import { ImageDto } from '../../../shared/ImageDto';
+import { FileSystemExceptionFilter } from '../filter/file-system-exception.filter';
+import { DuplicateFileExceptionFilter } from '../filter/duplicate-file-exception.filter';
 
 @Controller('explorer')
-@UseFilters(FileSystemExceptionFilter)
+@UseFilters(FileSystemExceptionFilter, DuplicateFileExceptionFilter)
 export class ExplorerController {
     constructor(
         private readonly explorerService: ExplorerService,
