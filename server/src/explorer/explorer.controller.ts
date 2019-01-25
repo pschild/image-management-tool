@@ -13,9 +13,12 @@ import { FolderDto } from '../../../shared/FolderDto';
 import { ImageDto } from '../../../shared/ImageDto';
 import { FileSystemExceptionFilter } from '../filter/file-system-exception.filter';
 import { DuplicateFileExceptionFilter } from '../filter/duplicate-file-exception.filter';
+import { FileNotFoundException } from '../../../shared/exception/file-not-found.exception';
+import { RelocationException } from '../../../shared/exception/relocation.exception';
+import { RelocationExceptionFilter } from '../filter/relocation-exception.filter';
+import { FileNotFoundExceptionFilter } from '../filter/file-not-found-exception.filter';
 
 @Controller('explorer')
-@UseFilters(FileSystemExceptionFilter, DuplicateFileExceptionFilter)
 export class ExplorerController {
     constructor(
         private readonly explorerService: ExplorerService,
@@ -31,6 +34,7 @@ export class ExplorerController {
     }
 
     @Get('path/:folderPath')
+    @UseFilters(FileSystemExceptionFilter, DuplicateFileExceptionFilter)
     async getContentByFolderPath(@Param('folderPath') folderPath: string): Promise<IFolderContentDto | FileSystemException> {
         const fsFiles: IFileDto[] = await this.fileSystemService.getFilesByPath(folderPath).catch(error => {
             throw new FileSystemException({
@@ -59,6 +63,7 @@ export class ExplorerController {
     }
 
     @Get('systemDrives')
+    @UseFilters(FileSystemExceptionFilter, DuplicateFileExceptionFilter)
     async getSystemDrives(): Promise<IFolderContentDto | FileSystemException> {
         const fsFolders: IFileDto[] = await this.fileSystemService.getSystemDrives();
         const dbFolders: Folder[] = await this.folderService.findRootFolders();
@@ -103,36 +108,89 @@ export class ExplorerController {
     }
 
     @Post('relocate/folder')
+    @UseFilters(RelocationExceptionFilter)
     async relocateFolder(@Body() body: {oldPath: string, newPath: string}): Promise<Folder> {
-        const oldPath: string = decodeURI(body.oldPath);
-        const newPath: string = decodeURI(body.newPath);
+        const sourcePath: string = decodeURI(body.oldPath);
+        const targetPath: string = decodeURI(body.newPath);
 
-        const oldFolder: Folder = await this.folderService.getFolderByPath(oldPath);
-        const newFolder: Folder = await this.folderService.getFolderByPath(newPath);
+        const sourceFolder: Folder = await this.folderService.getFolderByPath(sourcePath);
+        const targetFolder: Folder = await this.folderService.getFolderByPath(targetPath);
 
-        // if the new folder exists in db, use it as parent for the old folder's children (folders and images)
-        if (newFolder) {
-            await this.folderService.updateByConditions({ parent: oldFolder }, { parent: newFolder });
-            await this.imageService.updateByConditions({ parentFolder: oldFolder }, { parentFolder: newFolder });
-            await this.folderService.remove(oldFolder.id);
-            return newFolder;
+        // if the target folder exists in db, use it as parent for the source folder's children (folders and images)
+        if (targetFolder) {
+            await this.folderService.updateByConditions({ parent: sourceFolder }, { parent: targetFolder });
+            await this.imageService.updateByConditions({ parentFolder: sourceFolder }, { parentFolder: targetFolder });
+            await this.folderService.remove(sourceFolder.id);
+            return targetFolder;
         }
 
-        // if the new folder doesn't exist in db, get/create the new folder's parent and set it as the old folder's parent
-        const newPathParts: string[] = newPath.split(path.sep);
-        const newFolderName = newPathParts.pop();
-        let newParent: Folder = null;
-        if (newPathParts.length > 0) {
-            const newParentPath = newPathParts.join(path.sep);
-            newParent = await this.folderService.getFolderOrCreateByPath(newParentPath);
+        // if the target folder doesn't exist in db, get/create the target folder's parent and set it as the source folder's parent
+        const targetPathParts: string[] = targetPath.split(path.sep);
+        const targetFolderName = targetPathParts.pop();
+        let targetParent: Folder = null;
+        if (targetPathParts.length > 0) {
+            const targetParentPath = targetPathParts.join(path.sep);
+            targetParent = await this.folderService.getFolderOrCreateByPath(targetParentPath);
         }
-        oldFolder.parent = newParent;
+        sourceFolder.parent = targetParent;
 
-        // the new folder may be renamed, so set the old folder's name to the new folder's name
-        oldFolder.name = newFolderName;
+        // the target folder may be renamed, so set the source folder's name to the target folder's name
+        sourceFolder.name = targetFolderName;
 
         // update db
-        await this.folderService.update(oldFolder.id, oldFolder);
-        return oldFolder;
+        await this.folderService.update(sourceFolder.id, sourceFolder);
+        return sourceFolder;
+    }
+
+    @Post('relocate/image')
+    @UseFilters(RelocationExceptionFilter, FileNotFoundExceptionFilter)
+    async relocateImage(@Body() body: {oldPath: string, newPath: string}): Promise<Image> {
+        const sourcePath: string = decodeURI(body.oldPath);
+        const targetPath: string = decodeURI(body.newPath);
+
+        const sourcePathParts: string[] = sourcePath.split(path.sep);
+        const targetPathParts: string[] = targetPath.split(path.sep);
+
+        const sourceFolderPath: string = sourcePathParts.slice(0, -1).join(path.sep);
+        const targetFolderPath: string = targetPathParts.slice(0, -1).join(path.sep);
+
+        const sourceImageExtension: string = path.extname(sourcePath).substring(1); // remove . at the beginning
+        const targetImageExtension: string = path.extname(targetPath).substring(1); // remove . at the beginning
+
+        const sourceImageName: string = path.basename(sourcePath, '.' + sourceImageExtension);
+        const targetImageName: string = path.basename(targetPath, '.' + targetImageExtension);
+
+        const sourceFolder: Folder = await this.folderService.getFolderByPath(sourceFolderPath);
+        const targetFolder: Folder = await this.folderService.getFolderByPath(targetFolderPath);
+
+        const sourceImage: Image = await this.imageService.findOneByConditions({
+            parentFolder: sourceFolder,
+            name: sourceImageName,
+            extension: sourceImageExtension
+        });
+
+        if (!sourceImage) {
+            throw new FileNotFoundException(`Could not find file ${sourcePath} in the database`);
+        }
+
+        if (targetFolder) {
+            const targetImage: Image = await this.imageService.findOneByConditions({
+                parentFolder: targetFolder,
+                name: targetImageName,
+                extension: targetImageExtension
+            });
+            if (targetImage) {
+                throw new RelocationException(
+                    `The chosen image ${targetPath} already exists in the database. Therefore, it cannot be set for ${sourcePath}`
+                );
+            }
+        }
+
+        sourceImage.parentFolder = await this.folderService.getFolderOrCreateByPath(targetFolderPath);
+        sourceImage.name = targetImageName;
+        sourceImage.extension = targetImageExtension;
+
+        await this.imageService.update(sourceImage.id, sourceImage);
+        return sourceImage;
     }
 }

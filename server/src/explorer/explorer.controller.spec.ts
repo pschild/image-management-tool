@@ -11,6 +11,8 @@ import * as drivelist from 'drivelist';
 import { Folder } from '../entity/folder.entity';
 import { IFolderContentDto } from '../../../shared/interface/IFolderContentDto';
 import { FileSystemException } from '../../../shared/exception/file-system.exception';
+import { RelocationException } from '../../../shared/exception/relocation.exception';
+import { FileNotFoundException } from '../../../shared/exception/file-not-found.exception';
 
 describe('ExplorerController', () => {
     let connection: Connection;
@@ -147,7 +149,7 @@ describe('ExplorerController', () => {
 
             expect(folderService.update).toBeCalledWith(
                 f2.id,
-                expect.toContainAnyEntries([
+                expect.toContainEntries([
                     ['name', 'F2 new'],
                     ['parent', expect.toContainEntry(['name', 'C:'])]
                 ])
@@ -162,7 +164,7 @@ describe('ExplorerController', () => {
 
             expect(folderService.update).toBeCalledWith(
                 f2.id,
-                expect.toContainAnyEntries([
+                expect.toContainEntries([
                     ['name', 'F2'],
                     ['parent', expect.toContainEntry(['name', 'F5'])]
                 ])
@@ -177,14 +179,14 @@ describe('ExplorerController', () => {
 
             expect(folderService.update).toBeCalledWith(
                 f2.id,
-                expect.toContainAnyEntries([
+                expect.toContainEntries([
                     ['name', 'F2 new'],
                     ['parent', expect.toContainEntry(['name', 'F5'])]
                 ])
             );
         });
 
-        it('should relocate a renamed and moved folder (moved into untracked folder) ', async () => {
+        it('should relocate a renamed and moved folder (moved into untracked folder)', async () => {
             jest.spyOn(folderService, 'update').mockResolvedValue(undefined);
 
             const f2 = await folderService.findOneByName('F2');
@@ -192,7 +194,7 @@ describe('ExplorerController', () => {
 
             expect(folderService.update).toBeCalledWith(
                 f2.id,
-                expect.toContainAnyEntries([
+                expect.toContainEntries([
                     ['name', 'F2 new'],
                     ['parent', expect.toContainEntry(['name', 'bar'])]
                 ])
@@ -207,7 +209,7 @@ describe('ExplorerController', () => {
 
             expect(folderService.update).toBeCalledWith(
                 c.id,
-                expect.toContainAnyEntries([
+                expect.toContainEntries([
                     ['name', 'Y:'],
                     ['parent', null]
                 ])
@@ -231,6 +233,96 @@ describe('ExplorerController', () => {
                 expect.toContainEntry(['parentFolder', expect.toContainAnyEntries([['name', 'F5']])])
             );
             expect(folderService.remove).toBeCalledWith(f2.id);
+        });
+    });
+
+    describe('relocateImage', () => {
+        it('should relocate a renamed image', async () => {
+            jest.spyOn(imageService, 'update').mockResolvedValue(undefined);
+
+            const image = await imageService.findOneByConditions({ name: 'dummy-image-1' });
+            await explorerController.relocateImage({ oldPath: 'C:\\dummy-image-1.jpg', newPath: 'C:\\dummy-image-1-new.jpg' });
+
+            expect(imageService.update).toBeCalledWith(
+                image.id,
+                expect.toContainEntries([
+                    ['name', 'dummy-image-1-new'],
+                    ['extension', 'jpg'],
+                    ['parentFolder', expect.toContainEntry(['name', 'C:'])]
+                ])
+            );
+        });
+
+        it('should relocate a moved image (moved into tracked folder)', async () => {
+            jest.spyOn(imageService, 'update').mockResolvedValue(undefined);
+
+            const image = await imageService.findOneByConditions({ name: 'dummy-image-6' });
+            await explorerController.relocateImage({ oldPath: 'C:\\F2\\F3\\dummy-image-6.jpg', newPath: 'D:\\F4\\dummy-image-6.jpg' });
+
+            expect(imageService.update).toBeCalledWith(
+                image.id,
+                expect.toContainEntries([
+                    ['name', 'dummy-image-6'],
+                    ['extension', 'jpg'],
+                    ['parentFolder', expect.toContainEntry(['name', 'F4'])]
+                ])
+            );
+        });
+
+        it('should relocate a renamed and moved image (moved into tracked folder)', async () => {
+            jest.spyOn(imageService, 'update').mockResolvedValue(undefined);
+
+            const image = await imageService.findOneByConditions({ name: 'dummy-image-6' });
+            await explorerController.relocateImage({ oldPath: 'C:\\F2\\F3\\dummy-image-6.jpg', newPath: 'D:\\F4\\dummy-image-6-new.PNG' });
+
+            expect(imageService.update).toBeCalledWith(
+                image.id,
+                expect.toContainEntries([
+                    ['name', 'dummy-image-6-new'],
+                    ['extension', 'PNG'],
+                    ['parentFolder', expect.toContainEntry(['name', 'F4'])]
+                ])
+            );
+        });
+
+        it('should relocate a renamed and moved image (moved into untracked folder)', async () => {
+            jest.spyOn(imageService, 'update').mockResolvedValue(undefined);
+
+            const image = await imageService.findOneByConditions({ name: 'dummy-image-6' });
+            await explorerController.relocateImage({ oldPath: 'C:\\F2\\F3\\dummy-image-6.jpg', newPath: 'D:\\foo\\dummy-image-6-new.PNG' });
+
+            expect(imageService.update).toBeCalledWith(
+                image.id,
+                expect.toContainEntries([
+                    ['name', 'dummy-image-6-new'],
+                    ['extension', 'PNG'],
+                    ['parentFolder', expect.toContainEntry(['name', 'foo'])]
+                ])
+            );
+        });
+
+        it('should throw an error when source image doesn\'t exists', async () => {
+            let thrownError;
+            try {
+                await explorerController.relocateImage({ oldPath: 'C:\\foo\\not-existing.jpg', newPath: 'C:\\foo\\dummy-image-1.jpg' });
+            } catch (error) {
+                thrownError = error;
+            }
+            expect(thrownError).toBeInstanceOf(FileNotFoundException);
+            expect(thrownError.status).toBe(500);
+            expect(thrownError.userMessage).toBeDefined();
+        });
+
+        it('should throw an error when target image already exists', async () => {
+            let thrownError;
+            try {
+                await explorerController.relocateImage({ oldPath: 'C:\\F2\\F3\\dummy-image-6.jpg', newPath: 'C:\\dummy-image-1.jpg' });
+            } catch (error) {
+                thrownError = error;
+            }
+            expect(thrownError).toBeInstanceOf(RelocationException);
+            expect(thrownError.status).toBe(500);
+            expect(thrownError.userMessage).toBeDefined();
         });
     });
 });

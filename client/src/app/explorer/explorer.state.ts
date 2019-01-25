@@ -1,11 +1,12 @@
 import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
-import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, CreateFolderByPath, RelocateFolder, RefreshContent, CreateImageByPath, RemoveFolder } from './explorer.actions';
+import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, CreateFolderByPath, RelocateFolder, RefreshContent, CreateImageByPath, RemoveFolder, RemoveImage, RelocateImage } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDto';
 import { FolderDto } from '../../../../shared/FolderDto';
 import { ImageDto } from '../../../../shared/ImageDto';
 import { IFolderDto } from '../../../../shared/interface/IFolderDto';
+import { IImageDto } from '../../../../shared/interface/IImageDto';
 
 export interface ExplorerStateModel {
     currentPath: string[];
@@ -131,18 +132,41 @@ export class ExplorerState implements NgxsOnInit {
     relocateFolder({ dispatch }: StateContext<ExplorerStateModel>, action: RelocateFolder) {
         return this.explorerService.relocateFolder(action.oldPath, action.newPath)
             .pipe(
-                tap((relocatedFolder: IFolderDto) => {
+                tap((result: IFolderDto) => {
                     alert(`Success`); // TODO: dispatch RelocateFolderSuccess
                     return dispatch(new RefreshContent());
                 })
             );
     }
 
+    @Action(RelocateImage)
+    relocateImage({ dispatch }: StateContext<ExplorerStateModel>, action: RelocateImage) {
+        return this.explorerService.relocateImage(action.oldPath, action.newPath)
+            .pipe(
+                tap((result: IImageDto) => {
+                    alert(`Success`); // TODO: dispatch RelocateImageSuccess
+                    return dispatch(new RefreshContent());
+                })
+            );
+    }
+
+    // TODO: move to FolderState
     @Action(RemoveFolder)
     removeFolder({ dispatch }: StateContext<ExplorerStateModel>, action: RemoveFolder) {
         return this.explorerService.removeFolder(action.folder)
             .pipe(
-                tap((removedFolder: IFolderDto) => {
+                tap((result: IFolderDto) => {
+                    return dispatch(new RefreshContent());
+                })
+            );
+    }
+
+    // TODO: move to ImageState
+    @Action(RemoveImage)
+    removeImage({ dispatch }: StateContext<ExplorerStateModel>, action: RemoveImage) {
+        return this.explorerService.removeImage(action.image)
+            .pipe(
+                tap((result: IImageDto) => {
                     return dispatch(new RefreshContent());
                 })
             );

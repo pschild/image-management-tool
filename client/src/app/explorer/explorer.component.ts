@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, Select } from '@ngxs/store';
-import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder, CreateImageByPath, RemoveFolder } from './explorer.actions';
+import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder, CreateImageByPath, RemoveFolder, RemoveImage, RelocateImage } from './explorer.actions';
 import { ExplorerState } from './explorer.state';
 import { DialogService } from '../core/services/dialog.service';
 import { FolderDto } from '../../../../shared/FolderDto';
@@ -32,12 +32,11 @@ export class ExplorerComponent implements OnInit {
   }
 
   handleRemovedFolder(folder: FolderDto) {
-    console.log(`handleRemovedFolder: ${folder.absolutePath}`);
     this.dialogService.showMessageBox(
       `Ordner suchen`,
       `Der Ordner ${folder.name} wurde nicht mehr im System gefunden.
       Falls er verschoben wurde, können Sie einen neuen Ort bestimmen.
-      Falls er entfernt wurde, können Sie aus der Datenbank entfernen.`,
+      Falls er entfernt wurde, können Sie ihn aus der Datenbank entfernen.`,
       [
         { id: 0, label: 'Suchen' },
         { id: 1, label: 'Löschen' },
@@ -59,17 +58,36 @@ export class ExplorerComponent implements OnInit {
   }
 
   handleUntrackedFolder(folder: FolderDto) {
-    console.log(`handleUntrackedFolder: ${folder.absolutePath}`);
     this.store.dispatch(new CreateFolderByPath(folder.absolutePath));
   }
 
   handleRemovedImage(image: ImageDto) {
-    console.log(`handleRemovedImage: ${image.absolutePath}`);
+    this.dialogService.showMessageBox(
+      `Bild suchen`,
+      `Das Bild ${image.absolutePath} wurde nicht mehr im System gefunden.
+      Falls es verschoben wurde, können Sie einen neuen Ort bestimmen.
+      Falls es entfernt wurde, können Sie es aus der Datenbank entfernen.`,
+      [
+        { id: 0, label: 'Suchen' },
+        { id: 1, label: 'Löschen' },
+        { id: 2, label: 'Abbrechen' }
+      ],
+      (response: number) => {
+        if (response === 0) {
+          this.dialogService.showOpenFileDialog((filePaths: string[], bookmarks: string[]) => {
+            if (filePaths && filePaths.length) {
+              const newFilePath = filePaths[0];
+              this.store.dispatch(new RelocateImage(image.absolutePath, newFilePath));
+            }
+          }, false, image.absolutePath);
+        } else if (response === 1) {
+          this.store.dispatch(new RemoveImage(image));
+        }
+      }
+    );
   }
 
   handleUntrackedImage(image: ImageDto) {
-    // C:\Users\Philippe\Desktop\2017-12-16 zweiter Geburtstag Ella\2017-12-16 zweiter Geburtstag Ella (01).JPG
-    console.log(`handleUntrackedImage: ${image.absolutePath}`);
     this.store.dispatch(new CreateImageByPath(image.absolutePath, image.name, image.extension));
   }
 

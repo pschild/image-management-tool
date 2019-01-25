@@ -7,6 +7,7 @@ import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDt
 import { FolderDto } from '../../../../shared/FolderDto';
 import { ImageDto } from '../../../../shared/ImageDto';
 import { IFolderDto } from '../../../../shared/interface/IFolderDto';
+import { IImageDto } from '../../../../shared/interface/IImageDto';
 
 @Injectable()
 export class ExplorerService {
@@ -59,13 +60,38 @@ export class ExplorerService {
   }
 
   relocateFolder(oldPath: string, newPath: string): Observable<IFolderDto> {
-    return this.http.post<FolderDto>(`http://localhost:4201/explorer/relocate/folder`, { oldPath, newPath });
+    return this.http
+      .post<FolderDto>(`http://localhost:4201/explorer/relocate/folder`, { oldPath, newPath })
+      .pipe(
+        catchError((errorResponse: HttpErrorResponse) => {
+          return throwError(errorResponse.error);
+        })
+      );
   }
 
+  relocateImage(oldPath: string, newPath: string): Observable<IImageDto> {
+    return this.http
+      .post<ImageDto>(`http://localhost:4201/explorer/relocate/image`, { oldPath, newPath })
+      .pipe(
+        catchError((errorResponse: HttpErrorResponse) => {
+          return throwError(errorResponse.error);
+        })
+      );
+  }
+
+  // TODO: move to FolderService
   removeFolder(folder: FolderDto): Observable<IFolderDto> {
     if (!folder.id) {
       throw new Error(`No id available for removing folder`);
     }
     return this.http.delete<FolderDto>(`http://localhost:4201/folder/${folder.id}`);
+  }
+
+  // TODO: move to ImageService
+  removeImage(image: ImageDto): Observable<IImageDto> {
+    if (!image.id) {
+      throw new Error(`No id available for removing image`);
+    }
+    return this.http.delete<ImageDto>(`http://localhost:4201/image/${image.id}`);
   }
 }

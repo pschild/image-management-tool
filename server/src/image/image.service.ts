@@ -25,6 +25,10 @@ export class ImageService {
             .getMany();
     }
 
+    findOneByConditions(conditions: FindConditions<Image>) {
+        return this.repository.findOne(conditions);
+    }
+
     create(image: DeepPartial<Image>): Promise<Image> {
         return this.repository.save(image);
     }
