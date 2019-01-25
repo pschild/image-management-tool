@@ -10,7 +10,7 @@
         <li *ngFor="let folder of content.folders">
             <button *ngIf="folder.removedInFs" (click)="handleRemovedFolder(folder)">!</button>
             <button *ngIf="folder.addedInFs" (click)="handleUntrackedFolder(folder)">+</button>
-            <span (click)="openFolder(folder)">{{ folder.name }}</span>
+            <span (click)="!folder.removedInFs && openFolder(folder)">{{ folder.name }}</span>
         </li>
     </ul>
 
