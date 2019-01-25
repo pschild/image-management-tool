@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult, DeepPartial } from 'typeorm';
+import { Repository, UpdateResult, DeepPartial, FindConditions } from 'typeorm';
 import { Folder } from '../entity/folder.entity';
 import * as path from 'path';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
@@ -44,6 +44,10 @@ export class FolderService {
 
     update(id: number, folder: DeepPartial<Folder>): Promise<UpdateResult> {
         return this.repository.update(id, folder);
+    }
+
+    updateByConditions(conditions: FindConditions<Folder>, folder: DeepPartial<Folder>): Promise<UpdateResult> {
+        return this.repository.update(conditions, folder);
     }
 
     remove(id: number): Promise<Folder> {
@@ -118,9 +122,9 @@ export class FolderService {
     }
 
     async getFolderOrCreateByPath(givenPath: string): Promise<Folder> {
-        let folder = this.getFolderByPath(givenPath);
+        let folder = await this.getFolderByPath(givenPath);
         if (!folder) {
-            folder = this.createFolderByPath(givenPath);
+            folder = await this.createFolderByPath(givenPath);
         }
         return folder;
     }

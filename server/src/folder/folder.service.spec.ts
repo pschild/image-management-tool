@@ -218,4 +218,26 @@ describe('FolderService', () => {
             expect(foundFolder.parent.name).toBe('foo');
         });
     });
+
+    describe('getFolderOrCreateByPath', () => {
+        it('should not call createFolderByPath when folder does exist', async () => {
+            jest.spyOn(folderService, 'getFolderByPath').mockResolvedValue(new Folder());
+            jest.spyOn(folderService, 'createFolderByPath').mockResolvedValue(undefined);
+
+            await folderService.getFolderOrCreateByPath('some\\path');
+
+            expect(folderService.getFolderByPath).toBeCalledWith('some\\path');
+            expect(folderService.createFolderByPath).not.toBeCalled();
+        });
+
+        it('should call createFolderByPath when folder does not exist', async () => {
+            jest.spyOn(folderService, 'getFolderByPath').mockResolvedValue(undefined);
+            jest.spyOn(folderService, 'createFolderByPath').mockResolvedValue(new Folder());
+
+            await folderService.getFolderOrCreateByPath('some\\path');
+
+            expect(folderService.getFolderByPath).toBeCalledWith('some\\path');
+            expect(folderService.createFolderByPath).toBeCalledWith('some\\path');
+        });
+    });
 });

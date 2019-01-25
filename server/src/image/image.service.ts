@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult, DeepPartial } from 'typeorm';
+import { Repository, UpdateResult, DeepPartial, FindConditions } from 'typeorm';
 import { Image } from '../entity/image.entity';
 
 @Injectable()
@@ -31,6 +31,10 @@ export class ImageService {
 
     update(id: number, image: DeepPartial<Image>): Promise<UpdateResult> {
         return this.repository.update(id, image);
+    }
+
+    updateByConditions(conditions: FindConditions<Image>, image: DeepPartial<Image>): Promise<UpdateResult> {
+        return this.repository.update(conditions, image);
     }
 
     remove(id: number): Promise<Image> {
