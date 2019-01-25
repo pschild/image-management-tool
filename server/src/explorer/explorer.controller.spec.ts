@@ -18,6 +18,7 @@ describe('ExplorerController', () => {
     let explorerService: ExplorerService;
     let folderService: FolderService;
     let fileSystemService: FileSystemService;
+    let imageService: ImageService;
 
     beforeAll(async () => {
         const module = await createTestModule({
@@ -29,6 +30,7 @@ describe('ExplorerController', () => {
         explorerService = module.get<ExplorerService>(ExplorerService);
         folderService = module.get<FolderService>(FolderService);
         fileSystemService = module.get<FileSystemService>(FileSystemService);
+        imageService = module.get<ImageService>(ImageService);
 
         jest.spyOn(fileSystemService, 'getFilesByPath').mockResolvedValue([{
             name: 'F3',
@@ -128,16 +130,16 @@ describe('ExplorerController', () => {
 
     describe('createByPath', () => {
         it('should return a string', async () => {
-            jest.spyOn(folderService, 'getFolderByPath').mockImplementationOnce(() => new Folder());
+            const m = jest.spyOn(folderService, 'getFolderByPath').mockImplementation(() => new Folder());
             const result: Folder = await explorerController.createByPath({ path: 'some/path' });
 
             expect(result).toBeDefined();
+            m.mockRestore();
         });
     });
 
     describe('relocateFolder', () => {
         it('should relocate a renamed folder', async () => {
-            jest.clearAllMocks();
             jest.spyOn(folderService, 'update').mockResolvedValue(undefined);
 
             const f2 = await folderService.findOneByName('F2');
@@ -152,8 +154,7 @@ describe('ExplorerController', () => {
             );
         });
 
-        it('should relocate a moved (to existing folder) folder', async () => {
-            jest.clearAllMocks();
+        it('should relocate a moved folder (moved into tracked folder)', async () => {
             jest.spyOn(folderService, 'update').mockResolvedValue(undefined);
 
             const f2 = await folderService.findOneByName('F2');
@@ -168,8 +169,7 @@ describe('ExplorerController', () => {
             );
         });
 
-        it('should relocate a renamed and moved (to existing folder) folder', async () => {
-            jest.clearAllMocks();
+        it('should relocate a renamed and moved folder (moved into tracked folder)', async () => {
             jest.spyOn(folderService, 'update').mockResolvedValue(undefined);
 
             const f2 = await folderService.findOneByName('F2');
@@ -184,8 +184,7 @@ describe('ExplorerController', () => {
             );
         });
 
-        it('should relocate a renamed and moved (to new folder) folder', async () => {
-            jest.clearAllMocks();
+        it('should relocate a renamed and moved folder (moved into untracked folder) ', async () => {
             jest.spyOn(folderService, 'update').mockResolvedValue(undefined);
 
             const f2 = await folderService.findOneByName('F2');
@@ -201,7 +200,6 @@ describe('ExplorerController', () => {
         });
 
         it('should relocated a renamed folder with no parent', async () => {
-            jest.clearAllMocks();
             jest.spyOn(folderService, 'update').mockResolvedValue(undefined);
 
             const c = await folderService.findOneByName('C:');
@@ -214,6 +212,25 @@ describe('ExplorerController', () => {
                     ['parent', null]
                 ])
             );
+        });
+
+        it('should relocated a dissolved folder (moved content to tracked folder)', async () => {
+            jest.spyOn(folderService, 'updateByConditions').mockResolvedValue(undefined);
+            jest.spyOn(imageService, 'updateByConditions').mockResolvedValue(undefined);
+            jest.spyOn(folderService, 'remove').mockResolvedValue(undefined);
+
+            const f2 = await folderService.findOneByName('F2');
+            await explorerController.relocateFolder({ oldPath: 'C:\\F2', newPath: 'D:\\F4\\F5' });
+
+            expect(folderService.updateByConditions).toBeCalledWith(
+                expect.toContainEntry(['parent', expect.toContainAnyEntries([['name', 'F2']])]),
+                expect.toContainEntry(['parent', expect.toContainAnyEntries([['name', 'F5']])])
+            );
+            expect(imageService.updateByConditions).toBeCalledWith(
+                expect.toContainEntry(['parentFolder', expect.toContainAnyEntries([['name', 'F2']])]),
+                expect.toContainEntry(['parentFolder', expect.toContainAnyEntries([['name', 'F5']])])
+            );
+            expect(folderService.remove).toBeCalledWith(f2.id);
         });
     });
 });

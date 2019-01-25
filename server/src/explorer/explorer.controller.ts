@@ -107,18 +107,31 @@ export class ExplorerController {
         const oldPath: string = decodeURI(body.oldPath);
         const newPath: string = decodeURI(body.newPath);
 
+        const oldFolder: Folder = await this.folderService.getFolderByPath(oldPath);
+        const newFolder: Folder = await this.folderService.getFolderByPath(newPath);
+
+        // if the new folder exists in db, use it as parent for the old folder's children (folders and images)
+        if (newFolder) {
+            await this.folderService.updateByConditions({ parent: oldFolder }, { parent: newFolder });
+            await this.imageService.updateByConditions({ parentFolder: oldFolder }, { parentFolder: newFolder });
+            await this.folderService.remove(oldFolder.id);
+            return newFolder;
+        }
+
+        // if the new folder doesn't exist in db, get/create the new folder's parent and set it as the old folder's parent
         const newPathParts: string[] = newPath.split(path.sep);
         const newFolderName = newPathParts.pop();
-
         let newParent: Folder = null;
         if (newPathParts.length > 0) {
             const newParentPath = newPathParts.join(path.sep);
             newParent = await this.folderService.getFolderOrCreateByPath(newParentPath);
         }
-
-        const oldFolder: Folder = await this.folderService.getFolderByPath(oldPath);
-        oldFolder.name = newFolderName;
         oldFolder.parent = newParent;
+
+        // the new folder may be renamed, so set the old folder's name to the new folder's name
+        oldFolder.name = newFolderName;
+
+        // update db
         await this.folderService.update(oldFolder.id, oldFolder);
         return oldFolder;
     }
