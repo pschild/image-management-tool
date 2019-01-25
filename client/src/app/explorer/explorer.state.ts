@@ -1,5 +1,5 @@
 import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
-import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, CreateFolderByPath, RelocateFolder, RefreshContent, CreateImageByPath } from './explorer.actions';
+import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, CreateFolderByPath, RelocateFolder, RefreshContent, CreateImageByPath, RemoveFolder } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDto';
@@ -133,6 +133,16 @@ export class ExplorerState implements NgxsOnInit {
             .pipe(
                 tap((relocatedFolder: IFolderDto) => {
                     alert(`Success`); // TODO: dispatch RelocateFolderSuccess
+                    return dispatch(new RefreshContent());
+                })
+            );
+    }
+
+    @Action(RemoveFolder)
+    removeFolder({ dispatch }: StateContext<ExplorerStateModel>, action: RemoveFolder) {
+        return this.explorerService.removeFolder(action.folder)
+            .pipe(
+                tap((removedFolder: IFolderDto) => {
                     return dispatch(new RefreshContent());
                 })
             );

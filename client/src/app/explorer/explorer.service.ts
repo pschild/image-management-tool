@@ -61,4 +61,11 @@ export class ExplorerService {
   relocateFolder(oldPath: string, newPath: string): Observable<IFolderDto> {
     return this.http.post<FolderDto>(`http://localhost:4201/explorer/relocate/folder`, { oldPath, newPath });
   }
+
+  removeFolder(folder: FolderDto): Observable<IFolderDto> {
+    if (!folder.id) {
+      throw new Error(`No id available for removing folder`);
+    }
+    return this.http.delete<FolderDto>(`http://localhost:4201/folder/${folder.id}`);
+  }
 }

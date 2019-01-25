@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, Select } from '@ngxs/store';
-import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder, CreateImageByPath } from './explorer.actions';
+import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder, CreateImageByPath, RemoveFolder } from './explorer.actions';
 import { ExplorerState } from './explorer.state';
 import { DialogService } from '../core/services/dialog.service';
 import { FolderDto } from '../../../../shared/FolderDto';
@@ -52,7 +52,7 @@ export class ExplorerComponent implements OnInit {
             }
           }, false, folder.absolutePath);
         } else if (response === 1) {
-          console.log('Ordner löschen');
+          this.store.dispatch(new RemoveFolder(folder));
         }
       }
     );

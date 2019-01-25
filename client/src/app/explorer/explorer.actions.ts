@@ -1,4 +1,5 @@
 import { FileSystemException } from '../../../../shared/exception/file-system.exception';
+import { FolderDto } from '../../../../shared/FolderDto';
 
 export class LoadHomeDirectory {
     static readonly type = '[Explorer] LoadHomeDirectory';
@@ -40,4 +41,9 @@ export class LoadContentFailed {
 export class RelocateFolder {
     static readonly type = '[Explorer] RelocateFolder';
     constructor(public oldPath: string, public newPath: string) { }
+}
+
+export class RemoveFolder {
+    static readonly type = '[Explorer] RemoveFolder';
+    constructor(public folder: FolderDto) { }
 }
