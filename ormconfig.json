@@ -1,8 +1,8 @@
 {
    "type": "sqlite",
    "database": "<OVERWRITTEN_IN_SERVER.TS>",
-   "synchronize": false,
-   "migrationsRun": true,
+   "synchronize": true,
+   "migrationsRun": false,
    "logging": false,
    "entities": [
       "<OVERWRITTEN>"
