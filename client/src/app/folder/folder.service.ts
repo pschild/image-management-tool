@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { FolderDto } from '../../../../shared/FolderDto';
 import { IFolderDto } from '../../../../shared/interface/IFolderDto';
+import { AppConfig } from '../../environments/environment';
 
 @Injectable()
 export class FolderService {
@@ -13,6 +14,6 @@ export class FolderService {
     if (!folder.id) {
       throw new Error(`No id available for removing folder`);
     }
-    return this.http.delete<FolderDto>(`http://localhost:4201/folder/${folder.id}`);
+    return this.http.delete<FolderDto>(`${AppConfig.serverBaseUrl}/folder/${folder.id}`);
   }
 }

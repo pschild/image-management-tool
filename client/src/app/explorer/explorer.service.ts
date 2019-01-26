@@ -8,6 +8,7 @@ import { FolderDto } from '../../../../shared/FolderDto';
 import { ImageDto } from '../../../../shared/ImageDto';
 import { IFolderDto } from '../../../../shared/interface/IFolderDto';
 import { IImageDto } from '../../../../shared/interface/IImageDto';
+import { AppConfig } from '../../environments/environment';
 
 @Injectable()
 export class ExplorerService {
@@ -16,7 +17,7 @@ export class ExplorerService {
 
   getHomeDirectory(): Observable<string[]> {
     return this.http
-      .get(`http://localhost:4201/explorer/homeDirectory`, {responseType: 'text'})
+      .get(`${AppConfig.serverBaseUrl}/explorer/homeDirectory`, {responseType: 'text'})
       .pipe(
         map((homeDirectory: string) => homeDirectory.split(path.sep))
       );
@@ -24,7 +25,7 @@ export class ExplorerService {
 
   getSystemDrives(): Observable<IFolderContentDto> {
     return this.http
-      .get<IFolderContentDto>(`http://localhost:4201/explorer/systemDrives`)
+      .get<IFolderContentDto>(`${AppConfig.serverBaseUrl}/explorer/systemDrives`)
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
@@ -37,9 +38,9 @@ export class ExplorerService {
     if (pathParts.length > 0) {
       const joinedPath = path.join(...pathParts);
       const encodedPath = encodeURI(joinedPath);
-      url = `http://localhost:4201/explorer/path/${encodedPath}`;
+      url = `${AppConfig.serverBaseUrl}/explorer/path/${encodedPath}`;
     } else {
-      url = `http://localhost:4201/explorer/systemDrives`;
+      url = `${AppConfig.serverBaseUrl}/explorer/systemDrives`;
     }
 
     return this.http
@@ -52,16 +53,16 @@ export class ExplorerService {
   }
 
   createFolderByPath(folderPath: string): Observable<FolderDto> {
-    return this.http.post<FolderDto>(`http://localhost:4201/explorer/folder`, { path: folderPath });
+    return this.http.post<FolderDto>(`${AppConfig.serverBaseUrl}/explorer/folder`, { path: folderPath });
   }
 
   createImageByPath(absolutePath: string, name: string, extension: string): Observable<ImageDto> {
-    return this.http.post<ImageDto>(`http://localhost:4201/explorer/image`, { absolutePath, name, extension });
+    return this.http.post<ImageDto>(`${AppConfig.serverBaseUrl}/explorer/image`, { absolutePath, name, extension });
   }
 
   relocateFolder(oldPath: string, newPath: string): Observable<IFolderDto> {
     return this.http
-      .post<FolderDto>(`http://localhost:4201/explorer/relocate/folder`, { oldPath, newPath })
+      .post<FolderDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/folder`, { oldPath, newPath })
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
@@ -71,7 +72,7 @@ export class ExplorerService {
 
   relocateImage(oldPath: string, newPath: string): Observable<IImageDto> {
     return this.http
-      .post<ImageDto>(`http://localhost:4201/explorer/relocate/image`, { oldPath, newPath })
+      .post<ImageDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/image`, { oldPath, newPath })
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);

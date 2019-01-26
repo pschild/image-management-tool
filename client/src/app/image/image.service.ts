@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ImageDto } from '../../../../shared/ImageDto';
 import { IImageDto } from '../../../../shared/interface/IImageDto';
+import { AppConfig } from '../../environments/environment';
 
 @Injectable()
 export class ImageService {
@@ -13,6 +14,6 @@ export class ImageService {
     if (!image.id) {
       throw new Error(`No id available for removing image`);
     }
-    return this.http.delete<ImageDto>(`http://localhost:4201/image/${image.id}`);
+    return this.http.delete<ImageDto>(`${AppConfig.serverBaseUrl}/image/${image.id}`);
   }
 }
