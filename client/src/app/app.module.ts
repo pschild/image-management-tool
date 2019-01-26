@@ -12,8 +12,10 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { GestureConfig } from '@angular/material';
 import { GlobalErrorHandler } from './error-handler';
+import { AppConfig } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,10 @@ import { GlobalErrorHandler } from './error-handler';
     SharedModule,
     AppRoutingModule,
     ToastrModule.forRoot(),
-    NgxsModule.forRoot()
+    NgxsModule.forRoot(),
+    NgxsReduxDevtoolsPluginModule.forRoot({
+      disabled: AppConfig.production
+    })
   ],
   providers: [
     // https://github.com/angular/material2/issues/4278

@@ -24,6 +24,11 @@ function createWindow() {
     }
   });
 
+  // when running in development mode (app.isPackaged === false), install dev tools
+  if (app.isPackaged) {
+    installDevtoolExtensions();
+  }
+
   // load localhost URL when in development mode (--serve param, app.isPackaged === false)
   if (serve) {
     require('electron-reload')(__dirname, {
@@ -85,3 +90,15 @@ try {
 }
 
 global['autoUpdater'] = autoUpdater; // put autoUpdater to global namespace, so that it can be called from an Angular component
+
+async function installDevtoolExtensions() {
+  const installExtension = require('electron-devtools-installer').default;
+  const { REDUX_DEVTOOLS } = require('electron-devtools-installer');
+
+  try {
+    await installExtension(REDUX_DEVTOOLS);
+    console.log('Installed extension: REDUX_DEVTOOLS');
+  } catch (error) {
+    console.log('Error occurred when installing devtool:', error);
+  }
+}
