@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, Select } from '@ngxs/store';
-import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder, CreateImageByPath, RemoveFolder, RemoveImage, RelocateImage } from './explorer.actions';
+import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder, CreateImageByPath, RelocateImage } from './explorer.actions';
 import { ExplorerState } from './explorer.state';
 import { DialogService } from '../core/services/dialog.service';
 import { FolderDto } from '../../../../shared/FolderDto';
 import { ImageDto } from '../../../../shared/ImageDto';
-import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDto';
+import { RemoveFolder } from '../folder/folder.actions';
+import { FolderState } from '../folder/folder.state';
+import { IFolderDto } from '../../../../shared/interface/IFolderDto';
+import { ImageState } from '../image/image.state';
+import { IImageDto } from '../../../../shared/interface/IImageDto';
+import { RemoveImage } from '../image/image.actions';
 
 @Component({
   selector: 'app-explorer',
@@ -16,7 +21,8 @@ import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDt
 export class ExplorerComponent implements OnInit {
 
   @Select(ExplorerState.currentPath) currentPath$: Observable<string[]>;
-  @Select(ExplorerState.content) content$: Observable<IFolderContentDto>;
+  @Select(FolderState.folders) folders$: Observable<IFolderDto>;
+  @Select(ImageState.images) images$: Observable<IImageDto>;
 
   constructor(private store: Store, private dialogService: DialogService) { }
 

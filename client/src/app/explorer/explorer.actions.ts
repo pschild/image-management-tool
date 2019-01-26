@@ -1,6 +1,4 @@
 import { FileSystemException } from '../../../../shared/exception/file-system.exception';
-import { FolderDto } from '../../../../shared/FolderDto';
-import { ImageDto } from '../../../../shared/ImageDto';
 
 export class LoadHomeDirectory {
     static readonly type = '[Explorer] LoadHomeDirectory';
@@ -47,16 +45,4 @@ export class RelocateFolder {
 export class RelocateImage {
     static readonly type = '[Explorer] RelocateImage';
     constructor(public oldPath: string, public newPath: string) { }
-}
-
-// TODO: move to FolderActions
-export class RemoveFolder {
-    static readonly type = '[Explorer] RemoveFolder';
-    constructor(public folder: FolderDto) { }
-}
-
-// TODO: move to ImageActions
-export class RemoveImage {
-    static readonly type = '[Explorer] RemoveImage';
-    constructor(public image: ImageDto) { }
 }

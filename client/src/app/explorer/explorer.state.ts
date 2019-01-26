@@ -1,5 +1,15 @@
 import { State, Action, StateContext, Selector, NgxsOnInit } from '@ngxs/store';
-import { LoadContentByPath, NavigateToFolder, NavigateBack, LoadHomeDirectory, CreateFolderByPath, RelocateFolder, RefreshContent, CreateImageByPath, RemoveFolder, RemoveImage, RelocateImage } from './explorer.actions';
+import {
+    LoadContentByPath,
+    NavigateToFolder,
+    NavigateBack,
+    LoadHomeDirectory,
+    CreateFolderByPath,
+    RelocateFolder,
+    RefreshContent,
+    CreateImageByPath,
+    RelocateImage
+} from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap } from 'rxjs/operators';
 import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDto';
@@ -7,21 +17,21 @@ import { FolderDto } from '../../../../shared/FolderDto';
 import { ImageDto } from '../../../../shared/ImageDto';
 import { IFolderDto } from '../../../../shared/interface/IFolderDto';
 import { IImageDto } from '../../../../shared/interface/IImageDto';
+import { FolderState } from '../folder/folder.state';
+import { FoldersLoaded, FolderCreated } from '../folder/folder.actions';
+import { ImageCreated, ImagesLoaded } from '../image/image.actions';
+import { ImageState } from '../image/image.state';
 
 export interface ExplorerStateModel {
     currentPath: string[];
-    content: IFolderContentDto;
 }
 
 @State<ExplorerStateModel>({
     name: 'explorer',
     defaults: {
-        currentPath: [],
-        content: {
-            folders: [],
-            images: []
-        }
-    }
+        currentPath: []
+    },
+    children: [FolderState, ImageState]
 })
 export class ExplorerState implements NgxsOnInit {
     constructor(private explorerService: ExplorerService) { }
@@ -29,11 +39,6 @@ export class ExplorerState implements NgxsOnInit {
     @Selector()
     static currentPath(state: ExplorerStateModel) {
         return state.currentPath;
-    }
-
-    @Selector()
-    static content(state: ExplorerStateModel) {
-        return state.content;
     }
 
     ngxsOnInit({ dispatch }: StateContext<ExplorerStateModel>) {
@@ -51,45 +56,21 @@ export class ExplorerState implements NgxsOnInit {
     }
 
     @Action(CreateFolderByPath)
-    createFolderByPath({ getState, patchState }: StateContext<ExplorerStateModel>, action: CreateFolderByPath) {
+    createFolderByPath({ dispatch }: StateContext<ExplorerStateModel>, action: CreateFolderByPath) {
         return this.explorerService.createFolderByPath(action.path)
             .pipe(
                 tap((createdFolder: FolderDto) => {
-                    const state = getState();
-                    const newFolderState: FolderDto[] = state.content.folders.map((folder: FolderDto) => {
-                        if (folder.name === createdFolder.name) {
-                            folder.addedInFs = false;
-                        }
-                        return folder;
-                    });
-                    patchState({
-                        content: {
-                            folders: newFolderState,
-                            images: state.content.images
-                        }
-                    });
+                    dispatch(new FolderCreated(createdFolder)); // delegate to child state
                 })
             );
     }
 
     @Action(CreateImageByPath)
-    createImageByPath({ getState, patchState }: StateContext<ExplorerStateModel>, action: CreateImageByPath) {
+    createImageByPath({ dispatch }: StateContext<ExplorerStateModel>, action: CreateImageByPath) {
         return this.explorerService.createImageByPath(action.absolutePath, action.name, action.extension)
             .pipe(
                 tap((createdImage: ImageDto) => {
-                    const state = getState();
-                    const newImageState: ImageDto[] = state.content.images.map((image: ImageDto) => {
-                        if (image.name === createdImage.name) {
-                            image.addedInFs = false;
-                        }
-                        return image;
-                    });
-                    patchState({
-                        content: {
-                            folders: state.content.folders,
-                            images: newImageState
-                        }
-                    });
+                    dispatch(new ImageCreated(createdImage)); // delegate to child state
                 })
             );
     }
@@ -118,12 +99,10 @@ export class ExplorerState implements NgxsOnInit {
             .pipe(
                 tap((loadedContent: IFolderContentDto) => {
                     patchState({
-                        content: {
-                            folders: loadedContent.folders,
-                            images: loadedContent.images
-                        },
                         currentPath: action.path // currentPath is set only when loading content is successful
                     });
+                    dispatch(new FoldersLoaded(loadedContent.folders)); // delegate to child state
+                    dispatch(new ImagesLoaded(loadedContent.images)); // delegate to child state
                 })
             );
     }
@@ -145,28 +124,6 @@ export class ExplorerState implements NgxsOnInit {
             .pipe(
                 tap((result: IImageDto) => {
                     alert(`Success`); // TODO: dispatch RelocateImageSuccess
-                    return dispatch(new RefreshContent());
-                })
-            );
-    }
-
-    // TODO: move to FolderState
-    @Action(RemoveFolder)
-    removeFolder({ dispatch }: StateContext<ExplorerStateModel>, action: RemoveFolder) {
-        return this.explorerService.removeFolder(action.folder)
-            .pipe(
-                tap((result: IFolderDto) => {
-                    return dispatch(new RefreshContent());
-                })
-            );
-    }
-
-    // TODO: move to ImageState
-    @Action(RemoveImage)
-    removeImage({ dispatch }: StateContext<ExplorerStateModel>, action: RemoveImage) {
-        return this.explorerService.removeImage(action.image)
-            .pipe(
-                tap((result: IImageDto) => {
                     return dispatch(new RefreshContent());
                 })
             );

@@ -6,13 +6,19 @@ import { ExplorerService } from './explorer.service';
 import { SharedModule } from '../shared/shared.module';
 import { NgxsModule } from '@ngxs/store';
 import { ExplorerState } from './explorer.state';
+import { FolderState } from '../folder/folder.state';
+import { FolderModule } from '../folder/folder.module';
+import { ImageState } from '../image/image.state';
+import { ImageModule } from '../image/image.module';
 
 @NgModule({
   imports: [
     CommonModule,
     ExplorerRoutingModule,
     SharedModule,
-    NgxsModule.forFeature([ExplorerState])
+    FolderModule,
+    ImageModule,
+    NgxsModule.forFeature([ExplorerState, FolderState, ImageState])
   ],
   declarations: [
     ExplorerComponent
