@@ -12,6 +12,8 @@ import { map, startWith } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { Select, Store } from '@ngxs/store';
 import { AppendBar, FooState } from './playground.state';
+import { IDialogResult } from '../shared/dialog/dialog-config';
+import { DialogResult } from '../shared/dialog/dialog.enum';
 
 @Component({
   selector: 'app-playground',
@@ -60,12 +62,12 @@ export class PlaygroundComponent implements OnInit {
   ngOnInit() {
     this.applicationVersion = this.electronService.getApplicationVersion();
 
-    this.http.get(`${AppConfig.serverBaseUrl}/welcome/greet/philippe`, {responseType: 'text'})
+    this.http.get(`${AppConfig.serverBaseUrl}/welcome/greet/philippe`, { responseType: 'text' })
       .subscribe((result: any) => {
         this.greetings = result;
       });
 
-      this.http.get(`${AppConfig.serverBaseUrl}/welcome/dbtest`)
+    this.http.get(`${AppConfig.serverBaseUrl}/welcome/dbtest`)
       .subscribe((result: any) => {
         console.log(result);
       });
@@ -149,6 +151,42 @@ export class PlaygroundComponent implements OnInit {
 
   onAppendClick() {
     this.store.dispatch(new AppendBar('baz'));
+  }
+
+  testDialog(type: string) {
+    if (type === 'notification') {
+      this.dialogService.showNotificationDialog({
+        title: 'Title',
+        message: 'notification'
+      }).subscribe((dialogResult: IDialogResult) => console.log(dialogResult));
+    } else if (type === 'error') {
+      this.dialogService.showErrorDialog({
+        title: 'Title',
+        message: 'error'
+      }).subscribe((dialogResult: IDialogResult) => console.log(dialogResult));
+    } else if (type === 'yesno') {
+      this.dialogService.showYesNoDialog({
+        title: 'Title',
+        message: 'yesno'
+      }).subscribe((dialogResult: IDialogResult) => {
+        switch (dialogResult.result) {
+          case DialogResult.YES:
+            console.log('pressed yes');
+            break;
+          case DialogResult.NO:
+            console.log('press no');
+            break;
+          case DialogResult.ABORT:
+            console.log('aborted');
+            break;
+        }
+      });
+    } else if (type === 'save') {
+      this.dialogService.showSaveDialog({
+        title: 'Title',
+        message: 'save'
+      }).subscribe((dialogResult: IDialogResult) => console.log(dialogResult));
+    }
   }
 
 }

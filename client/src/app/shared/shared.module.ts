@@ -1,27 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NotificationComponent } from './notification/notification.component';
+import { DialogComponent } from './dialog/dialog.component';
 import { SafeUrlPipe } from './safe-url/safe-url.pipe';
 import { MaterialModule } from '../material/material.module';
-import { ErrorDialogComponent } from './notification/error-dialog/error-dialog.component';
+import { FormsModule } from '@angular/forms';
+import { FormDialogComponent } from './dialog/form-dialog/form-dialog.component';
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     MaterialModule
   ],
   entryComponents: [
-    NotificationComponent,
-    ErrorDialogComponent
+    DialogComponent,
+    FormDialogComponent
   ],
   declarations: [
-    NotificationComponent,
-    ErrorDialogComponent,
+    DialogComponent,
+    FormDialogComponent,
     SafeUrlPipe
   ],
   exports: [
-    NotificationComponent,
-    ErrorDialogComponent,
+    DialogComponent,
+    FormDialogComponent,
     SafeUrlPipe
   ]
 })

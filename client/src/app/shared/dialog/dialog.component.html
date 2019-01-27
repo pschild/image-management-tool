@@ -1,0 +1,37 @@
+<div>
+  <h1 mat-dialog-title>
+    <mat-icon *ngIf="data.config.iconName">error</mat-icon>
+    {{ data.config.title }}
+  </h1>
+  <div mat-dialog-content>
+    <p>{{ data.config.message }}</p>
+  </div>
+  <div mat-dialog-actions>
+    <ng-container *ngFor="let button of data.config.buttonConfig">
+      <button
+        *ngIf="button.style === isDefault"
+        mat-button
+        color="{{ button.color }}"
+        (click)="handleClicked(button.onClickListener, data.config.customData)"
+      >
+        {{ button.label }}
+      </button>
+      <button
+        *ngIf="button.style === isFlat"
+        mat-flat-button
+        color="{{ button.color }}"
+        (click)="handleClicked(button.onClickListener, data.config.customData)"
+      >
+        {{ button.label }}
+      </button>
+      <button
+        *ngIf="button.style === isStroked"
+        mat-stroked-button
+        color="{{ button.color }}"
+        (click)="handleClicked(button.onClickListener, data.config.customData)"
+      >
+        {{ button.label }}
+      </button>
+    </ng-container>
+  </div>
+</div>
