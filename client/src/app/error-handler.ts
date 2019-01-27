@@ -1,6 +1,5 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { ErrorDialogComponent } from './shared/notification/error-dialog/error-dialog.component';
+import { DialogService } from './core/services/dialog.service';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -8,6 +7,8 @@ export class GlobalErrorHandler implements ErrorHandler {
     constructor(private injector: Injector) { }
 
     handleError(error: any) {
+        const dialogService = this.injector.get(DialogService);
+
         let configuration;
         if (error.userMessage) {
             configuration = {
@@ -21,14 +22,6 @@ export class GlobalErrorHandler implements ErrorHandler {
             };
         }
 
-        const dialog = this.injector.get(MatDialog);
-        const dialogRef = dialog.open(ErrorDialogComponent, {
-            width: '50%',
-            data: configuration
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed', result);
-        });
+        dialogService.showErrorDialog(configuration);
     }
 }

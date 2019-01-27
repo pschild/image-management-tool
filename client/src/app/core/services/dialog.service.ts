@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from './electron.service';
+import { MatDialog } from '@angular/material';
+import { ErrorDialogComponent } from '../../shared/notification/error-dialog/error-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,20 @@ export class DialogService {
     { name: 'Alle Dateien', extensions: ['*'] }
   ];
 
-  constructor(private electronService: ElectronService) { }
+  constructor(
+    private electronService: ElectronService,
+    private dialog: MatDialog
+  ) { }
+
+  showErrorDialog(configuration) {
+    const dialogRef = this.dialog.open(ErrorDialogComponent, {
+      width: '50%',
+      data: configuration
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed', result);
+    });
+  }
 
   showOpenFolderDialog(callback: (filePaths: string[], bookmarks: string[]) => void, allowMultiple: boolean = false, defaultPath?: string) {
     const properties = [];
@@ -45,7 +60,7 @@ export class DialogService {
   showMessageBox(
     title: string,
     message: string,
-    buttons: {id: number, label: string}[],
+    buttons: { id: number, label: string }[],
     callback?: (response: number, checkboxChecked: boolean) => void
   ) {
     this.electronService.remote.dialog.showMessageBox({ title, message, buttons: buttons.map(b => b.label) }, callback);
