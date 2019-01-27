@@ -3,7 +3,7 @@ import { ElectronService } from './electron.service';
 import { MatDialog } from '@angular/material';
 import { Observable } from 'rxjs';
 import { IDialogConfig, IDialogResult } from '../../shared/dialog/dialog-config';
-import { OK_BUTTON_CONFIG, YES_NO_DIALOG_BUTTON_CONFIG, ABORT_SAVE_BUTTON_CONFIG } from '../../shared/dialog/dialog-button-config';
+import { OK_BUTTON_CONFIG, YES_NO_DIALOG_BUTTON_CONFIG, ABORT_SAVE_BUTTON_CONFIG, RELOCATION_BUTTON_CONFIG } from '../../shared/dialog/dialog-button-config';
 import { DialogIcons } from '../../shared/dialog/dialog.enum';
 import { DialogComponent } from '../../shared/dialog/dialog.component';
 
@@ -52,6 +52,13 @@ export class DialogService {
     return this.openDialog(DialogComponent, config);
   }
 
+  showRelocationDialog(config: IDialogConfig) {
+    if (!config.buttonConfig) {
+      config.buttonConfig = RELOCATION_BUTTON_CONFIG;
+    }
+    return this.openDialog(DialogComponent, config);
+  }
+
   openDialog(component: typeof DialogComponent, config: IDialogConfig) {
     const dialogRef = this.dialog.open(component, {
       width: '50%',
@@ -84,18 +91,5 @@ export class DialogService {
       { defaultPath, properties, filters: DialogService.FILTERS },
       callback
     );
-  }
-
-  showErrorBox(title: string, content: string) {
-    this.electronService.remote.dialog.showErrorBox(title, content);
-  }
-
-  showMessageBox(
-    title: string,
-    message: string,
-    buttons: { id: number, label: string }[],
-    callback?: (response: number, checkboxChecked: boolean) => void
-  ) {
-    this.electronService.remote.dialog.showMessageBox({ title, message, buttons: buttons.map(b => b.label) }, callback);
   }
 }

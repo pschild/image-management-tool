@@ -10,7 +10,9 @@ export enum DialogResult {
     YES = 'yes',
     NO = 'no',
     ABORT = 'abort',
-    SAVE = 'save'
+    SAVE = 'save',
+    RELOCATION_SEARCH = 'search',
+    RELOCATION_REMOVE = 'remove'
 }
 
 export enum DialogButtonColor {

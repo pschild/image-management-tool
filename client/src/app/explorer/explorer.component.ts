@@ -12,6 +12,8 @@ import { IFolderDto } from '../../../../shared/interface/IFolderDto';
 import { ImageState } from '../image/image.state';
 import { IImageDto } from '../../../../shared/interface/IImageDto';
 import { RemoveImage } from '../image/image.actions';
+import { IDialogResult } from '../shared/dialog/dialog-config';
+import { DialogResult } from '../shared/dialog/dialog.enum';
 
 @Component({
   selector: 'app-explorer',
@@ -38,29 +40,23 @@ export class ExplorerComponent implements OnInit {
   }
 
   handleRemovedFolder(folder: FolderDto) {
-    this.dialogService.showMessageBox(
-      `Ordner suchen`,
-      `Der Ordner ${folder.name} wurde nicht mehr im System gefunden.
-      Falls er verschoben wurde, können Sie einen neuen Ort bestimmen.
-      Falls er entfernt wurde, können Sie ihn aus der Datenbank entfernen.`,
-      [
-        { id: 0, label: 'Suchen' },
-        { id: 1, label: 'Löschen' },
-        { id: 2, label: 'Abbrechen' }
-      ],
-      (response: number) => {
-        if (response === 0) {
-          this.dialogService.showOpenFolderDialog((filePaths: string[], bookmarks: string[]) => {
-            if (filePaths && filePaths.length) {
-              const newFilePath = filePaths[0];
-              this.store.dispatch(new RelocateFolder(folder.absolutePath, newFilePath));
-            }
-          }, false, folder.absolutePath);
-        } else if (response === 1) {
-          this.store.dispatch(new RemoveFolder(folder));
-        }
+    this.dialogService.showRelocationDialog({
+      title: 'Ordner suchen',
+      message: `Der Ordner ${folder.name} wurde nicht mehr im System gefunden.
+        Falls er verschoben wurde, können Sie einen neuen Ort bestimmen \
+        Falls er entfernt wurde, können Sie ihn aus der Datenbank entfernen.`
+    }).subscribe((dialogResult: IDialogResult) => {
+      if (dialogResult.result === DialogResult.RELOCATION_SEARCH) {
+        this.dialogService.showOpenFolderDialog((filePaths: string[], bookmarks: string[]) => {
+          if (filePaths && filePaths.length) {
+            const newFilePath = filePaths[0];
+            this.store.dispatch(new RelocateFolder(folder.absolutePath, newFilePath));
+          }
+        }, false, folder.absolutePath);
+      } else if (dialogResult.result === DialogResult.RELOCATION_REMOVE) {
+        this.store.dispatch(new RemoveFolder(folder));
       }
-    );
+    });
   }
 
   handleUntrackedFolder(folder: FolderDto) {
@@ -68,29 +64,23 @@ export class ExplorerComponent implements OnInit {
   }
 
   handleRemovedImage(image: ImageDto) {
-    this.dialogService.showMessageBox(
-      `Bild suchen`,
-      `Das Bild ${image.absolutePath} wurde nicht mehr im System gefunden.
+    this.dialogService.showRelocationDialog({
+      title: 'Bild suchen',
+      message: `Das Bild ${image.absolutePath} wurde nicht mehr im System gefunden.
       Falls es verschoben wurde, können Sie einen neuen Ort bestimmen.
-      Falls es entfernt wurde, können Sie es aus der Datenbank entfernen.`,
-      [
-        { id: 0, label: 'Suchen' },
-        { id: 1, label: 'Löschen' },
-        { id: 2, label: 'Abbrechen' }
-      ],
-      (response: number) => {
-        if (response === 0) {
-          this.dialogService.showOpenFileDialog((filePaths: string[], bookmarks: string[]) => {
-            if (filePaths && filePaths.length) {
-              const newFilePath = filePaths[0];
-              this.store.dispatch(new RelocateImage(image.absolutePath, newFilePath));
-            }
-          }, false, image.absolutePath);
-        } else if (response === 1) {
-          this.store.dispatch(new RemoveImage(image));
-        }
+      Falls es entfernt wurde, können Sie es aus der Datenbank entfernen.`
+    }).subscribe((dialogResult: IDialogResult) => {
+      if (dialogResult.result === DialogResult.RELOCATION_SEARCH) {
+        this.dialogService.showOpenFileDialog((filePaths: string[], bookmarks: string[]) => {
+          if (filePaths && filePaths.length) {
+            const newFilePath = filePaths[0];
+            this.store.dispatch(new RelocateImage(image.absolutePath, newFilePath));
+          }
+        }, false, image.absolutePath);
+      } else if (dialogResult.result === DialogResult.RELOCATION_REMOVE) {
+        this.store.dispatch(new RemoveImage(image));
       }
-    );
+    });
   }
 
   handleUntrackedImage(image: ImageDto) {
