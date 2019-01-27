@@ -1,19 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Store, Select } from '@ngxs/store';
+import { Store, Select, Actions, ofActionSuccessful } from '@ngxs/store';
 import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder, CreateImageByPath, RelocateImage } from './explorer.actions';
 import { ExplorerState } from './explorer.state';
 import { DialogService } from '../core/services/dialog.service';
 import { FolderDto } from '../../../../shared/FolderDto';
 import { ImageDto } from '../../../../shared/ImageDto';
-import { RemoveFolder } from '../folder/folder.actions';
+import { RemoveFolder, FolderCreated } from '../folder/folder.actions';
 import { FolderState } from '../folder/folder.state';
 import { IFolderDto } from '../../../../shared/interface/IFolderDto';
 import { ImageState } from '../image/image.state';
 import { IImageDto } from '../../../../shared/interface/IImageDto';
-import { RemoveImage } from '../image/image.actions';
+import { RemoveImage, ImageCreated } from '../image/image.actions';
 import { IDialogResult } from '../shared/dialog/dialog-config';
 import { DialogResult } from '../shared/dialog/dialog.enum';
+import { ToastrService } from 'ngx-toastr';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-explorer',
@@ -26,7 +28,12 @@ export class ExplorerComponent implements OnInit {
   @Select(FolderState.folders) folders$: Observable<IFolderDto>;
   @Select(ImageState.images) images$: Observable<IImageDto>;
 
-  constructor(private store: Store, private dialogService: DialogService) { }
+  constructor(
+    private store: Store,
+    private dialogService: DialogService,
+    private toastr: ToastrService,
+    private actions$: Actions
+  ) { }
 
   ngOnInit() {
   }
@@ -61,6 +68,12 @@ export class ExplorerComponent implements OnInit {
 
   handleUntrackedFolder(folder: FolderDto) {
     this.store.dispatch(new CreateFolderByPath(folder.absolutePath));
+    this.actions$.pipe(
+      ofActionSuccessful(FolderCreated),
+      first()
+    ).subscribe((action: FolderCreated) => {
+      this.toastr.success(`Ordner "${action.createdFolder.name}" hinzugefügt`);
+    });
   }
 
   handleRemovedImage(image: ImageDto) {
@@ -85,6 +98,12 @@ export class ExplorerComponent implements OnInit {
 
   handleUntrackedImage(image: ImageDto) {
     this.store.dispatch(new CreateImageByPath(image.absolutePath, image.name, image.extension));
+    this.actions$.pipe(
+      ofActionSuccessful(ImageCreated),
+      first()
+    ).subscribe((action: ImageCreated) => {
+      this.toastr.success(`Bild "${action.createdImage.name}.${action.createdImage.extension}" hinzugefügt`);
+    });
   }
 
 }
