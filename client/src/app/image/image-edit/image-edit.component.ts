@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '../image.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-image-edit',
@@ -8,6 +9,8 @@ import { ImageService } from '../image.service';
   styleUrls: ['./image-edit.component.scss']
 })
 export class ImageEditComponent implements OnInit {
+
+  fullImagePath$: BehaviorSubject<string> = new BehaviorSubject('');
 
   constructor(
     private route: ActivatedRoute,
@@ -23,9 +26,11 @@ export class ImageEditComponent implements OnInit {
         }
         this.imageService.loadImage(imageId).subscribe(image => {
           console.log('tracked image', image.name + '.' + image.extension, params.currentFolderPath);
+          this.fullImagePath$.next(`${params.currentFolderPath}/${image.name}.${image.extension}`);
         });
       } else if (params['path']) {
         console.log('untracked image', params.path);
+        this.fullImagePath$.next(params.path);
       } else {
         throw new Error(`Invalid url: ${location.hash}`);
       }

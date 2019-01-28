@@ -112,12 +112,14 @@ export class ExplorerComponent implements OnInit {
     if (image.removedInFs) {
       return;
     } else if (image.addedInFs) {
-      this.router.navigateByUrl(`image/path/${image.absolutePath}`);
+      console.log(`image/path/${encodeURIComponent(image.absolutePath)}`);
+      this.router.navigateByUrl(`image/path/${encodeURIComponent(image.absolutePath)}`);
     } else {
       this.currentPath$.pipe(
         first()
       ).subscribe(path => {
         const currentPath = encodeURIComponent(path.join('/'));
+        console.log(`image/id/${currentPath}/${image.id}`);
         this.router.navigateByUrl(`image/id/${currentPath}/${image.id}`);
       });
     }
