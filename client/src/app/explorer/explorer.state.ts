@@ -17,10 +17,10 @@ import { FolderDto } from '../../../../shared/FolderDto';
 import { ImageDto } from '../../../../shared/ImageDto';
 import { IFolderDto } from '../../../../shared/interface/IFolderDto';
 import { IImageDto } from '../../../../shared/interface/IImageDto';
-import { FolderState } from '../folder/folder.state';
-import { FoldersLoaded, FolderCreated } from '../folder/folder.actions';
-import { ImageCreated, ImagesLoaded } from '../image/image.actions';
-import { ImageState } from '../image/image.state';
+import { ExplorerFolderState } from './explorer-folder/explorer-folder.state';
+import { FoldersLoaded, FolderCreated } from './explorer-folder/explorer-folder.actions';
+import { ImageCreated, ImagesLoaded } from './explorer-image/explorer-image.actions';
+import { ExplorerImageState } from './explorer-image/explorer-image.state';
 
 export interface ExplorerStateModel {
     currentPath: string[];
@@ -31,7 +31,7 @@ export interface ExplorerStateModel {
     defaults: {
         currentPath: []
     },
-    children: [FolderState, ImageState]
+    children: [ExplorerFolderState, ExplorerImageState]
 })
 export class ExplorerState implements NgxsOnInit {
     constructor(private explorerService: ExplorerService) { }

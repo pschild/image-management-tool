@@ -12,6 +12,10 @@ const routes: Routes = [
         loadChildren: './explorer/explorer.module#ExplorerModule'
     },
     {
+        path: 'image',
+        loadChildren: './image/image.module#ImageModule'
+    },
+    {
         path: 'management',
         loadChildren: './management/management.module#ManagementModule'
     },

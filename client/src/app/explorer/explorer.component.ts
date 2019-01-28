@@ -6,12 +6,12 @@ import { ExplorerState } from './explorer.state';
 import { DialogService } from '../core/services/dialog.service';
 import { FolderDto } from '../../../../shared/FolderDto';
 import { ImageDto } from '../../../../shared/ImageDto';
-import { RemoveFolder, FolderCreated } from '../folder/folder.actions';
-import { FolderState } from '../folder/folder.state';
+import { RemoveFolder, FolderCreated } from './explorer-folder/explorer-folder.actions';
+import { ExplorerFolderState } from './explorer-folder/explorer-folder.state';
 import { IFolderDto } from '../../../../shared/interface/IFolderDto';
-import { ImageState } from '../image/image.state';
+import { ExplorerImageState } from './explorer-image/explorer-image.state';
 import { IImageDto } from '../../../../shared/interface/IImageDto';
-import { RemoveImage, ImageCreated } from '../image/image.actions';
+import { RemoveImage, ImageCreated } from './explorer-image/explorer-image.actions';
 import { IDialogResult } from '../shared/dialog/dialog-config';
 import { DialogResult } from '../shared/dialog/dialog.enum';
 import { ToastrService } from 'ngx-toastr';
@@ -25,8 +25,8 @@ import { first } from 'rxjs/operators';
 export class ExplorerComponent implements OnInit {
 
   @Select(ExplorerState.currentPath) currentPath$: Observable<string[]>;
-  @Select(FolderState.folders) folders$: Observable<IFolderDto>;
-  @Select(ImageState.images) images$: Observable<IImageDto>;
+  @Select(ExplorerFolderState.folders) folders$: Observable<IFolderDto>;
+  @Select(ExplorerImageState.images) images$: Observable<IImageDto>;
 
   constructor(
     private store: Store,
