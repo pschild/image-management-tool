@@ -16,6 +16,7 @@ import { IDialogResult } from '../shared/dialog/dialog-config';
 import { DialogResult } from '../shared/dialog/dialog.enum';
 import { ToastrService } from 'ngx-toastr';
 import { first } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-explorer',
@@ -30,6 +31,7 @@ export class ExplorerComponent implements OnInit {
 
   constructor(
     private store: Store,
+    private router: Router,
     private dialogService: DialogService,
     private toastr: ToastrService,
     private actions$: Actions
@@ -104,6 +106,21 @@ export class ExplorerComponent implements OnInit {
     ).subscribe((action: ImageCreated) => {
       this.toastr.success(`Bild "${action.createdImage.name}.${action.createdImage.extension}" hinzugefügt`);
     });
+  }
+
+  handleImageClicked(image: ImageDto) {
+    if (image.removedInFs) {
+      return;
+    } else if (image.addedInFs) {
+      this.router.navigateByUrl(`image/path/${image.absolutePath}`);
+    } else {
+      this.currentPath$.pipe(
+        first()
+      ).subscribe(path => {
+        const currentPath = encodeURIComponent(path.join('/'));
+        this.router.navigateByUrl(`image/id/${currentPath}/${image.id}`);
+      });
+    }
   }
 
 }

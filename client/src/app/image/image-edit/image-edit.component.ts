@@ -16,12 +16,19 @@ export class ImageEditComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const imageId = +params['id'];
-      if (!imageId || isNaN(imageId)) {
-        throw new Error(`Couldn't get image id from active route ${location.hash}`);
+      if (params['id'] && params['currentFolderPath']) {
+        const imageId = +params['id'];
+        if (imageId && isNaN(imageId)) {
+          throw new Error(`Invalid image id in url: ${location.hash}`);
+        }
+        this.imageService.loadImage(imageId).subscribe(image => {
+          console.log('tracked image', image.name + '.' + image.extension, params.currentFolderPath);
+        });
+      } else if (params['path']) {
+        console.log('untracked image', params.path);
+      } else {
+        throw new Error(`Invalid url: ${location.hash}`);
       }
-      
-      this.imageService.loadImage(imageId).subscribe(i => console.log(i));
    });
   }
 
