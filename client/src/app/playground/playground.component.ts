@@ -14,6 +14,7 @@ import { Select, Store } from '@ngxs/store';
 import { AppendBar, FooState } from './playground.state';
 import { IDialogResult } from '../shared/dialog/dialog-config';
 import { DialogResult } from '../shared/dialog/dialog.enum';
+import { ElectronUpdateService } from '../core/services/electron-update.service';
 
 @Component({
   selector: 'app-playground',
@@ -52,7 +53,8 @@ export class PlaygroundComponent implements OnInit {
     private dialogService: DialogService,
     private toastr: ToastrService,
     private store: Store,
-    private zone: NgZone
+    private zone: NgZone,
+    private electronUpdateService: ElectronUpdateService
   ) {
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
       startWith(null),

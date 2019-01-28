@@ -7,6 +7,8 @@ export class GlobalErrorHandler implements ErrorHandler {
     constructor(private injector: Injector) { }
 
     handleError(error: any) {
+        console.error(error);
+
         const dialogService = this.injector.get(DialogService);
 
         let configuration;
