@@ -22,7 +22,8 @@
       "to": "shared"
     },
     ".env",
-    "ormconfig.json"
+    "ormconfig.json",
+    "package.json"
   ],
   "nsis": {
     "oneClick": false,
