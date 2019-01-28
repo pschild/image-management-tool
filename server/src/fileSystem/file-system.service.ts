@@ -56,7 +56,7 @@ export class FileSystemService {
             const absolutePath = path.join(givenPath, fileName);
             let stat;
             try {
-                stat = await afs.stat(absolutePath);
+                stat = await afs.lstat(absolutePath);
             } catch (error) {
                 // skip directories whose access throws EPERM errors
                 continue;
@@ -76,6 +76,9 @@ export class FileSystemService {
                     extension: extension.substring(1), // remove . at the beginning
                     isFile: true
                 });
+            } else if (stat.isSymbolicLink()) {
+                // skip directories which are symlinks
+                continue;
             } else {
                 throw new Error(`File ${absolutePath} is neither file nor directory.`);
             }
