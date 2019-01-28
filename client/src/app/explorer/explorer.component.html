@@ -20,8 +20,14 @@
         <li *ngFor="let image of images">
             <button *ngIf="image.removedInFs" (click)="handleRemovedImage(image)">!</button>
             <button *ngIf="image.addedInFs" (click)="handleUntrackedImage(image)">+</button>
-            <img width="100" [src]="image.absolutePath | safeUrl" />
-            <span>{{ image.name }}.{{ image.extension }}</span>
+            <span *ngIf="!image.removedInFs && !image.addedInFs else imageThumbnailWithName" [routerLink]="['../image', image.id]">
+                <ng-container *ngTemplateOutlet="imageThumbnailWithName"></ng-container>
+            </span>
+
+            <ng-template #imageThumbnailWithName>
+                <img width="100" [src]="image.absolutePath | safeUrl" />
+                <span>{{ image.name }}.{{ image.extension }}</span>
+            </ng-template>
         </li>
     </ul>
 </div>

@@ -10,6 +10,11 @@ export class ImageService {
 
   constructor(private http: HttpClient) { }
 
+  loadImage(id: number): Observable<IImageDto> {
+    return this.http
+      .get<IImageDto>(`${AppConfig.serverBaseUrl}/image/${id}`);
+  }
+
   removeImage(image: ImageDto): Observable<IImageDto> {
     if (!image.id) {
       throw new Error(`No id available for removing image`);
