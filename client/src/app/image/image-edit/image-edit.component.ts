@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '../image.service';
 import { BehaviorSubject } from 'rxjs';
+import * as path from 'path';
 
 @Component({
   selector: 'app-image-edit',
@@ -25,11 +26,9 @@ export class ImageEditComponent implements OnInit {
           throw new Error(`Invalid image id in url: ${location.hash}`);
         }
         this.imageService.loadImage(imageId).subscribe(image => {
-          console.log('tracked image', image.name + '.' + image.extension, params.currentFolderPath);
-          this.fullImagePath$.next(`${params.currentFolderPath}/${image.name}.${image.extension}`);
+          this.fullImagePath$.next(path.join(params.currentFolderPath, path.sep, `${image.name}.${image.extension}`));
         });
       } else if (params['path']) {
-        console.log('untracked image', params.path);
         this.fullImagePath$.next(params.path);
       } else {
         throw new Error(`Invalid url: ${location.hash}`);

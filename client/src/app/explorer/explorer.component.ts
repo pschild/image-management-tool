@@ -17,6 +17,7 @@ import { DialogResult } from '../shared/dialog/dialog.enum';
 import { ToastrService } from 'ngx-toastr';
 import { first } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import * as path from 'path';
 
 @Component({
   selector: 'app-explorer',
@@ -112,14 +113,14 @@ export class ExplorerComponent implements OnInit {
     if (image.removedInFs) {
       return;
     } else if (image.addedInFs) {
-      console.log(`image/path/${encodeURIComponent(image.absolutePath)}`);
+      // URI-encode the path, as it could contain special characters (=, &, (, ), ...)
       this.router.navigateByUrl(`image/path/${encodeURIComponent(image.absolutePath)}`);
     } else {
       this.currentPath$.pipe(
         first()
-      ).subscribe(path => {
-        const currentPath = encodeURIComponent(path.join('/'));
-        console.log(`image/id/${currentPath}/${image.id}`);
+      ).subscribe(result => {
+        // URI-encode the path, as it could contain special characters (=, &, (, ), ...)
+        const currentPath = encodeURIComponent(result.join(path.sep));
         this.router.navigateByUrl(`image/id/${currentPath}/${image.id}`);
       });
     }

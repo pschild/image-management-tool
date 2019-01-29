@@ -16,6 +16,8 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { GestureConfig } from '@angular/material';
 import { GlobalErrorHandler } from './error-handler';
 import { AppConfig } from '../environments/environment';
+import { UrlSerializer } from '@angular/router';
+import CustomUrlSerializer from './CustomUrlSerializer';
 
 @NgModule({
   declarations: [
@@ -43,6 +45,10 @@ import { AppConfig } from '../environments/environment';
     {
       provide: ErrorHandler,
       useClass: GlobalErrorHandler
+    },
+    {
+      provide: UrlSerializer,
+      useClass: CustomUrlSerializer
     }
   ],
   bootstrap: [AppComponent]
