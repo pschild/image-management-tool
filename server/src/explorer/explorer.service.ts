@@ -53,12 +53,17 @@ export class ExplorerService {
             resultList = foldersInDbAndFs;
         }
 
-        // TODO
         // find duplicates
-        // const duplicates = this.findDuplicates(resultList.map(i => i.name));
-        // if (duplicates.length) {
-        //     throw new DuplicateFileException(`Found duplicate folder(s): ${duplicates.join(',')}`);
-        // }
+        const duplicates = this.findDuplicates(resultList.map((item: IFolderDto) => {
+            if (item.dbFolder) {
+                return item.dbFolder.name;
+            } else {
+                return item.fsFolder.name;
+            }
+        }));
+        if (duplicates.length) {
+            throw new DuplicateFileException(`Found duplicate folder(s): ${duplicates.join(',')}`);
+        }
 
         return resultList;
     }
@@ -106,12 +111,17 @@ export class ExplorerService {
             resultList = imagesInDbAndFs;
         }
 
-        // TODO
         // find duplicates
-        // const duplicates = this.findDuplicates(resultList.map(i => `${i.name}.${i.extension}`));
-        // if (duplicates.length) {
-        //     throw new DuplicateFileException(`Found duplicate image(s): ${duplicates.join(',')}`);
-        // }
+        const duplicates = this.findDuplicates(resultList.map((item: IImageDto) => {
+            if (item.dbImage) {
+                return `${item.dbImage.name}.${item.dbImage.extension}`;
+            } else {
+                return `${item.fsImage.name}.${item.fsImage.extension}`;
+            }
+        }));
+        if (duplicates.length) {
+            throw new DuplicateFileException(`Found duplicate image(s): ${duplicates.join(',')}`);
+        }
 
         return resultList;
     }
