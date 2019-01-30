@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
 import * as path from 'path';
 import * as afs from 'async-file';
 import * as os from 'os';
 import * as drivelist from 'drivelist';
+import { Injectable } from '@nestjs/common';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { IFileDto } from '../../../shared/interface/IFileDto';
+import { IFsFile } from '../../../shared/IFsFile';
 
 @Injectable()
 export class FileSystemService {
@@ -13,22 +13,22 @@ export class FileSystemService {
 
     IMAGE_FILE_EXTENSIONS: string[] = ['jpg', 'jpeg', 'png', 'gif'];
 
-    filterByFolder(files: IFileDto[]): IFileDto[] {
-        return files.filter((file: IFileDto) => file.isDirectory);
+    filterByFolder(files: IFsFile[]): IFsFile[] {
+        return files.filter((file: IFsFile) => file.isDirectory);
     }
 
-    filterByImage(files: IFileDto[]): IFileDto[] {
-        return files.filter((file: IFileDto) => file.isFile && this.isImageFile(file));
+    filterByImage(files: IFsFile[]): IFsFile[] {
+        return files.filter((file: IFsFile) => file.isFile && this.isImageFile(file));
     }
 
-    async getSystemDrives(): Promise<any> { // TODO: fix any
-        return new Promise((resolve, reject) => {
+    async getSystemDrives(): Promise<IFsFile[]> {
+        return new Promise<IFsFile[]>((resolve, reject) => {
             drivelist.list((error, driveList) => {
                 if (error) {
                     reject(error);
                 }
 
-                const driveDirectories = [];
+                const driveDirectories: IFsFile[] = [];
                 driveList.forEach(driveInfo => {
                     driveInfo.mountpoints.forEach(mountpoint => {
                         const drivePath = mountpoint.path;
@@ -45,7 +45,7 @@ export class FileSystemService {
         });
     }
 
-    async getFilesByPath(givenPath: string): Promise<IFileDto[]> {
+    async getFilesByPath(givenPath: string): Promise<IFsFile[]> {
         // Workaround: ensure we get sth like C:\\ when pathName is drive letter
         givenPath = this.pathHelperService.getAsDirectory(givenPath);
 
@@ -86,11 +86,11 @@ export class FileSystemService {
         return fileDtos;
     }
 
-    async getHomeDirectory() {
+    getHomeDirectory(): string {
         return os.homedir();
     }
 
-    private isImageFile(file: IFileDto): boolean {
+    private isImageFile(file: IFsFile): boolean {
         const fileExtensions = this.IMAGE_FILE_EXTENSIONS.join('|');
         return file.extension && file.extension.match(new RegExp('(' + fileExtensions + ')$', 'i')) != null;
     }

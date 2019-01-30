@@ -1,5 +1,4 @@
-export interface IFileDto {
-    id?: number;
+export interface IFsFile {
     name: string;
     absolutePath: string;
     extension?: string;

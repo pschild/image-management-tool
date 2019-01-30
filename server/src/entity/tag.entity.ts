@@ -1,8 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Image } from './image.entity';
+import { ITagEntity } from '../../../shared/ITagEntity';
 
 @Entity()
-export class Tag {
+export class Tag implements ITagEntity {
 
     @PrimaryGeneratedColumn()
     id: number;

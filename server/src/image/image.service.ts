@@ -18,14 +18,14 @@ export class ImageService {
         return this.repository.find();
     }
 
-    findAllByFolderId(folderId: number) {
+    findAllByFolderId(folderId: number): Promise<Image[]> {
         return this.repository
             .createQueryBuilder('image')
             .innerJoinAndSelect('image.parentFolder', 'folder', 'folder.id = :folderId', { folderId })
             .getMany();
     }
 
-    findOneByConditions(conditions: FindConditions<Image>) {
+    findOneByConditions(conditions: FindConditions<Image>): Promise<Image> {
         return this.repository.findOne(conditions);
     }
 
