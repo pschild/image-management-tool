@@ -1,25 +1,29 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { FolderService } from './folder.service';
-import { Folder } from '../entity/folder.entity';
 import { UpdateResult } from 'typeorm';
+import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
+import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 
 @Controller('folder')
 export class FolderController {
-    constructor(private readonly folderService: FolderService) { }
+    constructor(
+        private readonly folderService: FolderService,
+        private readonly mapper: FolderEntityToDtoMapper
+    ) { }
 
     @Post()
-    create(@Body() data): Promise<Folder> {
-        return this.folderService.create(data);
+    async create(@Body() data): Promise<IFolderEntityDto> {
+        return this.mapper.map(await this.folderService.create(data));
     }
 
     @Get()
-    findAll(): Promise<Folder[]> {
-        return this.folderService.findAll();
+    async findAll(): Promise<IFolderEntityDto[]> {
+        return this.mapper.mapAll(await this.folderService.findAll());
     }
 
     @Get(':id')
-    findOne(@Param('id') id): Promise<Folder> {
-        return this.folderService.findOne(id);
+    async findOne(@Param('id') id): Promise<IFolderEntityDto> {
+        return this.mapper.map(await this.folderService.findOne(id));
     }
 
     @Put(':id')
@@ -28,7 +32,7 @@ export class FolderController {
     }
 
     @Delete(':id')
-    remove(@Param('id') id): Promise<Folder> {
-        return this.folderService.remove(id);
+    async remove(@Param('id') id): Promise<IFolderEntityDto> {
+        return this.mapper.map(await this.folderService.remove(id));
     }
 }

@@ -50,7 +50,7 @@ export class FileSystemService {
         givenPath = this.pathHelperService.getAsDirectory(givenPath);
 
         const fileList = await afs.readdir(givenPath);
-        const fileDtos = [];
+        const fileDtos: IFsFile[] = [];
         // use for-of loop instead of map, because map is synchronous!
         for (const fileName of fileList) {
             const absolutePath = path.join(givenPath, fileName);
@@ -74,6 +74,7 @@ export class FileSystemService {
                     name: path.basename(fileName, extension), // name without extension
                     absolutePath: absolutePath,
                     extension: extension.substring(1), // remove . at the beginning
+                    size: stat.size,
                     isFile: true
                 });
             } else if (stat.isSymbolicLink()) {
