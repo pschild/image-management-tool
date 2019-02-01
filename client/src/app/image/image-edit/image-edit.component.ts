@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '../image.service';
 import { BehaviorSubject } from 'rxjs';
 import { IImageEntityDto } from '../../../../../shared/dto/IImageEntity.dto';
+import * as path from 'path';
 
 @Component({
   selector: 'app-image-edit',
@@ -33,6 +34,14 @@ export class ImageEditComponent implements OnInit {
         }
         this.imageService.loadImage(imageId).subscribe((image: IImageEntityDto) => {
           this.image$.next(image);
+        });
+      } else {
+        const extension = path.extname(this.absoluteImagePath);
+        const name = path.basename(this.absoluteImagePath, extension);
+        this.image$.next({
+          name,
+          absolutePath: this.absoluteImagePath,
+          extension: extension.substring(1)
         });
       }
    });
