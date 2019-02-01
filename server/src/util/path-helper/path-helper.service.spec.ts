@@ -80,4 +80,24 @@ describe('PathHelperService', () => {
             expect(pathHelperService.isSystemDrive('H/')).toBeFalsy();
         });
     });
+
+    describe('getParentFolderPathParts', () => {
+        it('should return the parent path as array', () => {
+            expect(pathHelperService.getParentFolderPathParts('C:\\foo\\bar')).toEqual(['C:', 'foo']);
+            expect(pathHelperService.getParentFolderPathParts('C:\\foo\\bar\\img.jpg')).toEqual(['C:', 'foo', 'bar']);
+            expect(pathHelperService.getParentFolderPathParts('C:\\foo')).toEqual(['C:']);
+            expect(pathHelperService.getParentFolderPathParts('C:')).toEqual([]);
+            expect(pathHelperService.getParentFolderPathParts('')).toEqual([]);
+        });
+    });
+
+    describe('getParentFolderPath', () => {
+        it('should return the parent path as string', () => {
+            expect(pathHelperService.getParentFolderPath('C:\\foo\\bar')).toEqual('C:\\foo');
+            expect(pathHelperService.getParentFolderPath('C:\\foo\\bar\\img.jpg')).toEqual('C:\\foo\\bar');
+            expect(pathHelperService.getParentFolderPath('C:\\foo')).toEqual('C:');
+            expect(pathHelperService.getParentFolderPath('C:')).toEqual('');
+            expect(pathHelperService.getParentFolderPath('')).toEqual('');
+        });
+    });
 });

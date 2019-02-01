@@ -94,11 +94,10 @@ export class FolderService {
             if (foundFolder) {
                 parent = foundFolder;
             } else {
-                const newFolder = new Folder();
-                newFolder.name = pathName;
-                newFolder.parent = parent;
-                foundFolder = await this.repository.save(newFolder);
-                parent = foundFolder;
+                parent = foundFolder = await this.create({
+                    name: pathName,
+                    parent
+                });
             }
         }
         return foundFolder;

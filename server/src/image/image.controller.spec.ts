@@ -1,7 +1,6 @@
 import { Connection, UpdateResult } from 'typeorm';
 import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import 'jest-extended';
-import { Image } from '../entity/image.entity';
 import { ImageController } from './image.controller';
 import { ImageService } from './image.service';
 import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
@@ -57,6 +56,20 @@ describe('ImageController', () => {
         });
     });
 
+    describe('createByPath', () => {
+        it('should return an image', async () => {
+            jest.spyOn(imageService, 'create').mockImplementation(() => dummyImage);
+            const result = await imageController.createByPath({
+                absolutePath: 'C:\\foo\\bar\\dummy.jpg',
+                name: 'dummy',
+                extension: 'jpg'
+            });
+
+            expect(result).toBeDefined();
+            expect(result).toContainAllKeys(['id', 'name', 'extension', 'absolutePath']);
+        });
+    });
+
     describe('findAll', () => {
         it('should return an array of images', async () => {
             jest.spyOn(imageService, 'findAll').mockImplementation(() => [dummyImage, dummyImage]);
@@ -94,7 +107,7 @@ describe('ImageController', () => {
             jest.spyOn(imageService, 'remove').mockImplementation(() => dummyImage);
             const result = await imageController.remove(42);
 
-            expect(result).toBeDefined();
+            expect(result).toBeUndefined();
         });
     });
 });

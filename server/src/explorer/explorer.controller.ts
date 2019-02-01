@@ -11,7 +11,6 @@ import { FileNotFoundException } from '../../../shared/exception/file-not-found.
 import { RelocationException } from '../../../shared/exception/relocation.exception';
 import { RelocationExceptionFilter } from '../filter/relocation-exception.filter';
 import { FileNotFoundExceptionFilter } from '../filter/file-not-found-exception.filter';
-import { Image } from '../entity/image.entity';
 import { IExplorerContentDto } from '../../../shared/IExplorerContent.dto';
 import { IFsFile } from '../../../shared/IFsFile';
 import { IFolderEntity } from '../../../shared/IFolderEntity';
@@ -93,25 +92,6 @@ export class ExplorerController {
     @Get('homeDirectory')
     getHomeDirectory(): string {
         return this.fileSystemService.getHomeDirectory();
-    }
-
-    @Post('folder')
-    async createByPath(@Body() body: {path: string}): Promise<IFolderEntityDto> {
-        return this.folderEntityToDtoMapper.map(await this.folderService.createFolderByPath(decodeURI(body.path)));
-    }
-
-    @Post('image')
-    async createImageByPath(@Body() body: {absolutePath: string; name: string; extension: string; }): Promise<IImageEntityDto> {
-        const absolutePathParts = body.absolutePath.split(path.sep);
-        const parentFolderPathParts = absolutePathParts.slice(0, -1);
-        const parentFolder = await this.folderService.getFolderOrCreateByPath(parentFolderPathParts.join(path.sep));
-
-        const image = new Image();
-        image.name = body.name;
-        image.originalName = body.name;
-        image.extension = body.extension;
-        image.parentFolder = parentFolder;
-        return this.imageEntityToDtoMapper.map(await this.imageService.create(image));
     }
 
     @Post('relocate/folder')

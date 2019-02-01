@@ -48,6 +48,16 @@ describe('FolderController', () => {
         });
     });
 
+    describe('createByPath', () => {
+        it('should return a folder', async () => {
+            jest.spyOn(folderService, 'createFolderByPath').mockImplementation(() => dummyFolder);
+            const result: IFolderEntityDto = await folderController.createByPath({ path: 'some/path' });
+
+            expect(result).toBeDefined();
+            expect(result).toContainAllKeys(['id', 'name', 'absolutePath']);
+        });
+    });
+
     describe('findAll', () => {
         it('should return an array of folders', async () => {
             jest.spyOn(folderService, 'findAll').mockImplementation(() => [dummyFolder, dummyFolder]);
@@ -85,8 +95,7 @@ describe('FolderController', () => {
             jest.spyOn(folderService, 'remove').mockImplementation(() => dummyFolder);
             const result = await folderController.remove(42);
 
-            expect(result).toBeDefined();
-            expect(result).toContainAllKeys(['id', 'name', 'absolutePath']);
+            expect(result).toBeUndefined();
         });
     });
 });

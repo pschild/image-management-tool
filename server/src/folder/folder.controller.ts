@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode } from '@nestjs/common';
 import { FolderService } from './folder.service';
 import { UpdateResult } from 'typeorm';
 import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
@@ -14,6 +14,11 @@ export class FolderController {
     @Post()
     async create(@Body() data): Promise<IFolderEntityDto> {
         return this.folderEntityToDtoMapper.map(await this.folderService.create(data));
+    }
+
+    @Post('byPath')
+    async createByPath(@Body() body: {path: string}): Promise<IFolderEntityDto> {
+        return this.folderEntityToDtoMapper.map(await this.folderService.createFolderByPath(decodeURI(body.path)));
     }
 
     @Get()
@@ -32,7 +37,9 @@ export class FolderController {
     }
 
     @Delete(':id')
-    async remove(@Param('id') id): Promise<IFolderEntityDto> {
-        return this.folderEntityToDtoMapper.map(await this.folderService.remove(id));
+    @HttpCode(204)
+    async remove(@Param('id') id): Promise<void> {
+        await this.folderService.remove(id);
+        return;
     }
 }

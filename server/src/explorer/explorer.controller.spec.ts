@@ -8,12 +8,10 @@ import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FileSystemService } from '../fileSystem/file-system.service';
 import { ImageService } from '../image/image.service';
 import * as drivelist from 'drivelist';
-import { Folder } from '../entity/folder.entity';
 import { FileSystemException } from '../../../shared/exception/file-system.exception';
 import { RelocationException } from '../../../shared/exception/relocation.exception';
 import { FileNotFoundException } from '../../../shared/exception/file-not-found.exception';
 import { IExplorerContentDto } from '../../../shared/IExplorerContent.dto';
-import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 
@@ -138,16 +136,6 @@ describe('ExplorerController', () => {
 
             expect(result).toBeDefined();
             expect(result).toBeString();
-        });
-    });
-
-    describe('createByPath', () => {
-        it('should return a string', async () => {
-            const m = jest.spyOn(folderService, 'getFolderByPath').mockImplementation(() => new Folder());
-            const result: IFolderEntityDto = await explorerController.createByPath({ path: 'some/path' });
-
-            expect(result).toBeDefined();
-            m.mockRestore();
         });
     });
 
