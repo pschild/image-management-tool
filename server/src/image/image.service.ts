@@ -11,12 +11,12 @@ export class ImageService {
         private readonly repository: Repository<Image>
     ) { }
 
-    findOne(id: number): Promise<IImageEntity> {
-        return this.repository.findOne(id);
+    findOne(id: number, withRelations: boolean = false): Promise<IImageEntity> {
+        return this.repository.findOne(id, { relations: withRelations ? ['parentFolder', 'tags', 'persons', 'place'] : [] });
     }
 
-    findAll(): Promise<IImageEntity[]> {
-        return this.repository.find();
+    findAll(withRelations: boolean = false): Promise<IImageEntity[]> {
+        return this.repository.find({ relations: withRelations ? ['parentFolder', 'tags', 'persons', 'place'] : [] });
     }
 
     findAllByFolderId(folderId: number): Promise<IImageEntity[]> {

@@ -42,7 +42,7 @@ export class ImageController {
 
     @Get(':id')
     async findOne(@Param('id') id): Promise<IImageEntityDto> {
-        return this.imageEntityToDtoMapper.map(await this.imageService.findOne(id));
+        return this.imageEntityToDtoMapper.map(await this.imageService.findOne(id, true));
     }
 
     @Put(':id')
