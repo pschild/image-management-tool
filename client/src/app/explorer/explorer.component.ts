@@ -112,15 +112,10 @@ export class ExplorerComponent implements OnInit {
       return;
     } else if (image.addedInFs) {
       // URI-encode the path, as it could contain special characters (=, &, (, ), ...)
-      this.router.navigateByUrl(`image/path/${encodeURIComponent(image.absolutePath)}`);
+      this.router.navigateByUrl(`image/${encodeURIComponent(image.absolutePath)}`);
     } else {
-      this.currentPath$.pipe(
-        first()
-      ).subscribe(result => {
-        // URI-encode the path, as it could contain special characters (=, &, (, ), ...)
-        const currentPath = encodeURIComponent(result.join(path.sep));
-        this.router.navigateByUrl(`image/id/${currentPath}/${image.id}`);
-      });
+      // URI-encode the path, as it could contain special characters (=, &, (, ), ...)
+      this.router.navigateByUrl(`image/${encodeURIComponent(image.absolutePath)}/${image.id}`);
     }
   }
 

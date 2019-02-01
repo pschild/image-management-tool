@@ -4,11 +4,11 @@ import { ImageEditComponent } from './image-edit/image-edit.component';
 
 const routes: Routes = [
   {
-    path: 'id/:currentFolderPath/:id',
+    path: ':absolutePath/:id',
     component: ImageEditComponent
   },
   {
-    path: 'path/:path',
+    path: ':absolutePath',
     component: ImageEditComponent
   }
 ];

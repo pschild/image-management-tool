@@ -1,5 +1,5 @@
 <h1>Image</h1>
 
-<app-image-preview *ngIf="fullImagePath$ | async as fullImagePath" fullImagePath="{{ fullImagePath }}"></app-image-preview>
+<app-image-preview absoluteImagePath="{{ absoluteImagePath }}"></app-image-preview>
 
-<app-image-form></app-image-form>
+<app-image-form *ngIf="image$ | async as image" [image]="image"></app-image-form>

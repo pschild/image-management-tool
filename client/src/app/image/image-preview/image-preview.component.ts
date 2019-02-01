@@ -7,7 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ImagePreviewComponent implements OnInit {
 
-  @Input() fullImagePath: string;
+  @Input() absoluteImagePath: string;
 
   constructor() { }
 
