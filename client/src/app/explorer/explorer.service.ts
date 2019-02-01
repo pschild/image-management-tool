@@ -3,12 +3,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import * as path from 'path';
 import { catchError, map } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
-import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDto';
-import { FolderDto } from '../../../../shared/FolderDto';
-import { ImageDto } from '../../../../shared/ImageDto';
-import { IFolderDto } from '../../../../shared/interface/IFolderDto';
-import { IImageDto } from '../../../../shared/interface/IImageDto';
 import { AppConfig } from '../../environments/environment';
+import { IExplorerContentDto } from '../../../../shared/IExplorerContent.dto';
+import { IFolderEntityDto } from '../../../../shared/IFolderEntity.dto';
+import { IImageEntityDto } from '../../../../shared/IImageEntity.dto';
 
 @Injectable()
 export class ExplorerService {
@@ -23,9 +21,9 @@ export class ExplorerService {
       );
   }
 
-  getSystemDrives(): Observable<IFolderContentDto> {
+  getSystemDrives(): Observable<IExplorerContentDto> {
     return this.http
-      .get<IFolderContentDto>(`${AppConfig.serverBaseUrl}/explorer/systemDrives`)
+      .get<IExplorerContentDto>(`${AppConfig.serverBaseUrl}/explorer/systemDrives`)
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
@@ -33,7 +31,7 @@ export class ExplorerService {
       );
   }
 
-  getContentByPath(pathParts: string[]): Observable<IFolderContentDto> {
+  getContentByPath(pathParts: string[]): Observable<IExplorerContentDto> {
     let url;
     if (pathParts.length > 0) {
       const joinedPath = path.join(...pathParts);
@@ -44,7 +42,7 @@ export class ExplorerService {
     }
 
     return this.http
-      .get<IFolderContentDto>(url)
+      .get<IExplorerContentDto>(url)
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
@@ -52,17 +50,9 @@ export class ExplorerService {
       );
   }
 
-  createFolderByPath(folderPath: string): Observable<FolderDto> {
-    return this.http.post<FolderDto>(`${AppConfig.serverBaseUrl}/explorer/folder`, { path: folderPath });
-  }
-
-  createImageByPath(absolutePath: string, name: string, extension: string): Observable<ImageDto> {
-    return this.http.post<ImageDto>(`${AppConfig.serverBaseUrl}/explorer/image`, { absolutePath, name, extension });
-  }
-
-  relocateFolder(oldPath: string, newPath: string): Observable<IFolderDto> {
+  relocateFolder(oldPath: string, newPath: string): Observable<IFolderEntityDto> {
     return this.http
-      .post<FolderDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/folder`, { oldPath, newPath })
+      .post<IFolderEntityDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/folder`, { oldPath, newPath })
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
@@ -70,9 +60,9 @@ export class ExplorerService {
       );
   }
 
-  relocateImage(oldPath: string, newPath: string): Observable<IImageDto> {
+  relocateImage(oldPath: string, newPath: string): Observable<IImageEntityDto> {
     return this.http
-      .post<ImageDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/image`, { oldPath, newPath })
+      .post<IImageEntityDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/image`, { oldPath, newPath })
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);

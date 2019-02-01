@@ -4,23 +4,19 @@ import {
     NavigateToFolder,
     NavigateBack,
     LoadHomeDirectory,
-    CreateFolderByPath,
     RelocateFolder,
     RefreshContent,
-    CreateImageByPath,
     RelocateImage
 } from './explorer.actions';
 import { ExplorerService } from './explorer.service';
 import { tap } from 'rxjs/operators';
-import { IFolderContentDto } from '../../../../shared/interface/IFolderContentDto';
-import { FolderDto } from '../../../../shared/FolderDto';
-import { ImageDto } from '../../../../shared/ImageDto';
-import { IFolderDto } from '../../../../shared/interface/IFolderDto';
-import { IImageDto } from '../../../../shared/interface/IImageDto';
 import { ExplorerFolderState } from './explorer-folder/explorer-folder.state';
-import { FoldersLoaded, FolderCreated } from './explorer-folder/explorer-folder.actions';
-import { ImageCreated, ImagesLoaded } from './explorer-image/explorer-image.actions';
+import { FoldersLoaded } from './explorer-folder/explorer-folder.actions';
+import { ImagesLoaded } from './explorer-image/explorer-image.actions';
 import { ExplorerImageState } from './explorer-image/explorer-image.state';
+import { IFolderEntityDto } from '../../../../shared/IFolderEntity.dto';
+import { IImageEntityDto } from '../../../../shared/IImageEntity.dto';
+import { IExplorerContentDto } from '../../../../shared/IExplorerContent.dto';
 
 export interface ExplorerStateModel {
     currentPath: string[];
@@ -55,26 +51,6 @@ export class ExplorerState implements NgxsOnInit {
             );
     }
 
-    @Action(CreateFolderByPath)
-    createFolderByPath({ dispatch }: StateContext<ExplorerStateModel>, action: CreateFolderByPath) {
-        return this.explorerService.createFolderByPath(action.path)
-            .pipe(
-                tap((createdFolder: FolderDto) => {
-                    dispatch(new FolderCreated(createdFolder)); // delegate to child state
-                })
-            );
-    }
-
-    @Action(CreateImageByPath)
-    createImageByPath({ dispatch }: StateContext<ExplorerStateModel>, action: CreateImageByPath) {
-        return this.explorerService.createImageByPath(action.absolutePath, action.name, action.extension)
-            .pipe(
-                tap((createdImage: ImageDto) => {
-                    dispatch(new ImageCreated(createdImage)); // delegate to child state
-                })
-            );
-    }
-
     @Action(NavigateToFolder)
     navigateToFolder({ getState, dispatch }: StateContext<ExplorerStateModel>, action: NavigateToFolder) {
         const state = getState();
@@ -97,7 +73,7 @@ export class ExplorerState implements NgxsOnInit {
     loadContent({ patchState, dispatch }: StateContext<ExplorerStateModel>, action: LoadContentByPath) {
         return this.explorerService.getContentByPath(action.path)
             .pipe(
-                tap((loadedContent: IFolderContentDto) => {
+                tap((loadedContent: IExplorerContentDto) => {
                     patchState({
                         currentPath: action.path // currentPath is set only when loading content is successful
                     });
@@ -111,7 +87,7 @@ export class ExplorerState implements NgxsOnInit {
     relocateFolder({ dispatch }: StateContext<ExplorerStateModel>, action: RelocateFolder) {
         return this.explorerService.relocateFolder(action.oldPath, action.newPath)
             .pipe(
-                tap((result: IFolderDto) => {
+                tap((result: IFolderEntityDto) => {
                     alert(`Success`); // TODO: dispatch RelocateFolderSuccess
                     return dispatch(new RefreshContent());
                 })
@@ -122,7 +98,7 @@ export class ExplorerState implements NgxsOnInit {
     relocateImage({ dispatch }: StateContext<ExplorerStateModel>, action: RelocateImage) {
         return this.explorerService.relocateImage(action.oldPath, action.newPath)
             .pipe(
-                tap((result: IImageDto) => {
+                tap((result: IImageEntityDto) => {
                     alert(`Success`); // TODO: dispatch RelocateImageSuccess
                     return dispatch(new RefreshContent());
                 })

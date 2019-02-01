@@ -1,13 +1,13 @@
 import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { ImageService } from '../../image/image.service';
 import { tap } from 'rxjs/operators';
-import { ImagesLoaded, ImageCreated, RemoveImage } from './explorer-image.actions';
+import { ImagesLoaded, RemoveImage, CreateImageByPath, ImageCreated } from './explorer-image.actions';
 import { RefreshContent } from '../explorer.actions';
-import { ImageDto } from '../../../../../shared/ImageDto';
-import { IImageDto } from '../../../../../shared/interface/IImageDto';
+import { IMergedImageDto } from '../../../../../shared/IMergedImage.dto';
+import { IImageEntityDto } from '../../../../../shared/IImageEntity.dto';
 
 export interface ExplorerImageStateModel {
-    images: ImageDto[];
+    images: IMergedImageDto[];
 }
 
 @State<ExplorerImageStateModel>({
@@ -31,26 +31,27 @@ export class ExplorerImageState {
         });
     }
 
+    @Action(CreateImageByPath)
+    createImageByPath({ dispatch }: StateContext<ExplorerImageStateModel>, action: CreateImageByPath) {
+        return this.imageService.createByPath(action.absolutePath, action.name, action.extension)
+            .pipe(
+                tap((createdImage: IImageEntityDto) => {
+                    dispatch(new ImageCreated(createdImage));
+                })
+            );
+    }
+
     @Action(ImageCreated)
-    imageCreated({ getState, patchState }: StateContext<ExplorerImageStateModel>, action: ImageCreated) {
-        const state = getState();
-        const newImageState: ImageDto[] = state.images.map((image: ImageDto) => {
-            if (image.name === action.createdImage.name) {
-                image.addedInFs = false;
-            }
-            return image;
-        });
-        patchState({
-            images: newImageState
-        });
+    imageCreated({ dispatch }: StateContext<ExplorerImageStateModel>, action: ImageCreated) {
+        return dispatch(new RefreshContent()); // TODO: patchState instead of refresh whole content
     }
 
     @Action(RemoveImage)
     removeImage({ dispatch }: StateContext<ExplorerImageStateModel>, action: RemoveImage) {
         return this.imageService.removeImage(action.image)
             .pipe(
-                tap((result: IImageDto) => {
-                    return dispatch(new RefreshContent());
+                tap((result: void) => {
+                    return dispatch(new RefreshContent()); // TODO: patchState instead of refresh whole content
                 })
             );
     }

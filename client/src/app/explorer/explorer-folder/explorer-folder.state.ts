@@ -1,13 +1,13 @@
 import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { FolderService } from '../../folder/folder.service';
 import { tap } from 'rxjs/operators';
-import { FolderDto } from '../../../../../shared/FolderDto';
-import { RemoveFolder, FoldersLoaded, FolderCreated } from './explorer-folder.actions';
-import { IFolderDto } from '../../../../../shared/interface/IFolderDto';
+import { RemoveFolder, FoldersLoaded, CreateFolderByPath, FolderCreated } from './explorer-folder.actions';
 import { RefreshContent } from '../explorer.actions';
+import { IMergedFolderDto } from '../../../../../shared/IMergedFolder.dto';
+import { IFolderEntityDto } from '../../../../../shared/IFolderEntity.dto';
 
 export interface ExplorerFolderStateModel {
-    folders: FolderDto[];
+    folders: IMergedFolderDto[];
 }
 
 @State<ExplorerFolderStateModel>({
@@ -31,26 +31,27 @@ export class ExplorerFolderState {
         });
     }
 
+    @Action(CreateFolderByPath)
+    createFolderByPath({ dispatch }: StateContext<ExplorerFolderStateModel>, action: CreateFolderByPath) {
+        return this.folderService.createByPath(action.path)
+            .pipe(
+                tap((createdFolder: IFolderEntityDto) => {
+                    dispatch(new FolderCreated(createdFolder));
+                })
+            );
+    }
+
     @Action(FolderCreated)
-    folderCreated({ getState, patchState }: StateContext<ExplorerFolderStateModel>, action: FolderCreated) {
-        const state = getState();
-        const newFolderState: FolderDto[] = state.folders.map((folder: FolderDto) => {
-            if (folder.name === action.createdFolder.name) {
-                folder.addedInFs = false;
-            }
-            return folder;
-        });
-        patchState({
-            folders: newFolderState
-        });
+    folderCreated({ dispatch }: StateContext<ExplorerFolderStateModel>, action: FolderCreated) {
+        return dispatch(new RefreshContent()); // TODO: patchState instead of refresh whole content
     }
 
     @Action(RemoveFolder)
     removeFolder({ dispatch }: StateContext<ExplorerFolderStateModel>, action: RemoveFolder) {
         return this.folderService.removeFolder(action.folder)
             .pipe(
-                tap((result: IFolderDto) => {
-                    return dispatch(new RefreshContent());
+                tap((result: void) => {
+                    return dispatch(new RefreshContent()); // TODO: patchState instead of refresh whole content
                 })
             );
     }
