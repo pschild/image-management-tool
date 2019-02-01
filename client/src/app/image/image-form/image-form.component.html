@@ -1,12 +1,16 @@
-<form [formGroup]="imageEditForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="imageEditForm" (ngSubmit)="onSubmit()" class="image-edit-form">
   <mat-form-field>
     <mat-label>Beschreibung</mat-label>
     <textarea matInput formControlName="description" placeholder="Beschreibung"></textarea>
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Ort</mat-label>
-    <input type="text" matInput formControlName="place">
+    <input type="text" placeholder="Ort auswählen" aria-label="Number" matInput formControlName="place" [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
   </mat-form-field>
 
   <mat-form-field>
@@ -30,8 +34,7 @@
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
-
-  <p>
+  <div class="form-action-container">
     <button type="submit" mat-raised-button color="primary">Speichern</button>
-  </p>
+  </div>
 </form>
