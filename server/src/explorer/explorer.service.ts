@@ -1,42 +1,50 @@
+import * as path from 'path';
 import { Injectable } from '@nestjs/common';
 import { FolderService } from '../folder/folder.service';
-import { Folder } from '../entity/folder.entity';
-import { Image } from '../entity/image.entity';
-import * as path from 'path';
-import { IFileDto } from '../../../shared/interface/IFileDto';
-import { FolderDto } from '../../../shared/FolderDto';
-import { ImageDto } from '../../../shared/ImageDto';
 import { DuplicateFileException } from '../../../shared/exception/duplicate-file.exception';
+import { IFsFile } from '../../../shared/IFsFile';
+import { IMergedFolderDto } from '../../../shared/IMergedFolder.dto';
+import { IMergedImageDto } from '../../../shared/IMergedImage.dto';
+import { IImageEntity } from '../../../shared/IImageEntity';
+import { IFolderEntity } from '../../../shared/IFolderEntity';
 
 @Injectable()
 export class ExplorerService {
 
     constructor(private readonly folderService: FolderService) { }
 
-    async getMergedFolderList(fsFolders: IFileDto[], dbFolders: Folder[]): Promise<FolderDto[]> {
+    async getMergedFolderList(fsFolders: IFsFile[], dbFolders: IFolderEntity[]): Promise<IMergedFolderDto[]> {
         // merge DB and FS folder lists
-        const foldersInDbAndFs: FolderDto[] = [];
+        const foldersInDbAndFs: IMergedFolderDto[] = [];
         for (const dbFolder of dbFolders) {
-            let removedInFs = false;
-
+            let accordingFsFolder = null;
             const accordingFsFolderIndex = fsFolders.findIndex(folder => folder.name === dbFolder.name);
-            if (accordingFsFolderIndex < 0) {
-                removedInFs = true;
-            } else {
+            if (accordingFsFolderIndex >= 0) {
                 // remove found folder from foldersFromFileSystem, so that in the end this array only contains elements
                 // that are in FS but not in DB.
-                fsFolders.splice(accordingFsFolderIndex, 1);
+                accordingFsFolder = fsFolders.splice(accordingFsFolderIndex, 1)[0];
             }
 
             const absolutePath = await this.folderService.buildPathByFolderId(dbFolder.id);
-            foldersInDbAndFs.push(new FolderDto(dbFolder.name, absolutePath, false, removedInFs, dbFolder.id));
+            foldersInDbAndFs.push({
+                id: dbFolder.id,
+                name: dbFolder.name,
+                absolutePath,
+                addedInFs: false,
+                removedInFs: accordingFsFolder === null
+            });
         }
 
-        let resultList: FolderDto[] = [];
+        let resultList: IMergedFolderDto[] = [];
         // if there are elements left in foldersFromFileSystem, they are in FS but not in DB
         if (fsFolders.length) {
-            const foldersOnlyInFs: FolderDto[] = fsFolders.map(fsFolder => {
-                return new FolderDto(fsFolder.name, fsFolder.absolutePath, true, false);
+            const foldersOnlyInFs: IMergedFolderDto[] = fsFolders.map(fsFolder => {
+                return {
+                    name: fsFolder.name,
+                    absolutePath: fsFolder.absolutePath,
+                    addedInFs: true,
+                    removedInFs: false
+                } as IMergedFolderDto;
             });
             resultList = [...foldersInDbAndFs, ...foldersOnlyInFs];
         } else {
@@ -44,7 +52,7 @@ export class ExplorerService {
         }
 
         // find duplicates
-        const duplicates = this.findDuplicates(resultList.map(i => i.name));
+        const duplicates = this.findDuplicates(resultList.map((item: IMergedFolderDto) => item.name));
         if (duplicates.length) {
             throw new DuplicateFileException(`Found duplicate folder(s): ${duplicates.join(',')}`);
         }
@@ -52,33 +60,43 @@ export class ExplorerService {
         return resultList;
     }
 
-    async getMergedImageList(fsImages: IFileDto[], dbImages: Image[]): Promise<ImageDto[]> {
+    async getMergedImageList(fsImages: IFsFile[], dbImages: IImageEntity[]): Promise<IMergedImageDto[]> {
         // merge DB and FS folder lists
-        const imagesInDbAndFs: ImageDto[] = [];
+        const imagesInDbAndFs: IMergedImageDto[] = [];
         for (const dbImage of dbImages) {
-            let removedInFs = false;
-
+            let accordingFsImage = null;
             const accordingFsImageIndex = fsImages.findIndex(
                 image => image.name === dbImage.name && image.extension === dbImage.extension
             );
-            if (accordingFsImageIndex < 0) {
-                removedInFs = true;
-            } else {
+            if (accordingFsImageIndex >= 0) {
                 // remove found image from imagesFromFileSystem, so that in the end this array only contains elements
                 // that are in FS but not in DB.
-                fsImages.splice(accordingFsImageIndex, 1);
+                accordingFsImage = fsImages.splice(accordingFsImageIndex, 1)[0];
             }
 
             const parentFolderPath = await this.folderService.buildPathByFolderId(dbImage.parentFolder.id);
             const absolutePath = `${parentFolderPath}${path.sep}${dbImage.name}.${dbImage.extension}`;
-            imagesInDbAndFs.push(new ImageDto(dbImage.name, absolutePath, dbImage.extension, false, removedInFs, dbImage.id));
+            imagesInDbAndFs.push({
+                id: dbImage.id,
+                name: dbImage.name,
+                extension: dbImage.extension,
+                absolutePath: absolutePath,
+                addedInFs: false,
+                removedInFs: accordingFsImage === null
+            });
         }
 
-        let resultList: ImageDto[] = [];
+        let resultList: IMergedImageDto[] = [];
         // if there are elements left in foldersFromFileSystem, they are in FS but not in DB
         if (fsImages.length) {
-            const imagesOnlyInFs: ImageDto[] = fsImages.map(fsImage => {
-                return new ImageDto(fsImage.name, fsImage.absolutePath, fsImage.extension, true, false);
+            const imagesOnlyInFs: IMergedImageDto[] = fsImages.map(fsImage => {
+                return {
+                    name: fsImage.name,
+                    extension: fsImage.extension,
+                    absolutePath: fsImage.absolutePath,
+                    addedInFs: true,
+                    removedInFs: false
+                } as IMergedImageDto;
             });
             resultList = [...imagesInDbAndFs, ...imagesOnlyInFs];
         } else {
@@ -86,7 +104,7 @@ export class ExplorerService {
         }
 
         // find duplicates
-        const duplicates = this.findDuplicates(resultList.map(i => `${i.name}.${i.extension}`));
+        const duplicates = this.findDuplicates(resultList.map((item: IMergedImageDto) => `${item.name}.${item.extension}`));
         if (duplicates.length) {
             throw new DuplicateFileException(`Found duplicate image(s): ${duplicates.join(',')}`);
         }

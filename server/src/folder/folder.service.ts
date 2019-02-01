@@ -4,6 +4,7 @@ import { Repository, UpdateResult, DeepPartial, FindConditions } from 'typeorm';
 import { Folder } from '../entity/folder.entity';
 import * as path from 'path';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
+import { IFolderEntity } from '../../../shared/IFolderEntity';
 
 @Injectable()
 export class FolderService {
@@ -13,44 +14,44 @@ export class FolderService {
         private readonly pathHelperService: PathHelperService
     ) { }
 
-    findOne(id: number, withRelations: boolean = false): Promise<Folder> {
+    findOne(id: number, withRelations: boolean = false): Promise<IFolderEntity> {
         return this.repository.findOne(id, { relations: withRelations ? ['parent', 'children', 'images'] : [] });
     }
 
-    findOneByName(name: string, withRelations: boolean = false): Promise<Folder> {
+    findOneByName(name: string, withRelations: boolean = false): Promise<IFolderEntity> {
         return this.repository.findOne({ name }, { relations: withRelations ? ['parent', 'children', 'images'] : [] });
     }
 
-    findDirectDescendantsByFolder(folder: Folder): Promise<Folder[]> {
+    findDirectDescendantsByFolder(folder: IFolderEntity): Promise<IFolderEntity[]> {
         return this.repository.find({ where: { parent: folder } });
     }
 
-    async findDirectDescendantsByFolderId(folderId: number): Promise<Folder[]> {
+    async findDirectDescendantsByFolderId(folderId: number): Promise<IFolderEntity[]> {
         const folder = await this.repository.findOne(folderId);
         return this.findDirectDescendantsByFolder(folder);
     }
 
-    findRootFolders(): Promise<Folder[]> {
+    findRootFolders(): Promise<IFolderEntity[]> {
         return this.repository.find({ where: { parent: null } });
     }
 
-    findAll(): Promise<Folder[]> {
+    findAll(): Promise<IFolderEntity[]> {
         return this.repository.find();
     }
 
-    create(folder: DeepPartial<Folder>): Promise<Folder> {
+    create(folder: DeepPartial<IFolderEntity>): Promise<IFolderEntity> {
         return this.repository.save(folder);
     }
 
-    update(id: number, folder: DeepPartial<Folder>): Promise<UpdateResult> {
+    update(id: number, folder: DeepPartial<IFolderEntity>): Promise<UpdateResult> {
         return this.repository.update(id, folder);
     }
 
-    updateByConditions(conditions: FindConditions<Folder>, folder: DeepPartial<Folder>): Promise<UpdateResult> {
+    updateByConditions(conditions: FindConditions<IFolderEntity>, folder: DeepPartial<IFolderEntity>): Promise<UpdateResult> {
         return this.repository.update(conditions, folder);
     }
 
-    remove(id: number): Promise<Folder> {
+    remove(id: number): Promise<IFolderEntity> {
         return this.repository.remove(
             this.repository.create({ id })
         );
@@ -80,11 +81,11 @@ export class FolderService {
         return pathParts.reverse().join(path.sep);
     }
 
-    async createFolderByPath(givenPath: string): Promise<Folder> {
+    async createFolderByPath(givenPath: string): Promise<IFolderEntity> {
         const pathParts = givenPath.split(path.sep);
 
-        let parent: Folder = null;
-        let foundFolder: Folder;
+        let parent: IFolderEntity = null;
+        let foundFolder: IFolderEntity;
         // Analyze the given path from beginning to end: try to find each folder in database by name and parent folder
         // Missing folders will be created automatically
         for (let pathName of pathParts) {
@@ -93,21 +94,20 @@ export class FolderService {
             if (foundFolder) {
                 parent = foundFolder;
             } else {
-                const newFolder = new Folder();
-                newFolder.name = pathName;
-                newFolder.parent = parent;
-                foundFolder = await this.repository.save(newFolder);
-                parent = foundFolder;
+                parent = foundFolder = await this.create({
+                    name: pathName,
+                    parent
+                });
             }
         }
         return foundFolder;
     }
 
-    async getFolderByPath(givenPath: string): Promise<Folder> {
+    async getFolderByPath(givenPath: string): Promise<IFolderEntity> {
         const pathParts = givenPath.split(path.sep);
 
-        let parent: Folder = null;
-        let foundFolder: Folder;
+        let parent: IFolderEntity = null;
+        let foundFolder: IFolderEntity;
         // Analyze the given path from beginning to end: try to find each folder in database by name and parent folder
         for (let pathName of pathParts) {
             pathName = this.pathHelperService.getAsName(pathName); // Workaround: ensure we get sth like C: when pathName is drive letter
@@ -121,7 +121,7 @@ export class FolderService {
         return foundFolder;
     }
 
-    async getFolderOrCreateByPath(givenPath: string): Promise<Folder> {
+    async getFolderOrCreateByPath(givenPath: string): Promise<IFolderEntity> {
         let folder = await this.getFolderByPath(givenPath);
         if (!folder) {
             folder = await this.createFolderByPath(givenPath);

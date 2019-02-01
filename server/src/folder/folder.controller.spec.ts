@@ -3,22 +3,31 @@ import { Connection, UpdateResult } from 'typeorm';
 import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import { FolderController } from './folder.controller';
 import { FolderService } from './folder.service';
-import { Folder } from '../entity/folder.entity';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
+import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
+import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
 
 describe('FolderController', () => {
     let connection: Connection;
     let folderController: FolderController;
     let folderService: FolderService;
 
+    let dummyFolder: IFolderEntityDto;
+
     beforeAll(async () => {
         const module = await createTestModule({
             controllers: [FolderController],
-            providers: [FolderService, PathHelperService]
+            providers: [FolderService, PathHelperService, FolderEntityToDtoMapper]
         });
         connection = module.get<Connection>(Connection);
         folderController = module.get<FolderController>(FolderController);
         folderService = module.get<FolderService>(FolderService);
+
+        dummyFolder = {
+            id: 43,
+            name: 'bar',
+            absolutePath: 'C:\\foo\\bar'
+        };
     });
 
     beforeEach(async () => {
@@ -31,33 +40,43 @@ describe('FolderController', () => {
 
     describe('create', () => {
         it('should return a folder', async () => {
-            jest.spyOn(folderService, 'create').mockImplementation(() => new Folder());
+            jest.spyOn(folderService, 'create').mockImplementation(() => dummyFolder);
             const result = await folderController.create({ foo: 'bar' });
 
             expect(result).toBeDefined();
-            expect(result instanceof Folder).toBeTrue();
+            expect(result).toContainAllKeys(['id', 'name', 'absolutePath']);
+        });
+    });
+
+    describe('createByPath', () => {
+        it('should return a folder', async () => {
+            jest.spyOn(folderService, 'createFolderByPath').mockImplementation(() => dummyFolder);
+            const result: IFolderEntityDto = await folderController.createByPath({ path: 'some/path' });
+
+            expect(result).toBeDefined();
+            expect(result).toContainAllKeys(['id', 'name', 'absolutePath']);
         });
     });
 
     describe('findAll', () => {
         it('should return an array of folders', async () => {
-            jest.spyOn(folderService, 'findAll').mockImplementation(() => [new Folder(), new Folder()]);
+            jest.spyOn(folderService, 'findAll').mockImplementation(() => [dummyFolder, dummyFolder]);
             const result = await folderController.findAll();
 
             expect(result).toBeDefined();
             expect(result).toBeArrayOfSize(2);
-            expect(result[0] instanceof Folder).toBeTrue();
-            expect(result[1] instanceof Folder).toBeTrue();
+            expect(result[0]).toContainAllKeys(['id', 'name', 'absolutePath']);
+            expect(result[1]).toContainAllKeys(['id', 'name', 'absolutePath']);
         });
     });
 
     describe('findOne', () => {
         it('should return a folder', async () => {
-            jest.spyOn(folderService, 'findOne').mockImplementation(() => new Folder());
+            jest.spyOn(folderService, 'findOne').mockImplementation(() => dummyFolder);
             const result = await folderController.findOne(42);
 
             expect(result).toBeDefined();
-            expect(result instanceof Folder).toBeTrue();
+            expect(result).toContainAllKeys(['id', 'name', 'absolutePath']);
         });
     });
 
@@ -72,12 +91,11 @@ describe('FolderController', () => {
     });
 
     describe('remove', () => {
-        it('should return an image', async () => {
-            jest.spyOn(folderService, 'remove').mockImplementation(() => new Folder());
+        it('should return a folder', async () => {
+            jest.spyOn(folderService, 'remove').mockImplementation(() => dummyFolder);
             const result = await folderController.remove(42);
 
-            expect(result).toBeDefined();
-            expect(result instanceof Folder).toBeTrue();
+            expect(result).toBeUndefined();
         });
     });
 });

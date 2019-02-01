@@ -3,20 +3,20 @@ import { ExplorerService } from './explorer.service';
 import { createTestModule } from '../../test/utils/test-utils';
 import { FolderService } from '../folder/folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { Folder } from '../entity/folder.entity';
-import { Image } from '../entity/image.entity';
-import { IFileDto } from '../../../shared/interface/IFileDto';
-import { FolderDto } from '../../../shared/FolderDto';
-import { ImageDto } from '../../../shared/ImageDto';
 import { DuplicateFileException } from '../../../shared/exception/duplicate-file.exception';
+import { IFsFile } from '../../../shared/IFsFile';
+import { IFolderEntity } from '../../../shared/IFolderEntity';
+import { IImageEntity } from '../../../shared/IImageEntity';
+import { IMergedFolderDto } from '../../../shared/IMergedFolder.dto';
+import { IMergedImageDto } from '../../../shared/IMergedImage.dto';
 
 describe('ExplorerService', () => {
     let explorerService: ExplorerService;
 
-    let fsFolders: IFileDto[];
-    let dbFolders: Folder[];
-    let fsImages: IFileDto[];
-    let dbImages: Image[];
+    let fsFolders: IFsFile[];
+    let dbFolders: IFolderEntity[];
+    let fsImages: IFsFile[];
+    let dbImages: IImageEntity[];
 
     beforeAll(async () => {
         const module = await createTestModule({
@@ -113,12 +113,12 @@ describe('ExplorerService', () => {
 
     describe('getMergedFolderList', () => {
         it('should return an empty array when no folders given', async () => {
-            const result: FolderDto[] = await explorerService.getMergedFolderList([], []);
+            const result: IMergedFolderDto[] = await explorerService.getMergedFolderList([], []);
             expect(result).toBeArrayOfSize(0);
         });
 
         it('should merge correctly when FS and DB are equal', async () => {
-            const result: FolderDto[] = await explorerService.getMergedFolderList(fsFolders, dbFolders);
+            const result: IMergedFolderDto[] = await explorerService.getMergedFolderList(fsFolders, dbFolders);
             expect(result).toBeArrayOfSize(2);
 
             expect(result.map(folderDto => folderDto.id)).toEqual([1, 2]);
@@ -134,7 +134,7 @@ describe('ExplorerService', () => {
                 isFile: false,
                 isDirectory: true
             }); // add 3rd element
-            const result: FolderDto[] = await explorerService.getMergedFolderList(fsFolders, dbFolders);
+            const result: IMergedFolderDto[] = await explorerService.getMergedFolderList(fsFolders, dbFolders);
             expect(result).toBeArrayOfSize(3);
 
             expect(result.map(folderDto => folderDto.id)).toEqual([1, 2, undefined]);
@@ -145,7 +145,7 @@ describe('ExplorerService', () => {
 
         it('should merge correctly when FS contains removed folders', async () => {
             fsFolders.pop(); // remove last element
-            const result: FolderDto[] = await explorerService.getMergedFolderList(fsFolders, dbFolders);
+            const result: IMergedFolderDto[] = await explorerService.getMergedFolderList(fsFolders, dbFolders);
             expect(result).toBeArrayOfSize(2);
 
             expect(result.map(folderDto => folderDto.id)).toEqual([1, 2]);
@@ -197,12 +197,12 @@ describe('ExplorerService', () => {
 
     describe('getMergedImageList', () => {
         it('should return an empty array when no images given', async () => {
-            const result: ImageDto[] = await explorerService.getMergedImageList([], []);
+            const result: IMergedImageDto[] = await explorerService.getMergedImageList([], []);
             expect(result).toBeArrayOfSize(0);
         });
 
         it('should merge correctly when FS and DB are equal', async () => {
-            const result: ImageDto[] = await explorerService.getMergedImageList(fsImages, dbImages);
+            const result: IMergedImageDto[] = await explorerService.getMergedImageList(fsImages, dbImages);
             expect(result).toBeArrayOfSize(2);
 
             expect(result.map(imageDto => imageDto.id)).toEqual([1, 2]);
@@ -220,7 +220,7 @@ describe('ExplorerService', () => {
                 isFile: true,
                 isDirectory: false
             }); // add 3rd element
-            const result: ImageDto[] = await explorerService.getMergedImageList(fsImages, dbImages);
+            const result: IMergedImageDto[] = await explorerService.getMergedImageList(fsImages, dbImages);
             expect(result).toBeArrayOfSize(3);
 
             expect(result.map(imageDto => imageDto.id)).toEqual([1, 2, undefined]);
@@ -232,7 +232,7 @@ describe('ExplorerService', () => {
 
         it('should merge correctly when FS contains removed images', async () => {
             fsImages.pop(); // remove last element
-            const result: ImageDto[] = await explorerService.getMergedImageList(fsImages, dbImages);
+            const result: IMergedImageDto[] = await explorerService.getMergedImageList(fsImages, dbImages);
             expect(result).toBeArrayOfSize(2);
 
             expect(result.map(imageDto => imageDto.id)).toEqual([1, 2]);

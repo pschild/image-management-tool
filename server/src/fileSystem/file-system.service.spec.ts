@@ -93,7 +93,6 @@ describe('FileSystemService', () => {
             expect(systemDrives).toBeArrayOfSize(2);
             expect(systemDrives[0].name).toBe('C:');
             expect(systemDrives[0].absolutePath).toBe('C:');
-            expect(systemDrives[0].ext).toBeUndefined();
             expect(systemDrives[0].isFile).toBeUndefined();
             expect(systemDrives[0].isDirectory).toBeTrue();
         });

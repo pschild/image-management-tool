@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult, DeepPartial, FindConditions } from 'typeorm';
 import { Image } from '../entity/image.entity';
+import { IImageEntity } from '../../../shared/IImageEntity';
 
 @Injectable()
 export class ImageService {
@@ -10,38 +11,38 @@ export class ImageService {
         private readonly repository: Repository<Image>
     ) { }
 
-    findOne(id: number): Promise<Image> {
+    findOne(id: number): Promise<IImageEntity> {
         return this.repository.findOne(id);
     }
 
-    findAll(): Promise<Image[]> {
+    findAll(): Promise<IImageEntity[]> {
         return this.repository.find();
     }
 
-    findAllByFolderId(folderId: number) {
+    findAllByFolderId(folderId: number): Promise<IImageEntity[]> {
         return this.repository
             .createQueryBuilder('image')
             .innerJoinAndSelect('image.parentFolder', 'folder', 'folder.id = :folderId', { folderId })
             .getMany();
     }
 
-    findOneByConditions(conditions: FindConditions<Image>) {
+    findOneByConditions(conditions: FindConditions<IImageEntity>): Promise<IImageEntity> {
         return this.repository.findOne(conditions);
     }
 
-    create(image: DeepPartial<Image>): Promise<Image> {
+    create(image: DeepPartial<IImageEntity>): Promise<IImageEntity> {
         return this.repository.save(image);
     }
 
-    update(id: number, image: DeepPartial<Image>): Promise<UpdateResult> {
+    update(id: number, image: DeepPartial<IImageEntity>): Promise<UpdateResult> {
         return this.repository.update(id, image);
     }
 
-    updateByConditions(conditions: FindConditions<Image>, image: DeepPartial<Image>): Promise<UpdateResult> {
+    updateByConditions(conditions: FindConditions<IImageEntity>, image: DeepPartial<IImageEntity>): Promise<UpdateResult> {
         return this.repository.update(conditions, image);
     }
 
-    remove(id: number): Promise<Image> {
+    remove(id: number): Promise<IImageEntity> {
         return this.repository.remove(
             this.repository.create({ id })
         );

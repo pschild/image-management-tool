@@ -1,23 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, Select, Actions, ofActionSuccessful } from '@ngxs/store';
-import { NavigateToFolder, NavigateBack, CreateFolderByPath, RelocateFolder, CreateImageByPath, RelocateImage } from './explorer.actions';
+import { NavigateToFolder, NavigateBack, RelocateFolder, RelocateImage } from './explorer.actions';
 import { ExplorerState } from './explorer.state';
 import { DialogService } from '../core/services/dialog.service';
-import { FolderDto } from '../../../../shared/FolderDto';
-import { ImageDto } from '../../../../shared/ImageDto';
-import { RemoveFolder, FolderCreated } from './explorer-folder/explorer-folder.actions';
+import { RemoveFolder, FolderCreated, CreateFolderByPath } from './explorer-folder/explorer-folder.actions';
 import { ExplorerFolderState } from './explorer-folder/explorer-folder.state';
-import { IFolderDto } from '../../../../shared/interface/IFolderDto';
 import { ExplorerImageState } from './explorer-image/explorer-image.state';
-import { IImageDto } from '../../../../shared/interface/IImageDto';
-import { RemoveImage, ImageCreated } from './explorer-image/explorer-image.actions';
+import { RemoveImage, ImageCreated, CreateImageByPath } from './explorer-image/explorer-image.actions';
 import { IDialogResult } from '../shared/dialog/dialog-config';
 import { DialogResult } from '../shared/dialog/dialog.enum';
 import { ToastrService } from 'ngx-toastr';
 import { first } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as path from 'path';
+import { IMergedFolderDto } from '../../../../shared/IMergedFolder.dto';
+import { IMergedImageDto } from '../../../../shared/IMergedImage.dto';
 
 @Component({
   selector: 'app-explorer',
@@ -27,8 +25,8 @@ import * as path from 'path';
 export class ExplorerComponent implements OnInit {
 
   @Select(ExplorerState.currentPath) currentPath$: Observable<string[]>;
-  @Select(ExplorerFolderState.folders) folders$: Observable<IFolderDto>;
-  @Select(ExplorerImageState.images) images$: Observable<IImageDto>;
+  @Select(ExplorerFolderState.folders) folders$: Observable<IMergedFolderDto[]>;
+  @Select(ExplorerImageState.images) images$: Observable<IMergedImageDto[]>;
 
   constructor(
     private store: Store,
@@ -41,7 +39,7 @@ export class ExplorerComponent implements OnInit {
   ngOnInit() {
   }
 
-  openFolder(folder: FolderDto) {
+  openFolder(folder: IMergedFolderDto) {
     this.store.dispatch(new NavigateToFolder(folder.name));
   }
 
@@ -49,7 +47,7 @@ export class ExplorerComponent implements OnInit {
     this.store.dispatch(new NavigateBack());
   }
 
-  handleRemovedFolder(folder: FolderDto) {
+  handleRemovedFolder(folder: IMergedFolderDto) {
     this.dialogService.showRelocationDialog({
       title: 'Ordner suchen',
       message: `Der Ordner ${folder.name} wurde nicht mehr im System gefunden.
@@ -69,7 +67,7 @@ export class ExplorerComponent implements OnInit {
     });
   }
 
-  handleUntrackedFolder(folder: FolderDto) {
+  handleUntrackedFolder(folder: IMergedFolderDto) {
     this.store.dispatch(new CreateFolderByPath(folder.absolutePath));
     this.actions$.pipe(
       ofActionSuccessful(FolderCreated),
@@ -79,7 +77,7 @@ export class ExplorerComponent implements OnInit {
     });
   }
 
-  handleRemovedImage(image: ImageDto) {
+  handleRemovedImage(image: IMergedImageDto) {
     this.dialogService.showRelocationDialog({
       title: 'Bild suchen',
       message: `Das Bild ${image.absolutePath} wurde nicht mehr im System gefunden.
@@ -99,7 +97,7 @@ export class ExplorerComponent implements OnInit {
     });
   }
 
-  handleUntrackedImage(image: ImageDto) {
+  handleUntrackedImage(image: IMergedImageDto) {
     this.store.dispatch(new CreateImageByPath(image.absolutePath, image.name, image.extension));
     this.actions$.pipe(
       ofActionSuccessful(ImageCreated),
@@ -109,7 +107,7 @@ export class ExplorerComponent implements OnInit {
     });
   }
 
-  handleImageClicked(image: ImageDto) {
+  handleImageClicked(image: IMergedImageDto) {
     if (image.removedInFs) {
       return;
     } else if (image.addedInFs) {

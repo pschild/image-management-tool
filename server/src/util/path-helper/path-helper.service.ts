@@ -31,4 +31,15 @@ export class PathHelperService {
     isSystemDrive(givenPath: string): boolean {
         return givenPath.match(this.DRIVE_LETTER_REGEX) !== null;
     }
+
+    getParentFolderPathParts(givenPath: string): string[] {
+        const pathParts = givenPath.split(path.sep);
+        const parentPathParts = pathParts.slice(0, -1);
+        return parentPathParts;
+    }
+
+    getParentFolderPath(givenPath: string): string {
+        const parentPathParts = this.getParentFolderPathParts(givenPath);
+        return parentPathParts.join(path.sep);
+    }
 }

@@ -8,11 +8,12 @@ import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FileSystemService } from '../fileSystem/file-system.service';
 import { ImageService } from '../image/image.service';
 import * as drivelist from 'drivelist';
-import { Folder } from '../entity/folder.entity';
-import { IFolderContentDto } from '../../../shared/interface/IFolderContentDto';
 import { FileSystemException } from '../../../shared/exception/file-system.exception';
 import { RelocationException } from '../../../shared/exception/relocation.exception';
 import { FileNotFoundException } from '../../../shared/exception/file-not-found.exception';
+import { IExplorerContentDto } from '../../../shared/IExplorerContent.dto';
+import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
+import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 
 describe('ExplorerController', () => {
     let connection: Connection;
@@ -25,7 +26,15 @@ describe('ExplorerController', () => {
     beforeAll(async () => {
         const module = await createTestModule({
             controllers: [ExplorerController],
-            providers: [FolderService, ExplorerService, FileSystemService, PathHelperService, ImageService]
+            providers: [
+                FolderService,
+                ExplorerService,
+                FileSystemService,
+                PathHelperService,
+                ImageService,
+                FolderEntityToDtoMapper,
+                ImageEntityToDtoMapper
+            ]
         });
         connection = module.get<Connection>(Connection);
         explorerController = module.get<ExplorerController>(ExplorerController);
@@ -75,8 +84,8 @@ describe('ExplorerController', () => {
         it('should return a correctly merged result', async () => {
             const f2 = await folderService.findOneByName('F2');
             const f2Path = await folderService.buildPathByFolderId(f2.id);
-            const result: IFolderContentDto | FileSystemException = await explorerController.getContentByFolderPath(f2Path);
-            const mergeResult = result as IFolderContentDto;
+            const result: IExplorerContentDto | FileSystemException = await explorerController.getContentByFolderPath(f2Path);
+            const mergeResult = result as IExplorerContentDto;
 
             expect(mergeResult.folders).toBeDefined();
             expect(mergeResult.folders).toBeArrayOfSize(2);
@@ -105,8 +114,8 @@ describe('ExplorerController', () => {
                 ]);
             });
 
-            const result: IFolderContentDto | FileSystemException = await explorerController.getSystemDrives();
-            const mergeResult = result as IFolderContentDto;
+            const result: IExplorerContentDto | FileSystemException = await explorerController.getSystemDrives();
+            const mergeResult = result as IExplorerContentDto;
 
             expect(mergeResult.folders).toBeDefined();
             expect(mergeResult.folders).toBeArrayOfSize(2);
@@ -127,16 +136,6 @@ describe('ExplorerController', () => {
 
             expect(result).toBeDefined();
             expect(result).toBeString();
-        });
-    });
-
-    describe('createByPath', () => {
-        it('should return a string', async () => {
-            const m = jest.spyOn(folderService, 'getFolderByPath').mockImplementation(() => new Folder());
-            const result: Folder = await explorerController.createByPath({ path: 'some/path' });
-
-            expect(result).toBeDefined();
-            m.mockRestore();
         });
     });
 
