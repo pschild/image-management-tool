@@ -1,25 +1,29 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { ImageService } from './image.service';
-import { Image } from '../entity/image.entity';
 import { UpdateResult } from 'typeorm';
+import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
+import { IImageEntityDto } from '../../../shared/IImageEntity.dto';
 
 @Controller('image')
 export class ImageController {
-    constructor(private readonly imageService: ImageService) { }
+    constructor(
+        private readonly imageService: ImageService,
+        private readonly imageEntityToDtoMapper: ImageEntityToDtoMapper
+    ) { }
 
     @Post()
-    create(@Body() data): Promise<Image> {
-        return this.imageService.create(data);
+    async create(@Body() data): Promise<IImageEntityDto> {
+        return this.imageEntityToDtoMapper.map(await this.imageService.create(data));
     }
 
     @Get()
-    findAll(): Promise<Image[]> {
-        return this.imageService.findAll();
+    async findAll(): Promise<IImageEntityDto[]> {
+        return this.imageEntityToDtoMapper.mapAll(await this.imageService.findAll());
     }
 
     @Get(':id')
-    findOne(@Param('id') id): Promise<Image> {
-        return this.imageService.findOne(id);
+    async findOne(@Param('id') id): Promise<IImageEntityDto> {
+        return this.imageEntityToDtoMapper.map(await this.imageService.findOne(id));
     }
 
     @Put(':id')
@@ -28,7 +32,7 @@ export class ImageController {
     }
 
     @Delete(':id')
-    remove(@Param('id') id): Promise<Image> {
-        return this.imageService.remove(id);
+    async remove(@Param('id') id): Promise<IImageEntityDto> {
+        return this.imageEntityToDtoMapper.map(await this.imageService.remove(id));
     }
 }

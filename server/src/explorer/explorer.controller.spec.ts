@@ -12,7 +12,10 @@ import { Folder } from '../entity/folder.entity';
 import { FileSystemException } from '../../../shared/exception/file-system.exception';
 import { RelocationException } from '../../../shared/exception/relocation.exception';
 import { FileNotFoundException } from '../../../shared/exception/file-not-found.exception';
-import { IFolderContentDto } from '../../../shared/IFolderContentDto';
+import { IExplorerContentDto } from '../../../shared/IExplorerContent.dto';
+import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
+import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
+import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 
 describe('ExplorerController', () => {
     let connection: Connection;
@@ -25,7 +28,15 @@ describe('ExplorerController', () => {
     beforeAll(async () => {
         const module = await createTestModule({
             controllers: [ExplorerController],
-            providers: [FolderService, ExplorerService, FileSystemService, PathHelperService, ImageService]
+            providers: [
+                FolderService,
+                ExplorerService,
+                FileSystemService,
+                PathHelperService,
+                ImageService,
+                FolderEntityToDtoMapper,
+                ImageEntityToDtoMapper
+            ]
         });
         connection = module.get<Connection>(Connection);
         explorerController = module.get<ExplorerController>(ExplorerController);
@@ -75,39 +86,24 @@ describe('ExplorerController', () => {
         it('should return a correctly merged result', async () => {
             const f2 = await folderService.findOneByName('F2');
             const f2Path = await folderService.buildPathByFolderId(f2.id);
-            const result: IFolderContentDto | FileSystemException = await explorerController.getContentByFolderPath(f2Path);
-            const mergeResult = result as IFolderContentDto;
+            const result: IExplorerContentDto | FileSystemException = await explorerController.getContentByFolderPath(f2Path);
+            const mergeResult = result as IExplorerContentDto;
 
             expect(mergeResult.folders).toBeDefined();
             expect(mergeResult.folders).toBeArrayOfSize(2);
             expect(mergeResult.images).toBeDefined();
             expect(mergeResult.images).toBeArrayOfSize(2);
 
-            expect(mergeResult.folders[0].dbFolder.id).toBe(4);
-            expect(mergeResult.folders[0].dbFolder.name).toBe('F3');
-            expect(mergeResult.folders[0].fsFolder.name).toBe('F3');
-            expect(mergeResult.folders[0].addedInFs).toBeFalse();
-            expect(mergeResult.folders[0].removedInFs).toBeFalse();
+            expect(mergeResult.folders.map(folderDto => folderDto.id)).toEqual([4, undefined]);
+            expect(mergeResult.folders.map(folderDto => folderDto.name)).toEqual(['F3', 'new folder']);
+            expect(mergeResult.folders.map(folderDto => folderDto.addedInFs)).toEqual([false, true]);
+            expect(mergeResult.folders.map(folderDto => folderDto.removedInFs)).toEqual([false, false]);
 
-            expect(mergeResult.folders[1].dbFolder).toBeNull();
-            expect(mergeResult.folders[1].fsFolder.name).toBe('new folder');
-            expect(mergeResult.folders[1].addedInFs).toBeTrue();
-            expect(mergeResult.folders[1].removedInFs).toBeFalse();
-
-            expect(mergeResult.images[0].dbImage.id).toBe(4);
-            expect(mergeResult.images[0].dbImage.name).toBe('dummy-image-4');
-            expect(mergeResult.images[0].dbImage.extension).toBe('jpeg');
-            expect(mergeResult.images[0].fsImage.name).toBe('dummy-image-4');
-            expect(mergeResult.images[0].fsImage.extension).toBe('jpeg');
-            expect(mergeResult.images[0].addedInFs).toBeFalse();
-            expect(mergeResult.images[0].removedInFs).toBeFalse();
-
-            expect(mergeResult.images[1].dbImage.id).toBe(5);
-            expect(mergeResult.images[1].dbImage.name).toBe('dummy-image-5');
-            expect(mergeResult.images[1].dbImage.extension).toBe('TIFF');
-            expect(mergeResult.images[1].fsImage).toBeNull();
-            expect(mergeResult.images[1].addedInFs).toBeFalse();
-            expect(mergeResult.images[1].removedInFs).toBeTrue();
+            expect(mergeResult.images.map(imageDto => imageDto.id)).toEqual([4, 5]);
+            expect(mergeResult.images.map(imageDto => imageDto.name)).toEqual(['dummy-image-4', 'dummy-image-5']);
+            expect(mergeResult.images.map(imageDto => imageDto.extension)).toEqual(['jpeg', 'TIFF']);
+            expect(mergeResult.images.map(imageDto => imageDto.addedInFs)).toEqual([false, false]);
+            expect(mergeResult.images.map(imageDto => imageDto.removedInFs)).toEqual([false, true]);
         });
     });
 
@@ -120,16 +116,16 @@ describe('ExplorerController', () => {
                 ]);
             });
 
-            const result: IFolderContentDto | FileSystemException = await explorerController.getSystemDrives();
-            const mergeResult = result as IFolderContentDto;
+            const result: IExplorerContentDto | FileSystemException = await explorerController.getSystemDrives();
+            const mergeResult = result as IExplorerContentDto;
 
             expect(mergeResult.folders).toBeDefined();
             expect(mergeResult.folders).toBeArrayOfSize(2);
             expect(mergeResult.images).toBeDefined();
             expect(mergeResult.images).toBeArrayOfSize(0);
 
-            expect(mergeResult.folders.map(folderDto => folderDto.dbFolder.id)).toEqual([1, 5]);
-            expect(mergeResult.folders.map(folderDto => folderDto.dbFolder.name)).toEqual(['C:', 'D:']);
+            expect(mergeResult.folders.map(folderDto => folderDto.id)).toEqual([1, 5]);
+            expect(mergeResult.folders.map(folderDto => folderDto.name)).toEqual(['C:', 'D:']);
             expect(mergeResult.folders.map(folderDto => folderDto.addedInFs)).toEqual([false, false]);
             expect(mergeResult.folders.map(folderDto => folderDto.removedInFs)).toEqual([false, false]);
         });
@@ -148,7 +144,7 @@ describe('ExplorerController', () => {
     describe('createByPath', () => {
         it('should return a string', async () => {
             const m = jest.spyOn(folderService, 'getFolderByPath').mockImplementation(() => new Folder());
-            const result: Folder = await explorerController.createByPath({ path: 'some/path' });
+            const result: IFolderEntityDto = await explorerController.createByPath({ path: 'some/path' });
 
             expect(result).toBeDefined();
             m.mockRestore();

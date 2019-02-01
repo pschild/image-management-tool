@@ -8,22 +8,22 @@ import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 export class FolderController {
     constructor(
         private readonly folderService: FolderService,
-        private readonly mapper: FolderEntityToDtoMapper
+        private readonly folderEntityToDtoMapper: FolderEntityToDtoMapper
     ) { }
 
     @Post()
     async create(@Body() data): Promise<IFolderEntityDto> {
-        return this.mapper.map(await this.folderService.create(data));
+        return this.folderEntityToDtoMapper.map(await this.folderService.create(data));
     }
 
     @Get()
     async findAll(): Promise<IFolderEntityDto[]> {
-        return this.mapper.mapAll(await this.folderService.findAll());
+        return this.folderEntityToDtoMapper.mapAll(await this.folderService.findAll());
     }
 
     @Get(':id')
     async findOne(@Param('id') id): Promise<IFolderEntityDto> {
-        return this.mapper.map(await this.folderService.findOne(id));
+        return this.folderEntityToDtoMapper.map(await this.folderService.findOne(id));
     }
 
     @Put(':id')
@@ -33,6 +33,6 @@ export class FolderController {
 
     @Delete(':id')
     async remove(@Param('id') id): Promise<IFolderEntityDto> {
-        return this.mapper.map(await this.folderService.remove(id));
+        return this.folderEntityToDtoMapper.map(await this.folderService.remove(id));
     }
 }
