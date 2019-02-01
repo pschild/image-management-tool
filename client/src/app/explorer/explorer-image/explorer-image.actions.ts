@@ -1,5 +1,5 @@
-import { IImageEntityDto } from '../../../../../shared/IImageEntity.dto';
-import { IMergedImageDto } from '../../../../../shared/IMergedImage.dto';
+import { IImageEntityDto } from '../../../../../shared/dto/IImageEntity.dto';
+import { IMergedImageDto } from '../../../../../shared/dto/IMergedImage.dto';
 
 export class ImagesLoaded {
     static readonly type = '[ExplorerImage] ImagesLoaded';

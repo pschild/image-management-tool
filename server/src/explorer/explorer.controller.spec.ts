@@ -11,9 +11,12 @@ import * as drivelist from 'drivelist';
 import { FileSystemException } from '../../../shared/exception/file-system.exception';
 import { RelocationException } from '../../../shared/exception/relocation.exception';
 import { FileNotFoundException } from '../../../shared/exception/file-not-found.exception';
-import { IExplorerContentDto } from '../../../shared/IExplorerContent.dto';
+import { IExplorerContentDto } from '../../../shared/dto/IExplorerContent.dto';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
+import { PersonEntityToDtoMapper } from '../mapper/PersonEntityToDto.mapper';
+import { PlaceEntityToDtoMapper } from '../mapper/PlaceEntityToDto.mapper';
+import { TagEntityToDtoMapper } from '../mapper/TagEntityToDto.mapper';
 
 describe('ExplorerController', () => {
     let connection: Connection;
@@ -32,8 +35,11 @@ describe('ExplorerController', () => {
                 FileSystemService,
                 PathHelperService,
                 ImageService,
+                ImageEntityToDtoMapper,
                 FolderEntityToDtoMapper,
-                ImageEntityToDtoMapper
+                PersonEntityToDtoMapper,
+                PlaceEntityToDtoMapper,
+                TagEntityToDtoMapper
             ]
         });
         connection = module.get<Connection>(Connection);

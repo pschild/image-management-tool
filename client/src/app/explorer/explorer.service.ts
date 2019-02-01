@@ -4,9 +4,9 @@ import * as path from 'path';
 import { catchError, map } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 import { AppConfig } from '../../environments/environment';
-import { IExplorerContentDto } from '../../../../shared/IExplorerContent.dto';
-import { IFolderEntityDto } from '../../../../shared/IFolderEntity.dto';
-import { IImageEntityDto } from '../../../../shared/IImageEntity.dto';
+import { IExplorerContentDto } from '../../../../shared/dto/IExplorerContent.dto';
+import { IFolderEntityDto } from '../../../../shared/dto/IFolderEntity.dto';
+import { IImageEntityDto } from '../../../../shared/dto/IImageEntity.dto';
 
 @Injectable()
 export class ExplorerService {

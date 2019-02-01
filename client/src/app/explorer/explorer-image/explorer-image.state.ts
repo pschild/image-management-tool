@@ -3,8 +3,8 @@ import { ImageService } from '../../image/image.service';
 import { tap } from 'rxjs/operators';
 import { ImagesLoaded, RemoveImage, CreateImageByPath, ImageCreated } from './explorer-image.actions';
 import { RefreshContent } from '../explorer.actions';
-import { IMergedImageDto } from '../../../../../shared/IMergedImage.dto';
-import { IImageEntityDto } from '../../../../../shared/IImageEntity.dto';
+import { IMergedImageDto } from '../../../../../shared/dto/IMergedImage.dto';
+import { IImageEntityDto } from '../../../../../shared/dto/IImageEntity.dto';
 
 export interface ExplorerImageStateModel {
     images: IMergedImageDto[];

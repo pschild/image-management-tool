@@ -1,8 +1,8 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { IMapper } from './IMapper';
 import { FolderService } from '../folder/folder.service';
-import { IImageEntity } from '../../../shared/IImageEntity';
-import { IImageEntityDto } from '../../../shared/IImageEntity.dto';
+import { IImageEntity } from '../interface/IImageEntity';
+import { IImageEntityDto } from '../../../shared/dto/IImageEntity.dto';
 import * as path from 'path';
 import { FolderEntityToDtoMapper } from './FolderEntityToDto.mapper';
 import { PersonEntityToDtoMapper } from './PersonEntityToDto.mapper';
@@ -46,7 +46,9 @@ export class ImageEntityToDtoMapper implements IMapper<IImageEntity, IImageEntit
     }
 
     mapAll(entities: IImageEntity[]): Promise<IImageEntityDto[]> {
-        const r = entities.map(async (entity: IImageEntity) => await this.map(entity));
-        return Promise.all(r);
+        if (entities && entities.length) {
+            const r = entities.map(async (entity: IImageEntity) => await this.map(entity));
+            return Promise.all(r);
+        }
     }
 }

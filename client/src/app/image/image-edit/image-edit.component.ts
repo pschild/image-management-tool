@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '../image.service';
 import { BehaviorSubject } from 'rxjs';
-import { IImageEntityDto } from '../../../../../shared/IImageEntity.dto';
+import { IImageEntityDto } from '../../../../../shared/dto/IImageEntity.dto';
 
 @Component({
   selector: 'app-image-edit',

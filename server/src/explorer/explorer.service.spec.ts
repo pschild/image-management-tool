@@ -4,11 +4,11 @@ import { createTestModule } from '../../test/utils/test-utils';
 import { FolderService } from '../folder/folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { DuplicateFileException } from '../../../shared/exception/duplicate-file.exception';
-import { IFsFile } from '../../../shared/IFsFile';
-import { IFolderEntity } from '../../../shared/IFolderEntity';
-import { IImageEntity } from '../../../shared/IImageEntity';
-import { IMergedFolderDto } from '../../../shared/IMergedFolder.dto';
-import { IMergedImageDto } from '../../../shared/IMergedImage.dto';
+import { IFsFile } from '../interface/IFsFile';
+import { IFolderEntity } from '../interface/IFolderEntity';
+import { IImageEntity } from '../interface/IImageEntity';
+import { IMergedFolderDto } from '../../../shared/dto/IMergedFolder.dto';
+import { IMergedImageDto } from '../../../shared/dto/IMergedImage.dto';
 
 describe('ExplorerService', () => {
     let explorerService: ExplorerService;

@@ -14,8 +14,8 @@ import { ToastrService } from 'ngx-toastr';
 import { first } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as path from 'path';
-import { IMergedFolderDto } from '../../../../shared/IMergedFolder.dto';
-import { IMergedImageDto } from '../../../../shared/IMergedImage.dto';
+import { IMergedFolderDto } from '../../../../shared/dto/IMergedFolder.dto';
+import { IMergedImageDto } from '../../../../shared/dto/IMergedImage.dto';
 
 @Component({
   selector: 'app-explorer',

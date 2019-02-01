@@ -4,7 +4,7 @@ import * as os from 'os';
 import * as drivelist from 'drivelist';
 import { Injectable } from '@nestjs/common';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { IFsFile } from '../../../shared/IFsFile';
+import { IFsFile } from '../interface/IFsFile';
 
 @Injectable()
 export class FileSystemService {

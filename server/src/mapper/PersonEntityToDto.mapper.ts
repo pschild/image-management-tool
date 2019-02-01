@@ -1,7 +1,7 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { IMapper } from './IMapper';
-import { IPersonEntity } from '../../../shared/IPersonEntity';
-import { IPersonEntityDto } from '../../../shared/IPersonEntity.dto';
+import { IPersonEntity } from '../interface/IPersonEntity';
+import { IPersonEntityDto } from '../../../shared/dto/IPersonEntity.dto';
 import { ImageEntityToDtoMapper } from './ImageEntityToDto.mapper';
 
 @Injectable()
@@ -26,7 +26,9 @@ export class PersonEntityToDtoMapper implements IMapper<IPersonEntity, IPersonEn
     }
 
     mapAll(entities: IPersonEntity[]): Promise<IPersonEntityDto[]> {
-        const r = entities.map(async (entity: IPersonEntity) => await this.map(entity));
-        return Promise.all(r);
+        if (entities && entities.length) {
+            const r = entities.map(async (entity: IPersonEntity) => await this.map(entity));
+            return Promise.all(r);
+        }
     }
 }

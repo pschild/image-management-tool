@@ -5,7 +5,7 @@ import { FolderController } from './folder.controller';
 import { FolderService } from './folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
-import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
+import { IFolderEntityDto } from '../../../shared/dto/IFolderEntity.dto';
 
 describe('FolderController', () => {
     let connection: Connection;

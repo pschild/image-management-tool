@@ -1,5 +1,5 @@
-import { IMergedFolderDto } from '../../../../../shared/IMergedFolder.dto';
-import { IFolderEntityDto } from '../../../../../shared/IFolderEntity.dto';
+import { IMergedFolderDto } from '../../../../../shared/dto/IMergedFolder.dto';
+import { IFolderEntityDto } from '../../../../../shared/dto/IFolderEntity.dto';
 
 export class FoldersLoaded {
     static readonly type = '[ExplorerFolder] FoldersLoaded';

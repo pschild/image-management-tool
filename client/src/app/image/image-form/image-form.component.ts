@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IImageEntityDto } from '../../../../../shared/IImageEntity.dto';
+import { IImageEntityDto } from '../../../../../shared/dto/IImageEntity.dto';
 import { FormBuilder } from '@angular/forms';
 import { ImageService } from '../image.service';
 

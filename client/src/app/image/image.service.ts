@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../environments/environment';
-import { IImageEntityDto } from '../../../../shared/IImageEntity.dto';
-import { IMergedImageDto } from '../../../../shared/IMergedImage.dto';
+import { IImageEntityDto } from '../../../../shared/dto/IImageEntity.dto';
+import { IMergedImageDto } from '../../../../shared/dto/IMergedImage.dto';
 
 @Injectable()
 export class ImageService {

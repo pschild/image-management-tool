@@ -3,8 +3,8 @@ import { FolderService } from '../../folder/folder.service';
 import { tap } from 'rxjs/operators';
 import { RemoveFolder, FoldersLoaded, CreateFolderByPath, FolderCreated } from './explorer-folder.actions';
 import { RefreshContent } from '../explorer.actions';
-import { IMergedFolderDto } from '../../../../../shared/IMergedFolder.dto';
-import { IFolderEntityDto } from '../../../../../shared/IFolderEntity.dto';
+import { IMergedFolderDto } from '../../../../../shared/dto/IMergedFolder.dto';
+import { IFolderEntityDto } from '../../../../../shared/dto/IFolderEntity.dto';
 
 export interface ExplorerFolderStateModel {
     folders: IMergedFolderDto[];

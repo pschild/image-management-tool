@@ -14,9 +14,9 @@ import { ExplorerFolderState } from './explorer-folder/explorer-folder.state';
 import { FoldersLoaded } from './explorer-folder/explorer-folder.actions';
 import { ImagesLoaded } from './explorer-image/explorer-image.actions';
 import { ExplorerImageState } from './explorer-image/explorer-image.state';
-import { IFolderEntityDto } from '../../../../shared/IFolderEntity.dto';
-import { IImageEntityDto } from '../../../../shared/IImageEntity.dto';
-import { IExplorerContentDto } from '../../../../shared/IExplorerContent.dto';
+import { IFolderEntityDto } from '../../../../shared/dto/IFolderEntity.dto';
+import { IImageEntityDto } from '../../../../shared/dto/IImageEntity.dto';
+import { IExplorerContentDto } from '../../../../shared/dto/IExplorerContent.dto';
 
 export interface ExplorerStateModel {
     currentPath: string[];

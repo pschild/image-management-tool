@@ -4,7 +4,7 @@ import { Repository, UpdateResult, DeepPartial, FindConditions } from 'typeorm';
 import { Folder } from '../entity/folder.entity';
 import * as path from 'path';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { IFolderEntity } from '../../../shared/IFolderEntity';
+import { IFolderEntity } from '../interface/IFolderEntity';
 
 @Injectable()
 export class FolderService {

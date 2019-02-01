@@ -6,8 +6,12 @@ import { ImageService } from './image.service';
 import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 import { FolderService } from '../folder/folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { IImageEntityDto } from '../../../shared/IImageEntity.dto';
-import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
+import { IImageEntityDto } from '../../../shared/dto/IImageEntity.dto';
+import { IFolderEntityDto } from '../../../shared/dto/IFolderEntity.dto';
+import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
+import { PersonEntityToDtoMapper } from '../mapper/PersonEntityToDto.mapper';
+import { PlaceEntityToDtoMapper } from '../mapper/PlaceEntityToDto.mapper';
+import { TagEntityToDtoMapper } from '../mapper/TagEntityToDto.mapper';
 
 describe('ImageController', () => {
     let connection: Connection;
@@ -19,7 +23,16 @@ describe('ImageController', () => {
     beforeAll(async () => {
         const module = await createTestModule({
             controllers: [ImageController],
-            providers: [ImageService, FolderService, PathHelperService, ImageEntityToDtoMapper]
+            providers: [
+                ImageService,
+                FolderService,
+                PathHelperService,
+                ImageEntityToDtoMapper,
+                FolderEntityToDtoMapper,
+                PersonEntityToDtoMapper,
+                PlaceEntityToDtoMapper,
+                TagEntityToDtoMapper
+            ]
         });
         connection = module.get<Connection>(Connection);
         imageController = module.get<ImageController>(ImageController);
@@ -52,7 +65,7 @@ describe('ImageController', () => {
             const result = await imageController.create({ foo: 'bar' });
 
             expect(result).toBeDefined();
-            expect(result).toContainAllKeys(['id', 'name', 'extension', 'absolutePath']);
+            expect(result).toContainKeys(['id', 'name', 'extension', 'absolutePath']);
         });
     });
 
@@ -66,7 +79,7 @@ describe('ImageController', () => {
             });
 
             expect(result).toBeDefined();
-            expect(result).toContainAllKeys(['id', 'name', 'extension', 'absolutePath']);
+            expect(result).toContainKeys(['id', 'name', 'extension', 'absolutePath']);
         });
     });
 
@@ -77,8 +90,8 @@ describe('ImageController', () => {
 
             expect(result).toBeDefined();
             expect(result).toBeArrayOfSize(2);
-            expect(result[0]).toContainAllKeys(['id', 'name', 'extension', 'absolutePath']);
-            expect(result[1]).toContainAllKeys(['id', 'name', 'extension', 'absolutePath']);
+            expect(result[0]).toContainKeys(['id', 'name', 'extension', 'absolutePath']);
+            expect(result[1]).toContainKeys(['id', 'name', 'extension', 'absolutePath']);
         });
     });
 
@@ -88,7 +101,7 @@ describe('ImageController', () => {
             const result = await imageController.findOne(42);
 
             expect(result).toBeDefined();
-            expect(result).toContainAllKeys(['id', 'name', 'extension', 'absolutePath']);
+            expect(result).toContainKeys(['id', 'name', 'extension', 'absolutePath']);
         });
     });
 

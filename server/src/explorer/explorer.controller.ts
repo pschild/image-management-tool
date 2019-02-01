@@ -11,14 +11,14 @@ import { FileNotFoundException } from '../../../shared/exception/file-not-found.
 import { RelocationException } from '../../../shared/exception/relocation.exception';
 import { RelocationExceptionFilter } from '../filter/relocation-exception.filter';
 import { FileNotFoundExceptionFilter } from '../filter/file-not-found-exception.filter';
-import { IExplorerContentDto } from '../../../shared/IExplorerContent.dto';
-import { IFsFile } from '../../../shared/IFsFile';
-import { IFolderEntity } from '../../../shared/IFolderEntity';
-import { IImageEntity } from '../../../shared/IImageEntity';
-import { IMergedFolderDto } from '../../../shared/IMergedFolder.dto';
-import { IMergedImageDto } from '../../../shared/IMergedImage.dto';
-import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
-import { IImageEntityDto } from '../../../shared/IImageEntity.dto';
+import { IExplorerContentDto } from '../../../shared/dto/IExplorerContent.dto';
+import { IFsFile } from '../interface/IFsFile';
+import { IFolderEntity } from '../interface/IFolderEntity';
+import { IImageEntity } from '../interface/IImageEntity';
+import { IMergedFolderDto } from '../../../shared/dto/IMergedFolder.dto';
+import { IMergedImageDto } from '../../../shared/dto/IMergedImage.dto';
+import { IFolderEntityDto } from '../../../shared/dto/IFolderEntity.dto';
+import { IImageEntityDto } from '../../../shared/dto/IImageEntity.dto';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 

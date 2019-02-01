@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IMapper } from './IMapper';
-import { IFolderEntity } from '../../../shared/IFolderEntity';
-import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
+import { IFolderEntity } from '../interface/IFolderEntity';
+import { IFolderEntityDto } from '../../../shared/dto/IFolderEntity.dto';
 import { FolderService } from '../folder/folder.service';
 
 @Injectable()
@@ -20,7 +20,9 @@ export class FolderEntityToDtoMapper implements IMapper<IFolderEntity, IFolderEn
     }
 
     mapAll(entities: IFolderEntity[]): Promise<IFolderEntityDto[]> {
-        const r = entities.map(async (entity: IFolderEntity) => await this.map(entity));
-        return Promise.all(r);
+        if (entities && entities.length) {
+            const r = entities.map(async (entity: IFolderEntity) => await this.map(entity));
+            return Promise.all(r);
+        }
     }
 }

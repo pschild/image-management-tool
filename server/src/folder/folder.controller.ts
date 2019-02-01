@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode } from '@nestjs/common';
 import { FolderService } from './folder.service';
 import { UpdateResult } from 'typeorm';
-import { IFolderEntityDto } from '../../../shared/IFolderEntity.dto';
+import { IFolderEntityDto } from '../../../shared/dto/IFolderEntity.dto';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 
 @Controller('folder')

@@ -5,7 +5,7 @@ import { Folder } from '../entity/folder.entity';
 import { get } from 'request-promise';
 import * as path from 'path';
 import * as afs from 'async-file';
-import { IFolderEntity } from '../../../shared/IFolderEntity';
+import { IFolderEntity } from '../interface/IFolderEntity';
 
 @Injectable()
 export class WelcomeService {

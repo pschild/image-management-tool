@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Image } from './image.entity';
-import { IPersonEntity } from '../../../shared/IPersonEntity';
+import { IPersonEntity } from '../interface/IPersonEntity';
 
 @Entity()
 export class Person implements IPersonEntity {

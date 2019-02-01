@@ -2,11 +2,11 @@ import * as path from 'path';
 import { Injectable } from '@nestjs/common';
 import { FolderService } from '../folder/folder.service';
 import { DuplicateFileException } from '../../../shared/exception/duplicate-file.exception';
-import { IFsFile } from '../../../shared/IFsFile';
-import { IMergedFolderDto } from '../../../shared/IMergedFolder.dto';
-import { IMergedImageDto } from '../../../shared/IMergedImage.dto';
-import { IImageEntity } from '../../../shared/IImageEntity';
-import { IFolderEntity } from '../../../shared/IFolderEntity';
+import { IFsFile } from '../interface/IFsFile';
+import { IMergedFolderDto } from '../../../shared/dto/IMergedFolder.dto';
+import { IMergedImageDto } from '../../../shared/dto/IMergedImage.dto';
+import { IImageEntity } from '../interface/IImageEntity';
+import { IFolderEntity } from '../interface/IFolderEntity';
 
 @Injectable()
 export class ExplorerService {

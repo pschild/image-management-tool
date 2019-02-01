@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode } from '@nest
 import { ImageService } from './image.service';
 import { UpdateResult } from 'typeorm';
 import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
-import { IImageEntityDto } from '../../../shared/IImageEntity.dto';
+import { IImageEntityDto } from '../../../shared/dto/IImageEntity.dto';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FolderService } from '../folder/folder.service';
 

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../environments/environment';
-import { IMergedFolderDto } from '../../../../shared/IMergedFolder.dto';
-import { IFolderEntityDto } from '../../../../shared/IFolderEntity.dto';
+import { IMergedFolderDto } from '../../../../shared/dto/IMergedFolder.dto';
+import { IFolderEntityDto } from '../../../../shared/dto/IFolderEntity.dto';
 
 @Injectable()
 export class FolderService {

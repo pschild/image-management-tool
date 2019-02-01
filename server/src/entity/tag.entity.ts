@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Image } from './image.entity';
-import { ITagEntity } from '../../../shared/ITagEntity';
+import { ITagEntity } from '../interface/ITagEntity';
 
 @Entity()
 export class Tag implements ITagEntity {
