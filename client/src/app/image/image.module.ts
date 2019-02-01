@@ -6,11 +6,16 @@ import { ImageRoutingModule } from './image-routing.module';
 import { ImagePreviewComponent } from './image-preview/image-preview.component';
 import { ImageFormComponent } from './image-form/image-form.component';
 import { SharedModule } from '../shared/shared.module';
+import { MaterialModule } from '../material/material.module';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
     ImageRoutingModule
   ],
   declarations: [
