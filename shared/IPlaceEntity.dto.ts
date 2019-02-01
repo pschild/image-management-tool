@@ -6,6 +6,6 @@ export interface IPlaceEntityDto {
     address?: string;
     city?: string;
     country?: string;
-    dateAdded?: string;
+    dateAdded?: Date;
     images?: IImageEntityDto[];
 }

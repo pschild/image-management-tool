@@ -10,11 +10,13 @@ export class FolderEntityToDtoMapper implements IMapper<IFolderEntity, IFolderEn
     constructor(private readonly folderService: FolderService) { }
 
     async map(entity: IFolderEntity): Promise<IFolderEntityDto> {
-        return {
-            id: entity.id,
-            name: entity.name,
-            absolutePath: await this.folderService.buildPathByFolderId(entity.id)
-        };
+        if (entity) {
+            return {
+                id: entity.id,
+                name: entity.name,
+                absolutePath: await this.folderService.buildPathByFolderId(entity.id)
+            };
+        }
     }
 
     mapAll(entities: IFolderEntity[]): Promise<IFolderEntityDto[]> {

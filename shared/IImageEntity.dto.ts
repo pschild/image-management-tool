@@ -11,9 +11,9 @@ export interface IImageEntityDto {
     originalName?: string;
     description?: string;
     parentFolder?: IFolderEntityDto;
-    dateAdded?: string;
-    dateFrom?: string;
-    dateTo?: string;
+    dateAdded?: Date;
+    dateFrom?: Date;
+    dateTo?: Date;
     place?: IPlaceEntityDto;
     tags?: ITagEntityDto[];
     persons?: IPersonEntityDto[];
