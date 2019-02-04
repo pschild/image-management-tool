@@ -81,6 +81,7 @@ export class ExplorerService {
                 name: dbImage.name,
                 extension: dbImage.extension,
                 absolutePath: absolutePath,
+                size: accordingFsImage ? accordingFsImage.size : undefined,
                 addedInFs: false,
                 removedInFs: accordingFsImage === null
             });
@@ -94,6 +95,7 @@ export class ExplorerService {
                     name: fsImage.name,
                     extension: fsImage.extension,
                     absolutePath: fsImage.absolutePath,
+                    size: fsImage.size,
                     addedInFs: true,
                     removedInFs: false
                 } as IMergedImageDto;
