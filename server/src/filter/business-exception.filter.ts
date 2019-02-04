@@ -17,6 +17,7 @@ export class BusinessExceptionFilter implements ExceptionFilter {
             .status(status)
             .json({
                 success: false,
+                name: exception.name,
                 userMessage
             });
     }
