@@ -1,6 +1,6 @@
 <h1>Image</h1>
 
-<div *ngIf="image$ | async as image">
+<div class="image-edit-container" *ngIf="image$ | async as image">
     <app-image-preview [image]="image"></app-image-preview>
     <app-image-form [image]="image"></app-image-form>
 </div>
