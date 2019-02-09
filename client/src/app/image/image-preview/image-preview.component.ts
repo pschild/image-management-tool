@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { IImageDto } from '../../../../../shared/dto/IImage.dto';
 
 @Component({
   selector: 'app-image-preview',
@@ -7,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ImagePreviewComponent implements OnInit {
 
-  @Input() absoluteImagePath: string;
+  @Input() image: IImageDto;
 
   constructor() { }
 

@@ -27,7 +27,7 @@ export class ImageFormComponent implements OnInit {
   ngOnInit() {
     console.log('loaded image:', this.image);
     this.imageEditForm.patchValue({
-      // description: this.image.name
+      description: this.image.description
     });
   }
 
