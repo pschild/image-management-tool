@@ -2,9 +2,9 @@ import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode } from '@nest
 import { ImageService } from './image.service';
 import { UpdateResult } from 'typeorm';
 import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
-import { IImageEntityDto } from '../../../shared/dto/IImageEntity.dto';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FolderService } from '../folder/folder.service';
+import { ImageDto } from '../dto/Image.dto';
 
 @Controller('image')
 export class ImageController {
@@ -16,12 +16,12 @@ export class ImageController {
     ) { }
 
     @Post()
-    async create(@Body() data): Promise<IImageEntityDto> {
+    async create(@Body() data): Promise<ImageDto> {
         return this.imageEntityToDtoMapper.map(await this.imageService.create(data));
     }
 
     @Post('byPath')
-    async createByPath(@Body() body: {absolutePath: string; name: string; extension: string; }): Promise<IImageEntityDto> {
+    async createByPath(@Body() body: {absolutePath: string; name: string; extension: string; }): Promise<ImageDto> {
         const parentPathParts = this.pathHelperService.getParentFolderPath(body.absolutePath);
         const parentFolder = await this.folderService.getFolderOrCreateByPath(parentPathParts);
 
@@ -36,12 +36,12 @@ export class ImageController {
     }
 
     @Get()
-    async findAll(): Promise<IImageEntityDto[]> {
-        return this.imageEntityToDtoMapper.mapAll(await this.imageService.findAll());
+    async findAll(): Promise<ImageDto[]> {
+        return this.imageEntityToDtoMapper.mapAll(await this.imageService.findAll(true));
     }
 
     @Get(':id')
-    async findOne(@Param('id') id): Promise<IImageEntityDto> {
+    async findOne(@Param('id') id): Promise<ImageDto> {
         return this.imageEntityToDtoMapper.map(await this.imageService.findOne(id, true));
     }
 

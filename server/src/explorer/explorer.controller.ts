@@ -13,14 +13,14 @@ import { RelocationExceptionFilter } from '../filter/relocation-exception.filter
 import { FileNotFoundExceptionFilter } from '../filter/file-not-found-exception.filter';
 import { IExplorerContentDto } from '../../../shared/dto/IExplorerContent.dto';
 import { IFsFile } from '../interface/IFsFile';
-import { IImageEntity } from '../interface/IImageEntity';
 import { IMergedFolderDto } from '../../../shared/dto/IMergedFolder.dto';
 import { IMergedImageDto } from '../../../shared/dto/IMergedImage.dto';
-import { IImageEntityDto } from '../../../shared/dto/IImageEntity.dto';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 import { Folder } from '../entity/folder.entity';
 import { FolderDto } from '../dto/Folder.dto';
+import { Image } from '../entity/image.entity';
+import { ImageDto } from '../dto/Image.dto';
 
 @Controller('explorer')
 export class ExplorerController {
@@ -56,7 +56,7 @@ export class ExplorerController {
         const folderFromDb: Folder = await this.folderService.getFolderByPath(folderPath);
 
         let dbFolders: Folder[] = [];
-        let dbImages: IImageEntity[] = [];
+        let dbImages: Image[] = [];
         if (folderFromDb) {
             dbFolders = await this.folderService.findDirectDescendantsByFolder(folderFromDb);
             dbImages = await this.imageService.findAllByFolderId(folderFromDb.id);
@@ -131,7 +131,7 @@ export class ExplorerController {
 
     @Post('relocate/image')
     @UseFilters(RelocationExceptionFilter, FileNotFoundExceptionFilter)
-    async relocateImage(@Body() body: {oldPath: string, newPath: string}): Promise<IImageEntityDto> {
+    async relocateImage(@Body() body: {oldPath: string, newPath: string}): Promise<ImageDto> {
         const sourcePath: string = decodeURI(body.oldPath);
         const targetPath: string = decodeURI(body.newPath);
 
@@ -150,7 +150,7 @@ export class ExplorerController {
         const sourceFolder: Folder = await this.folderService.getFolderByPath(sourceFolderPath);
         const targetFolder: Folder = await this.folderService.getFolderByPath(targetFolderPath);
 
-        const sourceImage: IImageEntity = await this.imageService.findOneByConditions({
+        const sourceImage: Image = await this.imageService.findOneByConditions({
             parentFolder: sourceFolder,
             name: sourceImageName,
             extension: sourceImageExtension
@@ -161,7 +161,7 @@ export class ExplorerController {
         }
 
         if (targetFolder) {
-            const targetImage: IImageEntity = await this.imageService.findOneByConditions({
+            const targetImage: Image = await this.imageService.findOneByConditions({
                 parentFolder: targetFolder,
                 name: targetImageName,
                 extension: targetImageExtension

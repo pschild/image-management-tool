@@ -3,10 +3,9 @@ import { Folder } from './folder.entity';
 import { Tag } from './tag.entity';
 import { Person } from './person.entity';
 import { Place } from './place.entity';
-import { IImageEntity } from '../interface/IImageEntity';
 
 @Entity()
-export class Image implements IImageEntity {
+export class Image {
 
     @PrimaryGeneratedColumn()
     id: number;

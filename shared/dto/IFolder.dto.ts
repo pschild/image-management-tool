@@ -1,4 +1,4 @@
-import { IImageEntityDto } from './IImageEntity.dto';
+import { IImageDto } from './IImage.dto';
 
 export interface IFolderDto {
     id?: number;
@@ -6,6 +6,6 @@ export interface IFolderDto {
     absolutePath: string;
     parent: IFolderDto;
     children?: IFolderDto[];
-    images?: IImageEntityDto[];
+    images?: IImageDto[];
     dateAdded?: Date;
 }

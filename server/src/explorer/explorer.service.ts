@@ -5,8 +5,8 @@ import { DuplicateFileException } from '../../../shared/exception/duplicate-file
 import { IFsFile } from '../interface/IFsFile';
 import { IMergedFolderDto } from '../../../shared/dto/IMergedFolder.dto';
 import { IMergedImageDto } from '../../../shared/dto/IMergedImage.dto';
-import { IImageEntity } from '../interface/IImageEntity';
 import { Folder } from '../entity/folder.entity';
+import { Image } from '../entity/image.entity';
 
 @Injectable()
 export class ExplorerService {
@@ -60,7 +60,7 @@ export class ExplorerService {
         return resultList;
     }
 
-    async getMergedImageList(fsImages: IFsFile[], dbImages: IImageEntity[]): Promise<IMergedImageDto[]> {
+    async getMergedImageList(fsImages: IFsFile[], dbImages: Image[]): Promise<IMergedImageDto[]> {
         // merge DB and FS folder lists
         const imagesInDbAndFs: IMergedImageDto[] = [];
         for (const dbImage of dbImages) {

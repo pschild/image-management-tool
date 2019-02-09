@@ -1,5 +1,5 @@
 import { IFolderDto } from '../../../shared/dto/IFolder.dto';
-import { IImageEntityDto } from '../../../shared/dto/IImageEntity.dto';
+import { ImageDto } from './Image.dto';
 
 export class FolderDto implements IFolderDto {
     id: number;
@@ -7,6 +7,6 @@ export class FolderDto implements IFolderDto {
     absolutePath: string;
     parent: FolderDto;
     children?: FolderDto[];
-    images?: IImageEntityDto[];
+    images?: ImageDto[];
     dateAdded?: Date;
 }

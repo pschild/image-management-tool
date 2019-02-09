@@ -1,16 +1,16 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { IMapper } from './IMapper';
 import { FolderService } from '../folder/folder.service';
-import { IImageEntity } from '../interface/IImageEntity';
-import { IImageEntityDto } from '../../../shared/dto/IImageEntity.dto';
 import * as path from 'path';
 import { FolderEntityToDtoMapper } from './FolderEntityToDto.mapper';
 import { PersonEntityToDtoMapper } from './PersonEntityToDto.mapper';
 import { TagEntityToDtoMapper } from './TagEntityToDto.mapper';
 import { PlaceEntityToDtoMapper } from './PlaceEntityToDto.mapper';
+import { ImageDto } from '../dto/Image.dto';
+import { Image } from '../entity/image.entity';
 
 @Injectable()
-export class ImageEntityToDtoMapper implements IMapper<IImageEntity, IImageEntityDto> {
+export class ImageEntityToDtoMapper implements IMapper<Image, ImageDto> {
 
     constructor(
         private readonly folderService: FolderService,
@@ -23,8 +23,11 @@ export class ImageEntityToDtoMapper implements IMapper<IImageEntity, IImageEntit
         private readonly tagEntityToDtoMapper: TagEntityToDtoMapper
     ) { }
 
-    async map(entity: IImageEntity): Promise<IImageEntityDto> {
+    async map(entity: Image): Promise<ImageDto> {
         if (entity) {
+            if (!entity.parentFolder) {
+                throw new Error(`Could not find parentFolder. Did you forget to query with relations?`);
+            }
             const parentFolderPath = await this.folderService.buildPathByFolderId(entity.parentFolder.id);
             const absolutePath = `${parentFolderPath}${path.sep}${entity.name}.${entity.extension}`;
             return {
@@ -45,9 +48,9 @@ export class ImageEntityToDtoMapper implements IMapper<IImageEntity, IImageEntit
         }
     }
 
-    mapAll(entities: IImageEntity[]): Promise<IImageEntityDto[]> {
+    mapAll(entities: Image[]): Promise<ImageDto[]> {
         if (entities && entities.length) {
-            const r = entities.map(async (entity: IImageEntity) => await this.map(entity));
+            const r = entities.map(async (entity: Image) => await this.map(entity));
             return Promise.all(r);
         }
     }
