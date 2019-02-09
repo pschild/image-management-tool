@@ -14,12 +14,12 @@ export class TagEntityToDtoMapper implements IMapper<Tag, TagDto> {
 
     async map(entity: Tag): Promise<TagDto> {
         if (entity) {
-            return {
-                id: entity.id,
-                label: entity.label,
-                dateAdded: entity.dateAdded,
-                images: await this.imageEntityToDtoMapper.mapAll(entity.images)
-            };
+            const dto = new TagDto();
+            dto.id = entity.id;
+            dto.label = entity.label;
+            dto.dateAdded = entity.dateAdded;
+            dto.images = await this.imageEntityToDtoMapper.mapAll(entity.images);
+            return dto;
         }
     }
 

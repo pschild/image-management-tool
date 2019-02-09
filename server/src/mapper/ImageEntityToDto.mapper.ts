@@ -30,21 +30,22 @@ export class ImageEntityToDtoMapper implements IMapper<Image, ImageDto> {
             }
             const parentFolderPath = await this.folderService.buildPathByFolderId(entity.parentFolder.id);
             const absolutePath = `${parentFolderPath}${path.sep}${entity.name}.${entity.extension}`;
-            return {
-                id: entity.id,
-                name: entity.name,
-                extension: entity.extension,
-                absolutePath: absolutePath,
-                description: entity.description,
-                originalName: entity.originalName,
-                dateAdded: entity.dateAdded,
-                dateFrom: entity.dateFrom,
-                dateTo: entity.dateTo,
-                parentFolder: await this.folderEntityToDtoMapper.map(entity.parentFolder),
-                persons: await this.personEntityToDtoMapper.mapAll(entity.persons),
-                place: await this.placeEntityToDtoMapper.map(entity.place),
-                tags: await this.tagEntityToDtoMapper.mapAll(entity.tags)
-            };
+
+            const dto = new ImageDto();
+            dto.id = entity.id;
+            dto.name = entity.name;
+            dto.extension = entity.extension;
+            dto.absolutePath = absolutePath;
+            dto.description = entity.description;
+            dto.originalName = entity.originalName;
+            dto.dateAdded = entity.dateAdded;
+            dto.dateFrom = entity.dateFrom;
+            dto.dateTo = entity.dateTo;
+            dto.parentFolder = await this.folderEntityToDtoMapper.map(entity.parentFolder);
+            dto.persons = await this.personEntityToDtoMapper.mapAll(entity.persons);
+            dto.place = await this.placeEntityToDtoMapper.map(entity.place);
+            dto.tags = await this.tagEntityToDtoMapper.mapAll(entity.tags);
+            return dto;
         }
     }
 

@@ -14,15 +14,15 @@ export class PlaceEntityToDtoMapper implements IMapper<Place, PlaceDto> {
 
     async map(entity: Place): Promise<PlaceDto> {
         if (entity) {
-            return {
-                id: entity.id,
-                name: entity.name,
-                address: entity.address,
-                city: entity.city,
-                country: entity.country,
-                dateAdded: entity.dateAdded,
-                images: await this.imageEntityToDtoMapper.mapAll(entity.images)
-            };
+            const dto = new PlaceDto();
+            dto.id = entity.id;
+            dto.name = entity.name;
+            dto.address = entity.address;
+            dto.city = entity.city;
+            dto.country = entity.country;
+            dto.dateAdded = entity.dateAdded;
+            dto.images = await this.imageEntityToDtoMapper.mapAll(entity.images);
+            return dto;
         }
     }
 

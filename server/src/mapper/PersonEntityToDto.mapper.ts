@@ -14,14 +14,14 @@ export class PersonEntityToDtoMapper implements IMapper<Person, PersonDto> {
 
     async map(entity: Person): Promise<PersonDto> {
         if (entity) {
-            return {
-                id: entity.id,
-                firstname: entity.firstname,
-                lastname: entity.lastname,
-                birthday: entity.birthday,
-                dateAdded: entity.dateAdded,
-                images: await this.imageEntityToDtoMapper.mapAll(entity.images)
-            };
+            const dto = new PersonDto();
+            dto.id = entity.id;
+            dto.firstname = entity.firstname;
+            dto.lastname = entity.lastname;
+            dto.birthday = entity.birthday;
+            dto.dateAdded = entity.dateAdded;
+            dto.images = await this.imageEntityToDtoMapper.mapAll(entity.images);
+            return dto;
         }
     }
 

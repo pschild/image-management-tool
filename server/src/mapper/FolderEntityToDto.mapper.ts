@@ -11,13 +11,13 @@ export class FolderEntityToDtoMapper implements IMapper<Folder, FolderDto> {
 
     async map(entity: Folder): Promise<FolderDto> {
         if (entity) {
-            return {
-                id: entity.id,
-                name: entity.name,
-                absolutePath: await this.folderService.buildPathByFolderId(entity.id),
-                parent: await this.map(entity.parent),
-                children: await this.mapAll(entity.children)
-            };
+            const dto = new FolderDto();
+            dto.id = entity.id;
+            dto.name = entity.name;
+            dto.absolutePath = await this.folderService.buildPathByFolderId(entity.id);
+            dto.parent = await this.map(entity.parent);
+            dto.children = await this.mapAll(entity.children);
+            return dto;
         }
     }
 
