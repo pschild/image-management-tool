@@ -1,9 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Image } from './image.entity';
-import { IPersonEntity } from '../interface/IPersonEntity';
 
 @Entity()
-export class Person implements IPersonEntity {
+export class Person {
 
     @PrimaryGeneratedColumn()
     id: number;

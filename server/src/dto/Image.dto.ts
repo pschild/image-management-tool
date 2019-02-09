@@ -1,8 +1,8 @@
 import { IImageDto } from '../../../shared/dto/IImage.dto';
 import { FolderDto } from './Folder.dto';
-import { IPlaceEntityDto } from '../../../shared/dto/IPlaceEntity.dto';
-import { ITagEntityDto } from '../../../shared/dto/ITagEntity.dto';
-import { IPersonEntityDto } from '../../../shared/dto/IPersonEntity.dto';
+import { TagDto } from './Tag.dto';
+import { PersonDto } from './Person.dto';
+import { PlaceDto } from './Place.dto';
 
 export class ImageDto implements IImageDto {
     id?: number;
@@ -15,7 +15,7 @@ export class ImageDto implements IImageDto {
     dateAdded?: Date;
     dateFrom?: Date;
     dateTo?: Date;
-    place?: IPlaceEntityDto;
-    tags?: ITagEntityDto[];
-    persons?: IPersonEntityDto[];
+    place?: PlaceDto;
+    tags?: TagDto[];
+    persons?: PersonDto[];
 }

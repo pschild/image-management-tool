@@ -1,18 +1,18 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { IMapper } from './IMapper';
-import { IPersonEntity } from '../interface/IPersonEntity';
-import { IPersonEntityDto } from '../../../shared/dto/IPersonEntity.dto';
 import { ImageEntityToDtoMapper } from './ImageEntityToDto.mapper';
+import { Person } from '../entity/person.entity';
+import { PersonDto } from '../dto/Person.dto';
 
 @Injectable()
-export class PersonEntityToDtoMapper implements IMapper<IPersonEntity, IPersonEntityDto> {
+export class PersonEntityToDtoMapper implements IMapper<Person, PersonDto> {
 
     constructor(
         @Inject(forwardRef(() => ImageEntityToDtoMapper)) // because ImageEntityToDtoMapper needs PersonEntityToDtoMapper
         private readonly imageEntityToDtoMapper: ImageEntityToDtoMapper
     ) { }
 
-    async map(entity: IPersonEntity): Promise<IPersonEntityDto> {
+    async map(entity: Person): Promise<PersonDto> {
         if (entity) {
             return {
                 id: entity.id,
@@ -25,9 +25,9 @@ export class PersonEntityToDtoMapper implements IMapper<IPersonEntity, IPersonEn
         }
     }
 
-    mapAll(entities: IPersonEntity[]): Promise<IPersonEntityDto[]> {
+    mapAll(entities: Person[]): Promise<PersonDto[]> {
         if (entities && entities.length) {
-            const r = entities.map(async (entity: IPersonEntity) => await this.map(entity));
+            const r = entities.map(async (entity: Person) => await this.map(entity));
             return Promise.all(r);
         }
     }

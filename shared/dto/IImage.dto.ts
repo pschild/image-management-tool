@@ -1,7 +1,7 @@
-import { IPersonEntityDto } from './IPersonEntity.dto';
-import { ITagEntityDto } from './ITagEntity.dto';
-import { IPlaceEntityDto } from './IPlaceEntity.dto';
 import { IFolderDto } from './IFolder.dto';
+import { IPlaceDto } from './IPlace.dto';
+import { ITagDto } from './ITag.dto';
+import { IPersonDto } from './IPerson.dto';
 
 export interface IImageDto {
     id?: number;
@@ -14,7 +14,7 @@ export interface IImageDto {
     dateAdded?: Date;
     dateFrom?: Date;
     dateTo?: Date;
-    place?: IPlaceEntityDto;
-    tags?: ITagEntityDto[];
-    persons?: IPersonEntityDto[];
+    place?: IPlaceDto;
+    tags?: ITagDto[];
+    persons?: IPersonDto[];
 }
