@@ -1,9 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, ManyToOne } from 'typeorm';
 import { Image } from './image.entity';
-import { IFolderEntity } from '../interface/IFolderEntity';
 
 @Entity()
-export class Folder implements IFolderEntity {
+export class Folder {
 
     @PrimaryGeneratedColumn()
     id: number;

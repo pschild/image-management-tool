@@ -1,27 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { IMapper } from './IMapper';
-import { IFolderEntity } from '../interface/IFolderEntity';
-import { IFolderEntityDto } from '../../../shared/dto/IFolderEntity.dto';
 import { FolderService } from '../folder/folder.service';
+import { Folder } from '../entity/folder.entity';
+import { FolderDto } from '../dto/Folder.dto';
 
 @Injectable()
-export class FolderEntityToDtoMapper implements IMapper<IFolderEntity, IFolderEntityDto> {
+export class FolderEntityToDtoMapper implements IMapper<Folder, FolderDto> {
 
     constructor(private readonly folderService: FolderService) { }
 
-    async map(entity: IFolderEntity): Promise<IFolderEntityDto> {
+    async map(entity: Folder): Promise<FolderDto> {
         if (entity) {
             return {
                 id: entity.id,
                 name: entity.name,
-                absolutePath: await this.folderService.buildPathByFolderId(entity.id)
+                absolutePath: await this.folderService.buildPathByFolderId(entity.id),
+                parent: await this.map(entity.parent),
+                children: await this.mapAll(entity.children)
             };
         }
     }
 
-    mapAll(entities: IFolderEntity[]): Promise<IFolderEntityDto[]> {
+    mapAll(entities: Folder[]): Promise<FolderDto[]> {
         if (entities && entities.length) {
-            const r = entities.map(async (entity: IFolderEntity) => await this.map(entity));
+            const r = entities.map(async (entity: Folder) => await this.map(entity));
             return Promise.all(r);
         }
     }

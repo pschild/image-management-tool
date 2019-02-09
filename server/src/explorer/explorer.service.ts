@@ -6,14 +6,14 @@ import { IFsFile } from '../interface/IFsFile';
 import { IMergedFolderDto } from '../../../shared/dto/IMergedFolder.dto';
 import { IMergedImageDto } from '../../../shared/dto/IMergedImage.dto';
 import { IImageEntity } from '../interface/IImageEntity';
-import { IFolderEntity } from '../interface/IFolderEntity';
+import { Folder } from '../entity/folder.entity';
 
 @Injectable()
 export class ExplorerService {
 
     constructor(private readonly folderService: FolderService) { }
 
-    async getMergedFolderList(fsFolders: IFsFile[], dbFolders: IFolderEntity[]): Promise<IMergedFolderDto[]> {
+    async getMergedFolderList(fsFolders: IFsFile[], dbFolders: Folder[]): Promise<IMergedFolderDto[]> {
         // merge DB and FS folder lists
         const foldersInDbAndFs: IMergedFolderDto[] = [];
         for (const dbFolder of dbFolders) {

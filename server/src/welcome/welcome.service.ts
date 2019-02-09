@@ -5,7 +5,6 @@ import { Folder } from '../entity/folder.entity';
 import { get } from 'request-promise';
 import * as path from 'path';
 import * as afs from 'async-file';
-import { IFolderEntity } from '../interface/IFolderEntity';
 
 @Injectable()
 export class WelcomeService {
@@ -19,7 +18,7 @@ export class WelcomeService {
         return `Hello, ${name}`;
     }
 
-    async findAllFolders(): Promise<IFolderEntity[]> {
+    async findAllFolders(): Promise<Folder[]> {
         return this.repository.find();
     }
 

@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode } from '@nestjs/common';
 import { FolderService } from './folder.service';
 import { UpdateResult } from 'typeorm';
-import { IFolderEntityDto } from '../../../shared/dto/IFolderEntity.dto';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
+import { FolderDto } from '../dto/Folder.dto';
 
 @Controller('folder')
 export class FolderController {
@@ -12,22 +12,22 @@ export class FolderController {
     ) { }
 
     @Post()
-    async create(@Body() data): Promise<IFolderEntityDto> {
+    async create(@Body() data): Promise<FolderDto> {
         return this.folderEntityToDtoMapper.map(await this.folderService.create(data));
     }
 
     @Post('byPath')
-    async createByPath(@Body() body: {path: string}): Promise<IFolderEntityDto> {
+    async createByPath(@Body() body: {path: string}): Promise<FolderDto> {
         return this.folderEntityToDtoMapper.map(await this.folderService.createFolderByPath(decodeURI(body.path)));
     }
 
     @Get()
-    async findAll(): Promise<IFolderEntityDto[]> {
+    async findAll(): Promise<FolderDto[]> {
         return this.folderEntityToDtoMapper.mapAll(await this.folderService.findAll());
     }
 
     @Get(':id')
-    async findOne(@Param('id') id): Promise<IFolderEntityDto> {
+    async findOne(@Param('id') id): Promise<FolderDto> {
         return this.folderEntityToDtoMapper.map(await this.folderService.findOne(id));
     }
 

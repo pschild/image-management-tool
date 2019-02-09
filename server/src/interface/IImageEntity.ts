@@ -1,7 +1,7 @@
-import { IFolderEntity } from './IFolderEntity';
 import { IPlaceEntity } from './IPlaceEntity';
 import { ITagEntity } from './ITagEntity';
 import { IPersonEntity } from './IPersonEntity';
+import { Folder } from '../entity/folder.entity';
 
 export interface IImageEntity {
     id: number;
@@ -9,7 +9,7 @@ export interface IImageEntity {
     extension: string;
     originalName: string;
     description: string;
-    parentFolder: IFolderEntity;
+    parentFolder: Folder;
     dateAdded: Date;
     dateFrom: Date;
     dateTo: Date;
