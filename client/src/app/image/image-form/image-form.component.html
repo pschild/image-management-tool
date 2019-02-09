@@ -5,14 +5,14 @@
     <textarea matInput formControlName="description" placeholder="Beschreibung"></textarea>
   </mat-form-field>
 
-  <mat-form-field>
+  <!-- <mat-form-field>
     <input type="text" placeholder="Ort auswählen" aria-label="Number" matInput formControlName="place" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete">
       <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
         {{option}}
       </mat-option>
     </mat-autocomplete>
-  </mat-form-field>
+  </mat-form-field> -->
 
   <mat-form-field>
     <input matInput [matDatepicker]="picker" placeholder="Datum" formControlName="date">
@@ -20,7 +20,7 @@
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
-  <mat-form-field class="example-chip-list">
+  <!-- <mat-form-field class="example-chip-list">
     <mat-chip-list #chipList>
       <mat-chip *ngFor="let fruit of fruits" [selectable]="selectable" [removable]="removable" (removed)="remove(fruit)">
         {{fruit}}
@@ -34,7 +34,7 @@
         {{fruit}}
       </mat-option>
     </mat-autocomplete>
-  </mat-form-field>
+  </mat-form-field> -->
   <div class="form-action-container">
     <button type="submit" mat-raised-button color="primary">Speichern</button>
   </div>
