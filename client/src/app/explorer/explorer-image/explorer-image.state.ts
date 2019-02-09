@@ -4,7 +4,7 @@ import { tap } from 'rxjs/operators';
 import { ImagesLoaded, RemoveImage, CreateImageByPath, ImageCreated } from './explorer-image.actions';
 import { RefreshContent } from '../explorer.actions';
 import { IMergedImageDto } from '../../../../../shared/dto/IMergedImage.dto';
-import { IImageEntityDto } from '../../../../../shared/dto/IImageEntity.dto';
+import { IImageDto } from '../../../../../shared/dto/IImage.dto';
 
 export interface ExplorerImageStateModel {
     images: IMergedImageDto[];
@@ -35,7 +35,7 @@ export class ExplorerImageState {
     createImageByPath({ dispatch }: StateContext<ExplorerImageStateModel>, action: CreateImageByPath) {
         return this.imageService.createByPath(action.absolutePath, action.name, action.extension)
             .pipe(
-                tap((createdImage: IImageEntityDto) => {
+                tap((createdImage: IImageDto) => {
                     dispatch(new ImageCreated(createdImage));
                 })
             );

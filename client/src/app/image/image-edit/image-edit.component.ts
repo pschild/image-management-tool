@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '../image.service';
 import { BehaviorSubject } from 'rxjs';
-import { IImageEntityDto } from '../../../../../shared/dto/IImageEntity.dto';
 import * as path from 'path';
+import { IImageDto } from '../../../../../shared/dto/IImage.dto';
 
 @Component({
   selector: 'app-image-edit',
@@ -13,7 +13,7 @@ import * as path from 'path';
 export class ImageEditComponent implements OnInit {
 
   absoluteImagePath: string;
-  image$: BehaviorSubject<IImageEntityDto> = new BehaviorSubject(null);
+  image$: BehaviorSubject<IImageDto> = new BehaviorSubject(null);
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +32,7 @@ export class ImageEditComponent implements OnInit {
         if (imageId && isNaN(imageId)) {
           throw new Error(`Invalid image id in url ${location.hash}`);
         }
-        this.imageService.loadImage(imageId).subscribe((image: IImageEntityDto) => {
+        this.imageService.loadImage(imageId).subscribe((image: IImageDto) => {
           this.image$.next(image);
         });
       } else {

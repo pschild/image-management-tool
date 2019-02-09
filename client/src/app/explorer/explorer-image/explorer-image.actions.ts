@@ -1,5 +1,5 @@
-import { IImageEntityDto } from '../../../../../shared/dto/IImageEntity.dto';
 import { IMergedImageDto } from '../../../../../shared/dto/IMergedImage.dto';
+import { IImageDto } from '../../../../../shared/dto/IImage.dto';
 
 export class ImagesLoaded {
     static readonly type = '[ExplorerImage] ImagesLoaded';
@@ -13,7 +13,7 @@ export class CreateImageByPath {
 
 export class ImageCreated {
     static readonly type = '[ExplorerImage] ImageCreated';
-    constructor(public createdImage: IImageEntityDto) { }
+    constructor(public createdImage: IImageDto) { }
 }
 
 export class RemoveImage {

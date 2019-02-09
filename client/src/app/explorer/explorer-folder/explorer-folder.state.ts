@@ -4,7 +4,7 @@ import { tap } from 'rxjs/operators';
 import { RemoveFolder, FoldersLoaded, CreateFolderByPath, FolderCreated } from './explorer-folder.actions';
 import { RefreshContent } from '../explorer.actions';
 import { IMergedFolderDto } from '../../../../../shared/dto/IMergedFolder.dto';
-import { IFolderEntityDto } from '../../../../../shared/dto/IFolderEntity.dto';
+import { IFolderDto } from '../../../../../shared/dto/IFolder.dto';
 
 export interface ExplorerFolderStateModel {
     folders: IMergedFolderDto[];
@@ -35,7 +35,7 @@ export class ExplorerFolderState {
     createFolderByPath({ dispatch }: StateContext<ExplorerFolderStateModel>, action: CreateFolderByPath) {
         return this.folderService.createByPath(action.path)
             .pipe(
-                tap((createdFolder: IFolderEntityDto) => {
+                tap((createdFolder: IFolderDto) => {
                     dispatch(new FolderCreated(createdFolder));
                 })
             );

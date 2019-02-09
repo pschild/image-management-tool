@@ -14,9 +14,9 @@ import { ExplorerFolderState } from './explorer-folder/explorer-folder.state';
 import { FoldersLoaded } from './explorer-folder/explorer-folder.actions';
 import { ImagesLoaded } from './explorer-image/explorer-image.actions';
 import { ExplorerImageState } from './explorer-image/explorer-image.state';
-import { IFolderEntityDto } from '../../../../shared/dto/IFolderEntity.dto';
-import { IImageEntityDto } from '../../../../shared/dto/IImageEntity.dto';
 import { IExplorerContentDto } from '../../../../shared/dto/IExplorerContent.dto';
+import { IFolderDto } from '../../../../shared/dto/IFolder.dto';
+import { IImageDto } from '../../../../shared/dto/IImage.dto';
 
 export interface ExplorerStateModel {
     currentPath: string[];
@@ -87,7 +87,7 @@ export class ExplorerState implements NgxsOnInit {
     relocateFolder({ dispatch }: StateContext<ExplorerStateModel>, action: RelocateFolder) {
         return this.explorerService.relocateFolder(action.oldPath, action.newPath)
             .pipe(
-                tap((result: IFolderEntityDto) => {
+                tap((result: IFolderDto) => {
                     alert(`Success`); // TODO: dispatch RelocateFolderSuccess
                     return dispatch(new RefreshContent());
                 })
@@ -98,7 +98,7 @@ export class ExplorerState implements NgxsOnInit {
     relocateImage({ dispatch }: StateContext<ExplorerStateModel>, action: RelocateImage) {
         return this.explorerService.relocateImage(action.oldPath, action.newPath)
             .pipe(
-                tap((result: IImageEntityDto) => {
+                tap((result: IImageDto) => {
                     alert(`Success`); // TODO: dispatch RelocateImageSuccess
                     return dispatch(new RefreshContent());
                 })

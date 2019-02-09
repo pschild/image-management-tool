@@ -5,8 +5,8 @@ import { catchError, map } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 import { AppConfig } from '../../environments/environment';
 import { IExplorerContentDto } from '../../../../shared/dto/IExplorerContent.dto';
-import { IFolderEntityDto } from '../../../../shared/dto/IFolderEntity.dto';
-import { IImageEntityDto } from '../../../../shared/dto/IImageEntity.dto';
+import { IFolderDto } from '../../../../shared/dto/IFolder.dto';
+import { IImageDto } from '../../../../shared/dto/IImage.dto';
 
 @Injectable()
 export class ExplorerService {
@@ -50,9 +50,9 @@ export class ExplorerService {
       );
   }
 
-  relocateFolder(oldPath: string, newPath: string): Observable<IFolderEntityDto> {
+  relocateFolder(oldPath: string, newPath: string): Observable<IFolderDto> {
     return this.http
-      .post<IFolderEntityDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/folder`, { oldPath, newPath })
+      .post<IFolderDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/folder`, { oldPath, newPath })
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);
@@ -60,9 +60,9 @@ export class ExplorerService {
       );
   }
 
-  relocateImage(oldPath: string, newPath: string): Observable<IImageEntityDto> {
+  relocateImage(oldPath: string, newPath: string): Observable<IImageDto> {
     return this.http
-      .post<IImageEntityDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/image`, { oldPath, newPath })
+      .post<IImageDto>(`${AppConfig.serverBaseUrl}/explorer/relocate/image`, { oldPath, newPath })
       .pipe(
         catchError((errorResponse: HttpErrorResponse) => {
           return throwError(errorResponse.error);

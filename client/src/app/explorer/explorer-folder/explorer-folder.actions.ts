@@ -1,5 +1,5 @@
 import { IMergedFolderDto } from '../../../../../shared/dto/IMergedFolder.dto';
-import { IFolderEntityDto } from '../../../../../shared/dto/IFolderEntity.dto';
+import { IFolderDto } from '../../../../../shared/dto/IFolder.dto';
 
 export class FoldersLoaded {
     static readonly type = '[ExplorerFolder] FoldersLoaded';
@@ -13,7 +13,7 @@ export class CreateFolderByPath {
 
 export class FolderCreated {
     static readonly type = '[ExplorerFolder] FolderCreated';
-    constructor(public createdFolder: IFolderEntityDto) { }
+    constructor(public createdFolder: IFolderDto) { }
 }
 
 export class RemoveFolder {

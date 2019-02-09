@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IImageEntityDto } from '../../../../../shared/dto/IImageEntity.dto';
 import { FormBuilder } from '@angular/forms';
 import { ImageService } from '../image.service';
+import { IImageDto } from '../../../../../shared/dto/IImage.dto';
 
 @Component({
   selector: 'app-image-form',
@@ -10,7 +10,7 @@ import { ImageService } from '../image.service';
 })
 export class ImageFormComponent implements OnInit {
 
-  @Input() image: IImageEntityDto;
+  @Input() image: IImageDto;
 
   imageEditForm = this.fb.group({
     place: [''],

@@ -2,21 +2,21 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../environments/environment';
-import { IImageEntityDto } from '../../../../shared/dto/IImageEntity.dto';
 import { IMergedImageDto } from '../../../../shared/dto/IMergedImage.dto';
+import { IImageDto } from '../../../../shared/dto/IImage.dto';
 
 @Injectable()
 export class ImageService {
 
   constructor(private http: HttpClient) { }
 
-  loadImage(id: number): Observable<IImageEntityDto> {
+  loadImage(id: number): Observable<IImageDto> {
     return this.http
-      .get<IImageEntityDto>(`${AppConfig.serverBaseUrl}/image/${id}`);
+      .get<IImageDto>(`${AppConfig.serverBaseUrl}/image/${id}`);
   }
 
-  createByPath(absolutePath: string, name: string, extension: string): Observable<IImageEntityDto> {
-    return this.http.post<IImageEntityDto>(`${AppConfig.serverBaseUrl}/image/byPath`, { absolutePath, name, extension });
+  createByPath(absolutePath: string, name: string, extension: string): Observable<IImageDto> {
+    return this.http.post<IImageDto>(`${AppConfig.serverBaseUrl}/image/byPath`, { absolutePath, name, extension });
   }
 
   removeImage(image: IMergedImageDto): Observable<void> {

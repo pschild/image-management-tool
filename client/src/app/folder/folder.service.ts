@@ -3,15 +3,15 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../environments/environment';
 import { IMergedFolderDto } from '../../../../shared/dto/IMergedFolder.dto';
-import { IFolderEntityDto } from '../../../../shared/dto/IFolderEntity.dto';
+import { IFolderDto } from '../../../../shared/dto/IFolder.dto';
 
 @Injectable()
 export class FolderService {
 
   constructor(private http: HttpClient) { }
 
-  createByPath(folderPath: string): Observable<IFolderEntityDto> {
-    return this.http.post<IFolderEntityDto>(`${AppConfig.serverBaseUrl}/folder/byPath`, { path: folderPath });
+  createByPath(folderPath: string): Observable<IFolderDto> {
+    return this.http.post<IFolderDto>(`${AppConfig.serverBaseUrl}/folder/byPath`, { path: folderPath });
   }
 
   removeFolder(folder: IMergedFolderDto): Observable<void> {
