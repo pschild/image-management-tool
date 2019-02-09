@@ -5,18 +5,18 @@ import { FolderService } from '../folder/folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { DuplicateFileException } from '../../../shared/exception/duplicate-file.exception';
 import { IFsFile } from '../interface/IFsFile';
-import { IFolderEntity } from '../interface/IFolderEntity';
-import { IImageEntity } from '../interface/IImageEntity';
 import { IMergedFolderDto } from '../../../shared/dto/IMergedFolder.dto';
 import { IMergedImageDto } from '../../../shared/dto/IMergedImage.dto';
+import { Image } from '../entity/image.entity';
+import { Folder } from '../entity/folder.entity';
 
 describe('ExplorerService', () => {
     let explorerService: ExplorerService;
 
     let fsFolders: IFsFile[];
-    let dbFolders: IFolderEntity[];
+    let dbFolders: Folder[];
     let fsImages: IFsFile[];
-    let dbImages: IImageEntity[];
+    let dbImages: Image[];
 
     beforeAll(async () => {
         const module = await createTestModule({

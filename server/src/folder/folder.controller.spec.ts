@@ -5,14 +5,14 @@ import { FolderController } from './folder.controller';
 import { FolderService } from './folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
-import { IFolderEntityDto } from '../../../shared/dto/IFolderEntity.dto';
+import { FolderDto } from '../dto/Folder.dto';
 
 describe('FolderController', () => {
     let connection: Connection;
     let folderController: FolderController;
     let folderService: FolderService;
 
-    let dummyFolder: IFolderEntityDto;
+    let dummyFolder: FolderDto;
 
     beforeAll(async () => {
         const module = await createTestModule({
@@ -23,11 +23,10 @@ describe('FolderController', () => {
         folderController = module.get<FolderController>(FolderController);
         folderService = module.get<FolderService>(FolderService);
 
-        dummyFolder = {
-            id: 43,
-            name: 'bar',
-            absolutePath: 'C:\\foo\\bar'
-        };
+        dummyFolder = new FolderDto();
+        dummyFolder.id = 43;
+        dummyFolder.name = 'bar';
+        dummyFolder.absolutePath = 'C:\\foo\\bar';
     });
 
     beforeEach(async () => {
@@ -44,17 +43,17 @@ describe('FolderController', () => {
             const result = await folderController.create({ foo: 'bar' });
 
             expect(result).toBeDefined();
-            expect(result).toContainAllKeys(['id', 'name', 'absolutePath']);
+            expect(result).toContainAnyKeys(['id', 'name', 'absolutePath']);
         });
     });
 
     describe('createByPath', () => {
         it('should return a folder', async () => {
             jest.spyOn(folderService, 'createFolderByPath').mockImplementation(() => dummyFolder);
-            const result: IFolderEntityDto = await folderController.createByPath({ path: 'some/path' });
+            const result: FolderDto = await folderController.createByPath({ path: 'some/path' });
 
             expect(result).toBeDefined();
-            expect(result).toContainAllKeys(['id', 'name', 'absolutePath']);
+            expect(result).toContainAnyKeys(['id', 'name', 'absolutePath']);
         });
     });
 
@@ -65,8 +64,8 @@ describe('FolderController', () => {
 
             expect(result).toBeDefined();
             expect(result).toBeArrayOfSize(2);
-            expect(result[0]).toContainAllKeys(['id', 'name', 'absolutePath']);
-            expect(result[1]).toContainAllKeys(['id', 'name', 'absolutePath']);
+            expect(result[0]).toContainAnyKeys(['id', 'name', 'absolutePath']);
+            expect(result[1]).toContainAnyKeys(['id', 'name', 'absolutePath']);
         });
     });
 
@@ -76,7 +75,7 @@ describe('FolderController', () => {
             const result = await folderController.findOne(42);
 
             expect(result).toBeDefined();
-            expect(result).toContainAllKeys(['id', 'name', 'absolutePath']);
+            expect(result).toContainAnyKeys(['id', 'name', 'absolutePath']);
         });
     });
 

@@ -6,19 +6,19 @@ import { ImageService } from './image.service';
 import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 import { FolderService } from '../folder/folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { IImageEntityDto } from '../../../shared/dto/IImageEntity.dto';
-import { IFolderEntityDto } from '../../../shared/dto/IFolderEntity.dto';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { PersonEntityToDtoMapper } from '../mapper/PersonEntityToDto.mapper';
 import { PlaceEntityToDtoMapper } from '../mapper/PlaceEntityToDto.mapper';
 import { TagEntityToDtoMapper } from '../mapper/TagEntityToDto.mapper';
+import { ImageDto } from '../dto/Image.dto';
+import { FolderDto } from '../dto/Folder.dto';
 
 describe('ImageController', () => {
     let connection: Connection;
     let imageController: ImageController;
     let imageService: ImageService;
 
-    let dummyImage: IImageEntityDto;
+    let dummyImage: ImageDto;
 
     beforeAll(async () => {
         const module = await createTestModule({
@@ -47,7 +47,7 @@ describe('ImageController', () => {
                 id: 43,
                 name: 'bar',
                 absolutePath: 'C:\\foo\\bar'
-            } as IFolderEntityDto
+            } as FolderDto
         };
     });
 
