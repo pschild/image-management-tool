@@ -11,11 +11,11 @@ export class ImageService {
     ) { }
 
     findOne(id: number, withRelations: boolean = false): Promise<Image> {
-        return this.repository.findOne(id, { relations: withRelations ? ['parentFolder', 'tags', 'persons', 'place'] : [] });
+        return this.repository.findOne(id, { relations: withRelations ? ['tags', 'persons', 'place'] : [] });
     }
 
     findAll(withRelations: boolean = false): Promise<Image[]> {
-        return this.repository.find({ relations: withRelations ? ['parentFolder', 'tags', 'persons', 'place'] : [] });
+        return this.repository.find({ relations: withRelations ? ['tags', 'persons', 'place'] : [] });
     }
 
     findAllByFolderId(folderId: number): Promise<Image[]> {

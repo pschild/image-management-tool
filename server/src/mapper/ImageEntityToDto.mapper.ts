@@ -26,7 +26,7 @@ export class ImageEntityToDtoMapper implements IMapper<Image, ImageDto> {
     async map(entity: Image): Promise<ImageDto> {
         if (entity) {
             if (!entity.parentFolder) {
-                throw new Error(`Could not find parentFolder. Did you forget to query with relations?`);
+                throw new Error(`Could not find parentFolder. Did you forget to query with relations or disabled eager loading?`);
             }
             const parentFolderPath = await this.folderService.buildPathByFolderId(entity.parentFolder.id);
             const absolutePath = `${parentFolderPath}${path.sep}${entity.name}.${entity.extension}`;

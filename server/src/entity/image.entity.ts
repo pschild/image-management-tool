@@ -11,6 +11,7 @@ export class Image {
     id: number;
 
     @ManyToOne(type => Folder, folder => folder.images, {
+        eager: true, // always load the parentFolder when loading an image
         onDelete: 'CASCADE' // delete all images when the parent folder is removed
     })
     parentFolder: Folder;
