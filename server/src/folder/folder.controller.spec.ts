@@ -43,7 +43,7 @@ describe('FolderController', () => {
             const result = await folderController.create({ foo: 'bar' });
 
             expect(result).toBeDefined();
-            expect(result).toContainAnyKeys(['id', 'name', 'absolutePath']);
+            expect(result).toContainKeys(['id', 'name', 'absolutePath']);
         });
     });
 
@@ -53,7 +53,7 @@ describe('FolderController', () => {
             const result: FolderDto = await folderController.createByPath({ path: 'some/path' });
 
             expect(result).toBeDefined();
-            expect(result).toContainAnyKeys(['id', 'name', 'absolutePath']);
+            expect(result).toContainKeys(['id', 'name', 'absolutePath']);
         });
     });
 
@@ -64,8 +64,8 @@ describe('FolderController', () => {
 
             expect(result).toBeDefined();
             expect(result).toBeArrayOfSize(2);
-            expect(result[0]).toContainAnyKeys(['id', 'name', 'absolutePath']);
-            expect(result[1]).toContainAnyKeys(['id', 'name', 'absolutePath']);
+            expect(result[0]).toContainKeys(['id', 'name', 'absolutePath']);
+            expect(result[1]).toContainKeys(['id', 'name', 'absolutePath']);
         });
     });
 
@@ -75,7 +75,7 @@ describe('FolderController', () => {
             const result = await folderController.findOne(42);
 
             expect(result).toBeDefined();
-            expect(result).toContainAnyKeys(['id', 'name', 'absolutePath']);
+            expect(result).toContainKeys(['id', 'name', 'absolutePath']);
         });
     });
 
