@@ -7,6 +7,7 @@ import { IAppConfig } from './config/IAppConfig';
 import { ImageModule } from './image/image.module';
 import { FolderModule } from './folder/folder.module';
 import { FileSystemModule } from './fileSystem/file-system.module';
+import { FactoryModule } from './factory/factory.module';
 
 export class AppModule {
     static forRoot(config: IAppConfig): DynamicModule {
@@ -14,6 +15,7 @@ export class AppModule {
             module: AppModule,
             imports: [
                 ConfigModule.forRoot(config),
+                FactoryModule,
                 DatabaseModule,
                 ImageModule,
                 FolderModule,

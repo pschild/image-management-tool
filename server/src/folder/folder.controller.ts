@@ -3,12 +3,16 @@ import { FolderService } from './folder.service';
 import { UpdateResult } from 'typeorm';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { FolderDto } from '../dto/Folder.dto';
+import { FolderDtoFactory } from '../factory/folderDto.factory';
+import { classToPlain, classToClass, plainToClass } from 'class-transformer';
+import { Folder } from '../entity/folder.entity';
 
 @Controller('folder')
 export class FolderController {
     constructor(
         private readonly folderService: FolderService,
-        private readonly folderEntityToDtoMapper: FolderEntityToDtoMapper
+        private readonly folderEntityToDtoMapper: FolderEntityToDtoMapper,
+        private readonly folderDtoFactory: FolderDtoFactory
     ) { }
 
     @Post()
@@ -23,12 +27,14 @@ export class FolderController {
 
     @Get()
     async findAll(): Promise<FolderDto[]> {
-        return this.folderEntityToDtoMapper.mapAll(await this.folderService.findAll());
+        // return this.folderEntityToDtoMapper.mapAll(await this.folderService.findAll());
+        return this.folderDtoFactory.toDtos(await this.folderService.findAll());
     }
 
     @Get(':id')
     async findOne(@Param('id') id): Promise<FolderDto> {
-        return this.folderEntityToDtoMapper.map(await this.folderService.findOne(id));
+        // return this.folderEntityToDtoMapper.map(await this.folderService.findOne(id));
+        return this.folderDtoFactory.toDto(await this.folderService.findOne(id, true));
     }
 
     @Put(':id')
