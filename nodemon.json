@@ -6,7 +6,8 @@
         "node_modules"
     ],
     "watch": [
-        "server/src"
+        "server/src",
+        "shared"
     ],
     "exec": "npm run server:start",
     "ext": "ts"
