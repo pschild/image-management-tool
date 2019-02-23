@@ -1,9 +1,9 @@
 import { Folder } from '../entity/folder.entity';
 import { FolderDto } from '../dto/Folder.dto';
-import { ImageDtoFactory } from './imageDto.factory';
 import { Injectable } from '@nestjs/common';
 import { FolderService } from '../folder/folder.service';
 import { ModuleRef } from '@nestjs/core';
+import { ImageDtoFactory } from './image-dto.factory';
 
 @Injectable()
 export class FolderDtoFactory {
@@ -20,22 +20,22 @@ export class FolderDtoFactory {
         this.imageDtoFactory = this.moduleRef.get(ImageDtoFactory);
     }
 
-    async toDto(f: Folder): Promise<FolderDto> {
-        if (f) {
+    async toDto(entity: Folder): Promise<FolderDto> {
+        if (entity) {
             const dto = new FolderDto();
-            dto.id = f.id;
-            dto.name = f.name;
-            dto.absolutePath = await this.buildAbsolutePath(f);
-            dto.parent = await this.toDto(f.parent);
-            dto.children = await this.toDtos(f.children);
-            dto.images = await this.imageDtoFactory.toDtos(f.images);
+            dto.id = entity.id;
+            dto.name = entity.name;
+            dto.absolutePath = await this.buildAbsolutePath(entity);
+            dto.parent = await this.toDto(entity.parent);
+            dto.children = await this.toDtos(entity.children);
+            dto.images = await this.imageDtoFactory.toDtos(entity.images);
             return dto;
         }
     }
 
-    async toDtos(f: Folder[]): Promise<FolderDto[]> {
-        if (f && f.length) {
-            return Promise.all(f.map(async (folder: Folder) => await this.toDto(folder)));
+    async toDtos(entities: Folder[]): Promise<FolderDto[]> {
+        if (entities && entities.length) {
+            return Promise.all(entities.map(async (folder: Folder) => await this.toDto(folder)));
         }
     }
 

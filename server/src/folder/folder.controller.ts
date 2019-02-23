@@ -3,9 +3,9 @@ import { FolderService } from './folder.service';
 import { UpdateResult } from 'typeorm';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { FolderDto } from '../dto/Folder.dto';
-import { FolderDtoFactory } from '../factory/folderDto.factory';
 import { classToPlain, classToClass, plainToClass } from 'class-transformer';
 import { Folder } from '../entity/folder.entity';
+import { FolderDtoFactory } from '../factory/folder-dto.factory';
 
 @Controller('folder')
 export class FolderController {

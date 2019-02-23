@@ -5,7 +5,7 @@ import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FolderService } from '../folder/folder.service';
 import { ImageDto } from '../dto/Image.dto';
-import { ImageDtoFactory } from '../factory/imageDto.factory';
+import { ImageDtoFactory } from '../factory/image-dto.factory';
 
 @Controller('image')
 export class ImageController {
