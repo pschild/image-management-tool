@@ -4,7 +4,7 @@ import { ImageService } from '../image.service';
 import { of, Observable } from 'rxjs';
 import * as path from 'path';
 import { IImageDto } from '../../../../../shared/dto/IImage.dto';
-import { tap, mergeMap } from 'rxjs/operators';
+import { tap, mergeMap, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-image-edit',
@@ -28,7 +28,7 @@ export class ImageEditComponent implements OnInit {
           throw new Error(`Missing absolutePath in url ${location.hash}`);
         }
       }),
-      mergeMap((params: Params, index: number) => {
+      switchMap((params: Params, index: number) => {
         if (params.id) {
           return this.imageService.loadImage(params.id);
         } else {
