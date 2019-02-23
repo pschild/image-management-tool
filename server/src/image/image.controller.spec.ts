@@ -3,15 +3,12 @@ import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import 'jest-extended';
 import { ImageController } from './image.controller';
 import { ImageService } from './image.service';
-import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 import { FolderService } from '../folder/folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
-import { PersonEntityToDtoMapper } from '../mapper/PersonEntityToDto.mapper';
-import { PlaceEntityToDtoMapper } from '../mapper/PlaceEntityToDto.mapper';
-import { TagEntityToDtoMapper } from '../mapper/TagEntityToDto.mapper';
 import { ImageDto } from '../dto/Image.dto';
 import { FolderDto } from '../dto/Folder.dto';
+import { ImageDtoFactory } from '../factory/image-dto.factory';
+import { FolderDtoFactory } from '../factory/folder-dto.factory';
 
 describe('ImageController', () => {
     let connection: Connection;
@@ -26,17 +23,16 @@ describe('ImageController', () => {
             providers: [
                 ImageService,
                 FolderService,
-                PathHelperService,
-                ImageEntityToDtoMapper,
-                FolderEntityToDtoMapper,
-                PersonEntityToDtoMapper,
-                PlaceEntityToDtoMapper,
-                TagEntityToDtoMapper
+                PathHelperService
             ]
         });
         connection = module.get<Connection>(Connection);
         imageController = module.get<ImageController>(ImageController);
         imageService = module.get<ImageService>(ImageService);
+
+        // call the lifecycle-hook manually
+        module.get<ImageDtoFactory>(ImageDtoFactory).onModuleInit();
+        module.get<FolderDtoFactory>(FolderDtoFactory).onModuleInit();
 
         dummyImage = {
             id: 42,

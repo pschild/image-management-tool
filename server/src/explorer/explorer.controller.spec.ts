@@ -12,11 +12,8 @@ import { FileSystemException } from '../../../shared/exception/file-system.excep
 import { RelocationException } from '../../../shared/exception/relocation.exception';
 import { FileNotFoundException } from '../../../shared/exception/file-not-found.exception';
 import { IExplorerContentDto } from '../../../shared/dto/IExplorerContent.dto';
-import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
-import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
-import { PersonEntityToDtoMapper } from '../mapper/PersonEntityToDto.mapper';
-import { PlaceEntityToDtoMapper } from '../mapper/PlaceEntityToDto.mapper';
-import { TagEntityToDtoMapper } from '../mapper/TagEntityToDto.mapper';
+import { ImageDtoFactory } from '../factory/image-dto.factory';
+import { FolderDtoFactory } from '../factory/folder-dto.factory';
 
 describe('ExplorerController', () => {
     let connection: Connection;
@@ -30,16 +27,11 @@ describe('ExplorerController', () => {
         const module = await createTestModule({
             controllers: [ExplorerController],
             providers: [
-                FolderService,
+                // FolderService does not need to be provided as it's provided by FactoryModule...
                 ExplorerService,
                 FileSystemService,
                 PathHelperService,
-                ImageService,
-                ImageEntityToDtoMapper,
-                FolderEntityToDtoMapper,
-                PersonEntityToDtoMapper,
-                PlaceEntityToDtoMapper,
-                TagEntityToDtoMapper
+                ImageService
             ]
         });
         connection = module.get<Connection>(Connection);
@@ -48,6 +40,10 @@ describe('ExplorerController', () => {
         folderService = module.get<FolderService>(FolderService);
         fileSystemService = module.get<FileSystemService>(FileSystemService);
         imageService = module.get<ImageService>(ImageService);
+
+        // call the lifecycle-hook manually
+        module.get<FolderDtoFactory>(FolderDtoFactory).onModuleInit();
+        module.get<ImageDtoFactory>(ImageDtoFactory).onModuleInit();
 
         jest.spyOn(fileSystemService, 'getFilesByPath').mockResolvedValue([{
             name: 'F3',

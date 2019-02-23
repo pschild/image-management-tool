@@ -4,14 +4,12 @@ import { FileSystemModule } from '../fileSystem/file-system.module';
 import { FolderModule } from '../folder/folder.module';
 import { ImageModule } from '../image/image.module';
 import { ExplorerService } from './explorer.service';
-import { MapperModule } from '../mapper/mapper.module';
 
 @Module({
     imports: [
         FileSystemModule,
         FolderModule,
-        ImageModule,
-        MapperModule
+        ImageModule
     ],
     controllers: [ExplorerController],
     providers: [ExplorerService]

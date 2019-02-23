@@ -3,9 +3,10 @@ import { ModuleRef } from '@nestjs/core';
 import { PlaceDto } from '../dto/Place.dto';
 import { Place } from '../entity/place.entity';
 import { ImageDtoFactory } from './image-dto.factory';
+import { IDtoFactory } from './IDtoFactory';
 
 @Injectable()
-export class PlaceDtoFactory implements OnModuleInit {
+export class PlaceDtoFactory implements IDtoFactory<Place, PlaceDto>, OnModuleInit {
 
     private imageDtoFactory: ImageDtoFactory;
 
@@ -14,7 +15,7 @@ export class PlaceDtoFactory implements OnModuleInit {
     ) {}
 
     onModuleInit() {
-        // this avoids using forawrdRef due to circular dependencies between factories
+        // this avoids using forwardRef due to circular dependencies between factories
         this.imageDtoFactory = this.moduleRef.get(ImageDtoFactory);
     }
 

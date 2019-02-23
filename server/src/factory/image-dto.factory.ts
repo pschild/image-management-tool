@@ -8,9 +8,10 @@ import { FolderDtoFactory } from './folder-dto.factory';
 import { TagDtoFactory } from './tag-dto.factory';
 import { PlaceDtoFactory } from './place-dto.factory';
 import { PersonDtoFactory } from './person-dto.factory';
+import { IDtoFactory } from './IDtoFactory';
 
 @Injectable()
-export class ImageDtoFactory implements OnModuleInit {
+export class ImageDtoFactory implements IDtoFactory<Image, ImageDto>, OnModuleInit {
 
     private folderDtoFactory: FolderDtoFactory;
     private tagDtoFactory: TagDtoFactory;
@@ -23,7 +24,7 @@ export class ImageDtoFactory implements OnModuleInit {
     ) {}
 
     onModuleInit() {
-        // this avoids using forawrdRef due to circular dependencies between factories
+        // this avoids using forwardRef due to circular dependencies between factories
         this.folderDtoFactory = this.moduleRef.get(FolderDtoFactory);
         this.tagDtoFactory = this.moduleRef.get(TagDtoFactory);
         this.personDtoFactory = this.moduleRef.get(PersonDtoFactory);
@@ -35,6 +36,10 @@ export class ImageDtoFactory implements OnModuleInit {
             const dto = new ImageDto();
             dto.id = entity.id;
             dto.name = entity.name;
+            dto.extension = entity.extension;
+            dto.description = entity.description;
+            dto.dateFrom = entity.dateFrom;
+            dto.dateTo = entity.dateTo;
             dto.absolutePath = await this.buildAbsolutePath(entity);
             dto.parentFolder = await this.folderDtoFactory.toDto(entity.parentFolder);
             dto.tags = await this.tagDtoFactory.toDtos(entity.tags);

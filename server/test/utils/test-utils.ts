@@ -9,6 +9,7 @@ import { ConfigModule } from '../../src/config/config.module';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Type, Provider } from '@nestjs/common';
+import { FactoryModule } from '../../src/factory/factory.module';
 
 const defaultConnectionOptions: ConnectionOptions = {
     type: 'sqlite',
@@ -27,7 +28,8 @@ export const createTestModule = async (moduleConfig: { controllers?: Type<any>[]
         imports: [
             ConfigModule.forRoot(defaultConfigOptions),
             TypeOrmModule.forRoot(defaultConnectionOptions),
-            TypeOrmModule.forFeature([Folder, Image])
+            TypeOrmModule.forFeature([Folder, Image]),
+            FactoryModule
         ],
         controllers: moduleConfig.controllers,
         providers: moduleConfig.providers
@@ -68,6 +70,7 @@ export const createTestData = async () => {
     const f6 = await folderRepo.save(folderRepo.create({ name: 'F6', parent: f5 }));
 
     const imageRepo = getRepository(Image);
+    // tslint:disable:max-line-length
     const i1 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-1', originalName: 'orig-image-1', extension: 'jpg', parentFolder: c }));
     const i2 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-2', originalName: 'orig-image-2', extension: 'PNG', parentFolder: f1 }));
     const i3 = await imageRepo.save(imageRepo.create({ name: 'dummy-image-3', originalName: 'orig-image-3', extension: 'gif', parentFolder: f1 }));

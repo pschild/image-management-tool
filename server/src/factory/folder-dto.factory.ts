@@ -1,12 +1,13 @@
 import { Folder } from '../entity/folder.entity';
 import { FolderDto } from '../dto/Folder.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { FolderService } from '../folder/folder.service';
 import { ModuleRef } from '@nestjs/core';
 import { ImageDtoFactory } from './image-dto.factory';
+import { IDtoFactory } from './IDtoFactory';
 
 @Injectable()
-export class FolderDtoFactory {
+export class FolderDtoFactory implements IDtoFactory<Folder, FolderDto>, OnModuleInit {
 
     private imageDtoFactory: ImageDtoFactory;
 
@@ -16,7 +17,7 @@ export class FolderDtoFactory {
     ) {}
 
     onModuleInit() {
-        // this avoids using forawrdRef due to circular dependencies between factories
+        // this avoids using forwardRef due to circular dependencies between factories
         this.imageDtoFactory = this.moduleRef.get(ImageDtoFactory);
     }
 

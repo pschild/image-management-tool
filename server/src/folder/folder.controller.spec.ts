@@ -4,8 +4,8 @@ import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import { FolderController } from './folder.controller';
 import { FolderService } from './folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { FolderDto } from '../dto/Folder.dto';
+import { FolderDtoFactory } from '../factory/folder-dto.factory';
 
 describe('FolderController', () => {
     let connection: Connection;
@@ -17,11 +17,17 @@ describe('FolderController', () => {
     beforeAll(async () => {
         const module = await createTestModule({
             controllers: [FolderController],
-            providers: [FolderService, PathHelperService, FolderEntityToDtoMapper]
+            providers: [
+                FolderService,
+                PathHelperService
+            ]
         });
         connection = module.get<Connection>(Connection);
         folderController = module.get<FolderController>(FolderController);
         folderService = module.get<FolderService>(FolderService);
+
+        // call the lifecycle-hook manually
+        module.get<FolderDtoFactory>(FolderDtoFactory).onModuleInit();
 
         dummyFolder = new FolderDto();
         dummyFolder.id = 43;
