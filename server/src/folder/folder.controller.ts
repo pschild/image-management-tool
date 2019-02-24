@@ -3,6 +3,8 @@ import { FolderService } from './folder.service';
 import { UpdateResult } from 'typeorm';
 import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { FolderDto } from '../dto/Folder.dto';
+import { plainToClass } from 'class-transformer';
+import { Folder } from '../entity/folder.entity';
 
 @Controller('folder')
 export class FolderController {
@@ -23,12 +25,20 @@ export class FolderController {
 
     @Get()
     async findAll(): Promise<FolderDto[]> {
-        return this.folderEntityToDtoMapper.mapAll(await this.folderService.findAll());
+        // return this.folderEntityToDtoMapper.mapAll(await this.folderService.findAll());
+        const dtos: FolderDto[] = plainToClass(FolderDto, await this.folderService.findAll());
+        return Promise.all(dtos.map(async (dto: FolderDto) => {
+            dto.absolutePath = await this.folderService.buildPathByFolderId(dto.id);
+            return dto;
+        }));
     }
 
     @Get(':id')
     async findOne(@Param('id') id): Promise<FolderDto> {
-        return this.folderEntityToDtoMapper.map(await this.folderService.findOne(id));
+        // return this.folderEntityToDtoMapper.map(await this.folderService.findOne(id));
+        const dto: FolderDto = plainToClass(FolderDto, await this.folderService.findOne(id, true));
+        dto.absolutePath = await this.folderService.buildPathByFolderId(dto.id);
+        return dto;
     }
 
     @Put(':id')

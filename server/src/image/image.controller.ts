@@ -5,6 +5,9 @@ import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
 import { FolderService } from '../folder/folder.service';
 import { ImageDto } from '../dto/Image.dto';
+import { plainToClass } from 'class-transformer';
+import { Image } from '../entity/image.entity';
+import * as path from 'path';
 
 @Controller('image')
 export class ImageController {
@@ -37,7 +40,13 @@ export class ImageController {
 
     @Get()
     async findAll(): Promise<ImageDto[]> {
-        return this.imageEntityToDtoMapper.mapAll(await this.imageService.findAll(true));
+        // return this.imageEntityToDtoMapper.mapAll(await this.imageService.findAll(true));
+        const dtos: ImageDto[] = plainToClass(ImageDto, await this.imageService.findAll(true));
+        return Promise.all(dtos.map(async (dto: ImageDto) => {
+            const parentFolderPath = await this.folderService.buildPathByFolderId(dto.parentFolder.id);
+            dto.absolutePath = `${parentFolderPath}${path.sep}${dto.name}.${dto.extension}`;
+            return dto;
+        }));
     }
 
     @Get(':id')

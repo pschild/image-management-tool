@@ -3,6 +3,7 @@ import { FolderDto } from './Folder.dto';
 import { TagDto } from './Tag.dto';
 import { PersonDto } from './Person.dto';
 import { PlaceDto } from './Place.dto';
+import { Exclude, Type } from 'class-transformer';
 
 export class ImageDto implements IImageDto {
     id?: number;
@@ -11,11 +12,21 @@ export class ImageDto implements IImageDto {
     absolutePath: string;
     originalName?: string;
     description?: string;
-    parentFolder?: FolderDto;
-    dateAdded?: Date;
     dateFrom?: Date;
     dateTo?: Date;
+
+    @Exclude()
+    dateAdded?: Date;
+
+    @Type(() => FolderDto)
+    parentFolder?: FolderDto;
+
+    @Type(() => PlaceDto)
     place?: PlaceDto;
+
+    @Type(() => TagDto)
     tags?: TagDto[];
+
+    @Type(() => PersonDto)
     persons?: PersonDto[];
 }
