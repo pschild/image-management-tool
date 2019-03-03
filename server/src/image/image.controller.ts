@@ -53,7 +53,8 @@ export class ImageController {
     async findOne(@Param('id') id): Promise<ImageDto> {
         const image: Image = await this.imageService.findOne(id, true);
         const dto: ImageDto = this.transformer.transform(image, ImageDto);
-        dto.absolutePath = await this.folderService.buildPathByFolderId(image.parentFolder.id);
+        const parentFolderPath = await this.folderService.buildPathByFolderId(dto.parentFolder.id);
+        dto.absolutePath = `${parentFolderPath}${path.sep}${dto.name}.${dto.extension}`;
         return dto;
     }
 
