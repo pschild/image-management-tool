@@ -15,12 +15,11 @@ import { IExplorerContentDto } from '../../../shared/dto/IExplorerContent.dto';
 import { IFsFile } from '../interface/IFsFile';
 import { IMergedFolderDto } from '../../../shared/dto/IMergedFolder.dto';
 import { IMergedImageDto } from '../../../shared/dto/IMergedImage.dto';
-import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
-import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 import { Folder } from '../entity/folder.entity';
 import { FolderDto } from '../dto/Folder.dto';
 import { Image } from '../entity/image.entity';
 import { ImageDto } from '../dto/Image.dto';
+import { DtoTransformerService } from '../transformer/dto-transformer.service';
 
 @Controller('explorer')
 export class ExplorerController {
@@ -29,8 +28,7 @@ export class ExplorerController {
         private readonly fileSystemService: FileSystemService,
         private readonly folderService: FolderService,
         private readonly imageService: ImageService,
-        private readonly folderEntityToDtoMapper: FolderEntityToDtoMapper,
-        private readonly imageEntityToDtoMapper: ImageEntityToDtoMapper
+        private readonly transformer: DtoTransformerService
     ) { }
 
     @Get('id/:folderId')
@@ -108,7 +106,7 @@ export class ExplorerController {
             await this.folderService.updateByConditions({ parent: sourceFolder }, { parent: targetFolder });
             await this.imageService.updateByConditions({ parentFolder: sourceFolder }, { parentFolder: targetFolder });
             await this.folderService.remove(sourceFolder.id);
-            return this.folderEntityToDtoMapper.map(targetFolder);
+            return this.transformer.transform(targetFolder, FolderDto);
         }
 
         // if the target folder doesn't exist in db, get/create the target folder's parent and set it as the source folder's parent
@@ -126,7 +124,7 @@ export class ExplorerController {
 
         // update db
         await this.folderService.update(sourceFolder.id, sourceFolder);
-        return this.folderEntityToDtoMapper.map(sourceFolder);
+        return this.transformer.transform(sourceFolder, FolderDto);
     }
 
     @Post('relocate/image')
@@ -178,6 +176,6 @@ export class ExplorerController {
         sourceImage.extension = targetImageExtension;
 
         await this.imageService.update(sourceImage.id, sourceImage);
-        return this.imageEntityToDtoMapper.map(sourceImage);
+        return this.transformer.transform(sourceImage, ImageDto);
     }
 }

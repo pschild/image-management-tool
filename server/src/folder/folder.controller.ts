@@ -1,34 +1,49 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode } from '@nestjs/common';
 import { FolderService } from './folder.service';
 import { UpdateResult } from 'typeorm';
-import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { FolderDto } from '../dto/Folder.dto';
+import { Folder } from '../entity/folder.entity';
+import { DtoTransformerService } from '../transformer/dto-transformer.service';
 
 @Controller('folder')
 export class FolderController {
     constructor(
         private readonly folderService: FolderService,
-        private readonly folderEntityToDtoMapper: FolderEntityToDtoMapper
+        private readonly transformer: DtoTransformerService
     ) { }
 
     @Post()
     async create(@Body() data): Promise<FolderDto> {
-        return this.folderEntityToDtoMapper.map(await this.folderService.create(data));
+        const folder: Folder = await this.folderService.create(data);
+        const dto: FolderDto = this.transformer.transform(folder, FolderDto);
+        dto.absolutePath = await this.folderService.buildPathByFolderId(folder.id);
+        return dto;
     }
 
     @Post('byPath')
     async createByPath(@Body() body: {path: string}): Promise<FolderDto> {
-        return this.folderEntityToDtoMapper.map(await this.folderService.createFolderByPath(decodeURI(body.path)));
+        const folder: Folder = await this.folderService.createFolderByPath(decodeURI(body.path));
+        const dto: FolderDto = this.transformer.transform(folder, FolderDto);
+        dto.absolutePath = await this.folderService.buildPathByFolderId(folder.id);
+        return dto;
     }
 
     @Get()
     async findAll(): Promise<FolderDto[]> {
-        return this.folderEntityToDtoMapper.mapAll(await this.folderService.findAll());
+        const folders: Folder[] = await this.folderService.findAll();
+        const dtos: FolderDto[] = this.transformer.transformList(folders, FolderDto);
+        return Promise.all(dtos.map(async (dto: FolderDto) => {
+            dto.absolutePath = await this.folderService.buildPathByFolderId(dto.id);
+            return dto;
+        }));
     }
 
     @Get(':id')
     async findOne(@Param('id') id): Promise<FolderDto> {
-        return this.folderEntityToDtoMapper.map(await this.folderService.findOne(id));
+        const folder: Folder = await this.folderService.findOne(id, true);
+        const dto: FolderDto = this.transformer.transform(folder, FolderDto);
+        dto.absolutePath = await this.folderService.buildPathByFolderId(dto.id);
+        return dto;
     }
 
     @Put(':id')

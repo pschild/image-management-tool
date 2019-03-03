@@ -1,6 +1,7 @@
 import { Connection, UpdateResult } from 'typeorm';
 import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import { ImageService } from './image.service';
+import { DtoTransformerModule } from '../transformer/dto-transformer.module';
 import 'jest-extended';
 
 describe('ImageService', () => {
@@ -9,6 +10,7 @@ describe('ImageService', () => {
 
     beforeAll(async () => {
         const module = await createTestModule({
+            imports: [DtoTransformerModule],
             providers: [ImageService]
         });
         connection = module.get<Connection>(Connection);

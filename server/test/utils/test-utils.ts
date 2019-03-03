@@ -22,12 +22,13 @@ const defaultConfigOptions: IAppConfig = {
     appRootPath: '.'
 };
 
-export const createTestModule = async (moduleConfig: { controllers?: Type<any>[], providers?: Provider[] }) => {
+export const createTestModule = async (moduleConfig: { imports?: Array<Type<any>>, controllers?: Type<any>[], providers?: Provider[] }) => {
     return await Test.createTestingModule({
         imports: [
             ConfigModule.forRoot(defaultConfigOptions),
             TypeOrmModule.forRoot(defaultConnectionOptions),
-            TypeOrmModule.forFeature([Folder, Image])
+            TypeOrmModule.forFeature([Folder, Image]),
+            ...moduleConfig.imports
         ],
         controllers: moduleConfig.controllers,
         providers: moduleConfig.providers

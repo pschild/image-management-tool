@@ -2,8 +2,9 @@ import { WelcomeController } from './welcome.controller';
 import { WelcomeService } from './welcome.service';
 import { Connection } from 'typeorm';
 import { createTestModule, createTestData } from '../../test/utils/test-utils';
-import 'jest-extended';
 import { Folder } from '../entity/folder.entity';
+import { DtoTransformerModule } from '../transformer/dto-transformer.module';
+import 'jest-extended';
 
 describe('WelcomeController', () => {
     let connection: Connection;
@@ -12,6 +13,7 @@ describe('WelcomeController', () => {
 
     beforeAll(async () => {
         const module = await createTestModule({
+            imports: [DtoTransformerModule],
             controllers: [WelcomeController],
             providers: [WelcomeService]
         });

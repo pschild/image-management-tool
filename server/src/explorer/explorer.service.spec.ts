@@ -9,6 +9,7 @@ import { IMergedFolderDto } from '../../../shared/dto/IMergedFolder.dto';
 import { IMergedImageDto } from '../../../shared/dto/IMergedImage.dto';
 import { Image } from '../entity/image.entity';
 import { Folder } from '../entity/folder.entity';
+import { DtoTransformerModule } from '../transformer/dto-transformer.module';
 
 describe('ExplorerService', () => {
     let explorerService: ExplorerService;
@@ -20,6 +21,7 @@ describe('ExplorerService', () => {
 
     beforeAll(async () => {
         const module = await createTestModule({
+            imports: [DtoTransformerModule],
             providers: [FolderService, ExplorerService, PathHelperService]
         });
         explorerService = module.get<ExplorerService>(ExplorerService);
