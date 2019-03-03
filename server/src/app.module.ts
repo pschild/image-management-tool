@@ -7,6 +7,7 @@ import { IAppConfig } from './config/IAppConfig';
 import { ImageModule } from './image/image.module';
 import { FolderModule } from './folder/folder.module';
 import { FileSystemModule } from './fileSystem/file-system.module';
+import { TagModule } from './tag/tag.module';
 
 export class AppModule {
     static forRoot(config: IAppConfig): DynamicModule {
@@ -19,7 +20,8 @@ export class AppModule {
                 FolderModule,
                 FileSystemModule,
                 WelcomeModule,
-                ExplorerModule
+                ExplorerModule,
+                TagModule
             ]
         };
     }
