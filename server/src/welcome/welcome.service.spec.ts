@@ -1,6 +1,7 @@
 import { WelcomeService } from './welcome.service';
 import { Connection } from 'typeorm';
 import { createTestModule, createTestData } from '../../test/utils/test-utils';
+import { DtoTransformerModule } from '../transformer/dto-transformer.module';
 import 'jest-extended';
 
 describe('WelcomeService', () => {
@@ -9,6 +10,7 @@ describe('WelcomeService', () => {
 
     beforeAll(async () => {
         const module = await createTestModule({
+            imports: [DtoTransformerModule],
             providers: [WelcomeService]
         });
         connection = module.get<Connection>(Connection);

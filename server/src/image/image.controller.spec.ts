@@ -3,15 +3,11 @@ import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import 'jest-extended';
 import { ImageController } from './image.controller';
 import { ImageService } from './image.service';
-import { ImageEntityToDtoMapper } from '../mapper/ImageEntityToDto.mapper';
 import { FolderService } from '../folder/folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
-import { PersonEntityToDtoMapper } from '../mapper/PersonEntityToDto.mapper';
-import { PlaceEntityToDtoMapper } from '../mapper/PlaceEntityToDto.mapper';
-import { TagEntityToDtoMapper } from '../mapper/TagEntityToDto.mapper';
 import { ImageDto } from '../dto/Image.dto';
 import { FolderDto } from '../dto/Folder.dto';
+import { DtoTransformerModule } from '../transformer/dto-transformer.module';
 
 describe('ImageController', () => {
     let connection: Connection;
@@ -22,16 +18,12 @@ describe('ImageController', () => {
 
     beforeAll(async () => {
         const module = await createTestModule({
+            imports: [DtoTransformerModule],
             controllers: [ImageController],
             providers: [
                 ImageService,
                 FolderService,
-                PathHelperService,
-                ImageEntityToDtoMapper,
-                FolderEntityToDtoMapper,
-                PersonEntityToDtoMapper,
-                PlaceEntityToDtoMapper,
-                TagEntityToDtoMapper
+                PathHelperService
             ]
         });
         connection = module.get<Connection>(Connection);

@@ -4,8 +4,8 @@ import { createTestModule, createTestData } from '../../test/utils/test-utils';
 import { FolderController } from './folder.controller';
 import { FolderService } from './folder.service';
 import { PathHelperService } from '../util/path-helper/path-helper.service';
-import { FolderEntityToDtoMapper } from '../mapper/FolderEntityToDto.mapper';
 import { FolderDto } from '../dto/Folder.dto';
+import { DtoTransformerModule } from '../transformer/dto-transformer.module';
 
 describe('FolderController', () => {
     let connection: Connection;
@@ -16,8 +16,9 @@ describe('FolderController', () => {
 
     beforeAll(async () => {
         const module = await createTestModule({
+            imports: [DtoTransformerModule],
             controllers: [FolderController],
-            providers: [FolderService, PathHelperService, FolderEntityToDtoMapper]
+            providers: [FolderService, PathHelperService]
         });
         connection = module.get<Connection>(Connection);
         folderController = module.get<FolderController>(FolderController);

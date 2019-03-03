@@ -6,6 +6,7 @@ import { PathHelperService } from '../util/path-helper/path-helper.service';
 import * as path from 'path';
 import { Folder } from '../entity/folder.entity';
 import { ImageService } from '../image/image.service';
+import { DtoTransformerModule } from '../transformer/dto-transformer.module';
 
 describe('FolderService', () => {
     let connection: Connection;
@@ -14,6 +15,7 @@ describe('FolderService', () => {
 
     beforeAll(async () => {
         const module = await createTestModule({
+            imports: [DtoTransformerModule],
             providers: [FolderService, PathHelperService, ImageService]
         });
         connection = module.get<Connection>(Connection);
