@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { TagService } from '../tag.service';
 import { COMMA, TAB, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent, MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material';
@@ -23,6 +23,8 @@ export class TagChipsComponent implements OnInit {
   tagControl = new FormControl();
 
   @Input() preSelectedTags: ITagDto[] = [];
+  @Output() chipsChange: EventEmitter<ITagDto[]> = new EventEmitter();
+
   allTags$: Observable<ITagDto[]>;
   filteredTags$: Observable<ITagDto[]>;
   selectedTags: ITagDto[] = [];
@@ -59,8 +61,11 @@ export class TagChipsComponent implements OnInit {
     this.tagService.create(tagLabel).subscribe(
       (createdTag: ITagDto) => {
         this.selectedTags.push(createdTag);
+        this.chipsChange.emit(this.selectedTags);
+
         inputEl.value = '';
         this.tagControl.setValue(null);
+
         this.toastr.success(`Tag "${tagLabel}" hinzugefügt`);
         this.refreshSuggestions();
       }
@@ -71,12 +76,15 @@ export class TagChipsComponent implements OnInit {
     const index = this.selectedTags.indexOf(tag);
     if (index >= 0) {
       this.selectedTags.splice(index, 1);
+      this.refreshSuggestions();
+      this.chipsChange.emit(this.selectedTags);
     }
-    this.refreshSuggestions();
   }
 
   onTagSelected(event: MatAutocompleteSelectedEvent): void {
     this.selectedTags.push(event.option.value);
+    this.chipsChange.emit(this.selectedTags);
+
     this.tagInput.nativeElement.value = '';
     this.tagControl.setValue(null);
   }

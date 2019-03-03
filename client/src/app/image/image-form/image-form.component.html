@@ -20,7 +20,7 @@
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
-  <app-tag-chips [preSelectedTags]="image.tags"></app-tag-chips>
+  <app-tag-chips [preSelectedTags]="image.tags" (chipsChange)="onChipsChange($event)"></app-tag-chips>
 
   <div class="form-action-container">
     <button type="submit" mat-raised-button color="primary">Speichern</button>

@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ImageService } from '../image.service';
 import { IImageDto } from '../../../../../shared/dto/IImage.dto';
+import { ITagDto } from '../../../../../shared/dto/ITag.dto';
 
 @Component({
   selector: 'app-image-form',
@@ -44,6 +45,10 @@ export class ImageFormComponent implements OnInit {
         console.log('create', this.imageEditForm.value);
       }
     }
+  }
+
+  onChipsChange(selection: ITagDto[]) {
+    console.log(selection);
   }
 
 }
