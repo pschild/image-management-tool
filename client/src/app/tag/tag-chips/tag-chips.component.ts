@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { TagService } from '../tag.service';
 import { COMMA, TAB, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent, MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ITagDto } from '../../../../../shared/dto/ITag.dto';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormArray } from '@angular/forms';
 import { startWith, map, combineLatest } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
@@ -15,20 +15,17 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class TagChipsComponent implements OnInit {
 
-  separatorKeysCodes = [TAB, COMMA, ENTER];
+  @Input() tagFormArray: FormArray;
+  @Input() preSelectedTags: ITagDto[] = [];
 
   @ViewChild('tagInput') tagInput: ElementRef;
   @ViewChild('autoComplete') matAutocomplete: MatAutocomplete;
 
-  tagControl = new FormControl();
-
-  @Input() preSelectedTags: ITagDto[] = [];
-  @Output() chipsChange: EventEmitter<ITagDto[]> = new EventEmitter();
+  separatorKeysCodes = [TAB, COMMA, ENTER];
+  tagInputControl = new FormControl();
 
   allTags$: Observable<ITagDto[]>;
   filteredTags$: Observable<ITagDto[]>;
-  selectedTags: ITagDto[] = [];
-  test$ = new BehaviorSubject<boolean>(true);
 
   constructor(
     private tagService: TagService,
@@ -40,14 +37,14 @@ export class TagChipsComponent implements OnInit {
   refreshSuggestions() {
     this.allTags$ = this.tagService.loadAll();
     this.filteredTags$ = this.allTags$.pipe(
-      combineLatest(this.tagControl.valueChanges.pipe(startWith(''))),
+      combineLatest(this.tagInputControl.valueChanges.pipe(startWith(''))),
       map(([allTags, searchTerm]) => this._filter(allTags, searchTerm)),
       map((filteredTags) => this._sort(filteredTags))
     );
   }
 
   ngOnInit() {
-    this.selectedTags = this.preSelectedTags || [];
+    this.preSelectedTags.map((tag: ITagDto) => this.tagFormArray.push(new FormControl(tag)));
   }
 
   onTagAdded(event: MatChipInputEvent): void {
@@ -60,39 +57,36 @@ export class TagChipsComponent implements OnInit {
 
     this.tagService.create(tagLabel).subscribe(
       (createdTag: ITagDto) => {
-        this.selectedTags.push(createdTag);
-        this.chipsChange.emit(this.selectedTags);
+        this.tagFormArray.push(new FormControl(createdTag));
 
         inputEl.value = '';
-        this.tagControl.setValue(null);
+        this.tagInputControl.setValue(null);
 
-        this.toastr.success(`Tag "${tagLabel}" hinzugefügt`);
+        this.toastr.success(`Tag "${tagLabel}" erfolgreich angelegt`);
         this.refreshSuggestions();
       }
     );
   }
 
   onTagRemoved(tag: ITagDto): void {
-    const index = this.selectedTags.indexOf(tag);
+    const index = this.tagFormArray.value.indexOf(tag);
     if (index >= 0) {
-      this.selectedTags.splice(index, 1);
+      this.tagFormArray.removeAt(index);
       this.refreshSuggestions();
-      this.chipsChange.emit(this.selectedTags);
     }
   }
 
   onTagSelected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedTags.push(event.option.value);
-    this.chipsChange.emit(this.selectedTags);
+    this.tagFormArray.push(new FormControl(event.option.value));
 
     this.tagInput.nativeElement.value = '';
-    this.tagControl.setValue(null);
+    this.tagInputControl.setValue(null);
   }
 
   _filter(allTags: ITagDto[], searchTerm: string): ITagDto[] {
     return allTags.filter((tag: ITagDto) => {
       const labelMatchesSearchTerm = tag.label.search(new RegExp(searchTerm, 'i')) >= 0;
-      const tagIsNotSelected = !this.selectedTags.find((selectedTag: ITagDto) => selectedTag.label === tag.label);
+      const tagIsNotSelected = !this.tagFormArray.value.find((selectedTag: ITagDto) => selectedTag.label === tag.label);
       return labelMatchesSearchTerm && tagIsNotSelected;
     });
   }
