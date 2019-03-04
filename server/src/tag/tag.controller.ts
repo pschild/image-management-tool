@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode, UseFilters } from '@nestjs/common';
 import { TagService } from './tag.service';
 import { UpdateResult } from 'typeorm';
 import { DtoTransformerService } from '../transformer/dto-transformer.service';
 import { TagDto } from '../dto/Tag.dto';
 import { Tag } from '../entity/tag.entity';
+import { UniqueConstraintViolationException } from '../../../shared/exception/unique-constraint-violation.exception';
+import { SqLiteException } from '../../../shared/exception/sqlite.exception';
+import { SqLiteExceptionFilter } from '../filter/sqlite-exception.filter';
 
 @Controller('tag')
 export class TagController {
@@ -13,8 +16,14 @@ export class TagController {
     ) { }
 
     @Post()
+    @UseFilters(SqLiteExceptionFilter)
     async create(@Body() data): Promise<TagDto> {
-        const tag: Tag = await this.tagService.create(data);
+        const tag: Tag = await this.tagService.create(data).catch(error => {
+            if (error.code === 'SQLITE_CONSTRAINT') {
+                throw new UniqueConstraintViolationException(`Der Tag "${data.label}" existiert bereits.`);
+            }
+            throw new SqLiteException({status: 500, userMessage: error.message, technicalMessage: error.message});
+        });
         return this.transformer.transform(tag, TagDto);
     }
 
