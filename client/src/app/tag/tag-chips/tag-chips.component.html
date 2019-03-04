@@ -1,5 +1,4 @@
-<div [formGroup]="tagFormArray">
-    <mat-form-field class="example-chip-list">
+    <mat-form-field class="example-chip-list" [formGroup]="tagFormArray">
         <mat-chip-list #chipList>
             <mat-chip
                 *ngFor="let tag of tagFormArray.value"
@@ -11,7 +10,7 @@
             </mat-chip>
             <input
                 [formControl]="tagInputControl"
-                placeholder="Tags"
+                placeholder="Schlagwörter"
                 #tagInput
                 [matAutocomplete]="autoComplete"
                 [matChipInputFor]="chipList"
@@ -26,5 +25,5 @@
                 {{ tag.label }}
             </mat-option>
         </mat-autocomplete>
+        <mat-hint>mit [ENTER] können neue Schlagwörter angelegt werden</mat-hint>
     </mat-form-field>
-</div>

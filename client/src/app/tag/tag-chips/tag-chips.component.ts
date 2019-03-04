@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { TagService } from '../tag.service';
-import { COMMA, TAB, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent, MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material';
+import { COMMA, TAB } from '@angular/cdk/keycodes';
+import { MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { Observable } from 'rxjs';
 import { ITagDto } from '../../../../../shared/dto/ITag.dto';
 import { FormControl, FormArray } from '@angular/forms';
@@ -19,9 +19,8 @@ export class TagChipsComponent implements OnInit {
   @Input() preSelectedTags: ITagDto[] = [];
 
   @ViewChild('tagInput') tagInput: ElementRef;
-  @ViewChild('autoComplete') matAutocomplete: MatAutocomplete;
 
-  separatorKeysCodes = [TAB, COMMA, ENTER];
+  separatorKeysCodes = [TAB, COMMA];
   tagInputControl = new FormControl();
 
   allTags$: Observable<ITagDto[]>;
@@ -51,7 +50,7 @@ export class TagChipsComponent implements OnInit {
     const inputEl = event.input;
     const tagLabel = event.value;
 
-    if (!tagLabel || !tagLabel.length || this.matAutocomplete.isOpen) {
+    if (!tagLabel || !tagLabel.length) {
       return;
     }
 
