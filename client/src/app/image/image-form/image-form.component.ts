@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormArray } from '@angular/forms';
 import { ImageService } from '../image.service';
 import { IImageDto } from '../../../../../shared/dto/IImage.dto';
 import { ITagDto } from '../../../../../shared/dto/ITag.dto';
@@ -17,7 +17,7 @@ export class ImageFormComponent implements OnInit {
     place: [''],
     description: [''],
     date: [''],
-    tags: ['']
+    tags: this.fb.array([])
   });
 
   constructor(
@@ -30,6 +30,8 @@ export class ImageFormComponent implements OnInit {
     this.imageEditForm.patchValue({
       description: this.image.description
     });
+    const tagFormArray = this.imageEditForm.get('tags') as FormArray;
+    this.image.tags.map((tag: ITagDto) => tagFormArray.push(this.fb.control(tag)));
   }
 
   onSubmit() {
@@ -48,7 +50,9 @@ export class ImageFormComponent implements OnInit {
   }
 
   onChipsChange(selection: ITagDto[]) {
-    console.log(selection);
+    const tagFormArray = this.imageEditForm.get('tags') as FormArray;
+    tagFormArray.controls = [];
+    selection.map((selectedTag: ITagDto) => tagFormArray.push(this.fb.control(selectedTag)));
   }
 
 }
