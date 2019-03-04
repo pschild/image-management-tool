@@ -43,7 +43,9 @@ export class TagChipsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.preSelectedTags.map((tag: ITagDto) => this.tagFormArray.push(new FormControl(tag)));
+    if (this.preSelectedTags && this.preSelectedTags.length) {
+      this.preSelectedTags.map((tag: ITagDto) => this.tagFormArray.push(new FormControl(tag)));
+    }
   }
 
   onTagAdded(event: MatChipInputEvent): void {
