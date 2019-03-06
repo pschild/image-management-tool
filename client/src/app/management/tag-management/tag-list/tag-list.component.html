@@ -1,3 +1,6 @@
-<p>
-  tag-list works!
-</p>
+<ul>
+  <li *ngFor="let tag of allTags">
+    {{ tag.label }}
+    <button mat-button (click)="editTag(tag)">edit</button>
+  </li>
+</ul>

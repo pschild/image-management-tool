@@ -1,0 +1,15 @@
+form.tag-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    width: 100%;
+
+    & > * {
+        padding: 10px;
+    }
+
+    .form-action-container {
+        padding: 10px;
+        margin-left: auto;
+    }
+}

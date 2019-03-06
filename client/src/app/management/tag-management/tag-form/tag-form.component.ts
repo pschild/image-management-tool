@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ITagDto } from '../../../../../../shared/dto/ITag.dto';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tag-form',
@@ -7,9 +10,36 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TagFormComponent implements OnInit {
 
-  constructor() { }
+  @Input() tag$: Observable<ITagDto>;
+  @Output() save: EventEmitter<ITagDto> = new EventEmitter<ITagDto>();
+
+  tagForm = this.fb.group({
+    id: [''],
+    label: ['', Validators.required]
+  });
+
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.tag$.subscribe((tag: ITagDto) => {
+      this.tagForm.patchValue({
+        id: tag.id,
+        label: tag.label
+      });
+    });
+  }
+
+  onReset() {
+    this.tagForm.reset();
+  }
+
+  onSubmit() {
+    console.log(this.tagForm.status);
+    console.log(this.tagForm.valid);
+    console.log(this.tagForm.value);
+    if (this.tagForm.valid) {
+      this.save.emit(this.tagForm.value);
+    }
   }
 
 }
