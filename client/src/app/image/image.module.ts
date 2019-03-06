@@ -8,7 +8,7 @@ import { ImageFormComponent } from './image-form/image-form.component';
 import { SharedModule } from '../shared/shared.module';
 import { MaterialModule } from '../material/material.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { TagModule } from '../tag/tag.module';
+import { TagManagementModule } from '../management/tag-management/tag-management.module';
 
 @NgModule({
   imports: [
@@ -18,7 +18,7 @@ import { TagModule } from '../tag/tag.module';
     FormsModule,
     ReactiveFormsModule,
     ImageRoutingModule,
-    TagModule
+    TagManagementModule
   ],
   declarations: [
     ImageEditComponent,

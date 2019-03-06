@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ManagementComponent } from './management.component';
-import { PersonsListComponent } from './persons-list/persons-list.component';
+import { TagManagementComponent } from './tag-management/tag-management.component';
 
 const routes: Routes = [
   {
@@ -10,11 +10,11 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'persons'
+        redirectTo: 'tags'
       },
       {
-        path: 'persons',
-        component: PersonsListComponent
+        path: 'tags',
+        component: TagManagementComponent
       }
     ]
   }

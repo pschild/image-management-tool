@@ -3,10 +3,10 @@ import { TagService } from '../tag.service';
 import { COMMA, TAB } from '@angular/cdk/keycodes';
 import { MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { Observable } from 'rxjs';
-import { ITagDto } from '../../../../../shared/dto/ITag.dto';
 import { FormControl, FormArray } from '@angular/forms';
 import { startWith, map, combineLatest } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { ITagDto } from '../../../../../../shared/dto/ITag.dto';
 
 @Component({
   selector: 'app-tag-chips',

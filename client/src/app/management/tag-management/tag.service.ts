@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AppConfig } from '../../environments/environment';
-import { ITagDto } from '../../../../shared/dto/ITag.dto';
 import { catchError } from 'rxjs/operators';
+import { ITagDto } from '../../../../../shared/dto/ITag.dto';
+import { AppConfig } from '../../../environments/environment';
 
 @Injectable()
 export class TagService {

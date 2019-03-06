@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormBuilder, FormArray } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ImageService } from '../image.service';
 import { IImageDto } from '../../../../../shared/dto/IImage.dto';
 

@@ -2,16 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ManagementComponent } from './management.component';
 import { ManagementRoutingModule } from './management-routing.module';
-import { PersonsListComponent } from './persons-list/persons-list.component';
+import { TagManagementModule } from './tag-management/tag-management.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    ManagementRoutingModule
+    ManagementRoutingModule,
+    TagManagementModule
   ],
   declarations: [
-    ManagementComponent,
-    PersonsListComponent
+    ManagementComponent
   ],
   exports: [
     ManagementComponent
