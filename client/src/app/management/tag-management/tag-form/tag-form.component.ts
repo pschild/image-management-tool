@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ITagDto } from '../../../../../../shared/dto/ITag.dto';
 import { Observable } from 'rxjs';
@@ -12,6 +12,8 @@ export class TagFormComponent implements OnInit {
 
   @Input() tag$: Observable<ITagDto>;
   @Output() save: EventEmitter<ITagDto> = new EventEmitter<ITagDto>();
+
+  @ViewChild('formEl') formEl;
 
   tagForm = this.fb.group({
     id: [''],
@@ -39,6 +41,7 @@ export class TagFormComponent implements OnInit {
     console.log(this.tagForm.value);
     if (this.tagForm.valid) {
       this.save.emit(this.tagForm.value);
+      this.formEl.resetForm();
     }
   }
 

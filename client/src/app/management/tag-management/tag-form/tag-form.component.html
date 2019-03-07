@@ -1,19 +1,21 @@
-<h2 *ngIf="tagForm.value.id">Tag bearbeiten</h2>
-<h2 *ngIf="!tagForm.value.id">Neuen Tag anlegen</h2>
-<form [formGroup]="tagForm" (ngSubmit)="onSubmit()" class="tag-form">
-  <input type="text" formControlName="id" readonly>
+<mat-card>
+  <h2 *ngIf="tagForm.value.id">Tag bearbeiten</h2>
+  <h2 *ngIf="!tagForm.value.id">Neuen Tag anlegen</h2>
+  <form [formGroup]="tagForm" (ngSubmit)="onSubmit()" class="tag-form" #formEl="ngForm">
+    <input type="hidden" formControlName="id" readonly>
 
-  <mat-form-field>
-    <mat-label>Label</mat-label>
-    <input matInput formControlName="label" placeholder="Label">
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Label</mat-label>
+      <input matInput formControlName="label" placeholder="Label">
+    </mat-form-field>
 
-  <div class="form-action-container">
-    <button *ngIf="tagForm.value.id" mat-button (click)="onReset()">Zurücksetzen</button>
-    <button *ngIf="tagForm.value.id" type="submit" mat-raised-button color="primary">Speichern</button>
-    <button *ngIf="!tagForm.value.id" type="submit" mat-raised-button color="primary">Anlegen</button>
-  </div>
+    <div class="form-action-container">
+      <button *ngIf="tagForm.value.id" mat-stroked-button (click)="onReset()">Abbrechen</button>
+      <button *ngIf="tagForm.value.id" type="submit" mat-raised-button color="primary" [disabled]="!tagForm.valid">Speichern</button>
+      <button *ngIf="!tagForm.value.id" type="submit" mat-raised-button color="primary" [disabled]="!tagForm.valid">Anlegen</button>
+    </div>
 
-  <strong>tagForm.value:</strong>
-  <pre>{{tagForm.value | json}}</pre>
-</form>
+    <strong>tagForm.value:</strong>
+    <pre>{{tagForm.value | json}}</pre>
+  </form>
+</mat-card>

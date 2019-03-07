@@ -11,5 +11,9 @@ form.tag-form {
     .form-action-container {
         padding: 10px;
         margin-left: auto;
+
+        & > * {
+            margin: 0 5px;
+        }
     }
 }
