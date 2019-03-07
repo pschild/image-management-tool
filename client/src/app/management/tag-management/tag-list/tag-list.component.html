@@ -1,6 +1,1 @@
-<ul>
-  <li *ngFor="let tag of allTags">
-    {{ tag.label }}
-    <button mat-button (click)="editTag(tag)">edit</button>
-  </li>
-</ul>
+<app-table-wrapper [config]="tableConfig" [columns]="columns" [elements]="allTags"></app-table-wrapper>

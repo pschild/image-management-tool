@@ -22,7 +22,8 @@ import { MatButtonModule, MatCardModule, MatListModule, MatMenuModule, MatIconMo
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
-    MatSortModule
+    MatSortModule,
+    MatPaginatorModule
   ],
   exports: [
     MatButtonModule,
@@ -44,7 +45,8 @@ import { MatButtonModule, MatCardModule, MatListModule, MatMenuModule, MatIconMo
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
-    MatSortModule
+    MatSortModule,
+    MatPaginatorModule
   ]
 })
 export class MaterialModule { }

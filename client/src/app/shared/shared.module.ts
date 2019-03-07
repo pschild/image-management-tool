@@ -5,6 +5,7 @@ import { SafeUrlPipe } from './safe-url/safe-url.pipe';
 import { MaterialModule } from '../material/material.module';
 import { FormsModule } from '@angular/forms';
 import { FormDialogComponent } from './dialog/form-dialog/form-dialog.component';
+import { TableWrapperComponent } from './table-wrapper/table-wrapper.component';
 
 @NgModule({
   imports: [
@@ -19,12 +20,14 @@ import { FormDialogComponent } from './dialog/form-dialog/form-dialog.component'
   declarations: [
     DialogComponent,
     FormDialogComponent,
-    SafeUrlPipe
+    SafeUrlPipe,
+    TableWrapperComponent
   ],
   exports: [
     DialogComponent,
     FormDialogComponent,
-    SafeUrlPipe
+    SafeUrlPipe,
+    TableWrapperComponent
   ]
 })
 export class SharedModule { }

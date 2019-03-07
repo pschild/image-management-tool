@@ -7,12 +7,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TagManagementComponent } from './tag-management.component';
 import { TagListComponent } from './tag-list/tag-list.component';
 import { TagFormComponent } from './tag-form/tag-form.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ],
   declarations: [
     TagManagementComponent,
