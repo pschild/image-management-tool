@@ -21,4 +21,12 @@ export class TagService {
       })
     );
   }
+
+  remove(tag: ITagDto): Observable<any> {
+    return this.http.delete<any>(`${AppConfig.serverBaseUrl}/tag/${tag.id}`).pipe(
+      catchError((errorResponse: HttpErrorResponse) => {
+        return throwError(errorResponse.error);
+      })
+    );
+  }
 }

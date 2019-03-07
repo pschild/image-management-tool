@@ -1,4 +1,4 @@
 <div class="tag-management-container">
-  <app-tag-list [allTags]="allTags$ | async" (handleEdit)="handleEdit($event)"></app-tag-list>
+  <app-tag-list [allTags]="allTags$ | async" (handleEdit)="handleEdit($event)" (handleRemove)="handleRemove($event)"></app-tag-list>
   <app-tag-form [tag$]="tagToEdit$" (save)="handleSave($event)"></app-tag-form>
 </div>
