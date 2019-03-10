@@ -61,7 +61,7 @@ export class TagChipsComponent implements OnInit {
         this.tagFormArray.push(new FormControl(createdTag));
 
         inputEl.value = '';
-        this.tagInputControl.setValue(null);
+        this.tagInputControl.setValue('');
 
         this.toastr.success(`Tag "${tagLabel}" erfolgreich angelegt`);
         this.refreshSuggestions();
@@ -81,12 +81,12 @@ export class TagChipsComponent implements OnInit {
     this.tagFormArray.push(new FormControl(event.option.value));
 
     this.tagInput.nativeElement.value = '';
-    this.tagInputControl.setValue(null);
+    this.tagInputControl.setValue('');
   }
 
   _filter(allTags: ITagDto[], searchTerm: string): ITagDto[] {
     return allTags.filter((tag: ITagDto) => {
-      const labelMatchesSearchTerm = tag.label.search(new RegExp(searchTerm, 'i')) >= 0;
+      const labelMatchesSearchTerm = searchTerm ? tag.label.search(new RegExp(searchTerm, 'i')) >= 0 : true;
       const tagIsNotSelected = !this.tagFormArray.value.find((selectedTag: ITagDto) => selectedTag.label === tag.label);
       return labelMatchesSearchTerm && tagIsNotSelected;
     });
