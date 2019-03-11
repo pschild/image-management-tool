@@ -19,6 +19,7 @@ export class TableWrapperComponent implements OnInit, OnChanges {
 
   displayedColumns: string[];
   dataSource: MatTableDataSource<any>;
+  filterValue: string;
 
   constructor() { }
 
@@ -40,7 +41,8 @@ export class TableWrapperComponent implements OnInit, OnChanges {
   }
 
   applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.filterValue = filterValue;
+    this.dataSource.filter = this.filterValue.trim().toLowerCase();
   }
 
 }
