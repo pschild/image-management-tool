@@ -27,6 +27,7 @@ export class TagListComponent implements OnInit {
     {
       columnDef: 'label',
       header: 'Label',
+      isSearchable: true,
       cellContent: (element: ITagDto) => `${element.label}`
     },
     {

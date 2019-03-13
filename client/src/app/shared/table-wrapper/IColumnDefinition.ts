@@ -5,4 +5,5 @@ export interface IColumnInterface {
     cellContent: (element: any) => string;
     cellAction?: (element: any) => any;
     icon?: string;
+    isSearchable?: boolean;
 }

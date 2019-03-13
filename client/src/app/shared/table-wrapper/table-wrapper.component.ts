@@ -18,6 +18,7 @@ export class TableWrapperComponent implements OnInit, OnChanges {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   displayedColumns: string[];
+  searchableColumns: IColumnInterface[] = [];
   dataSource: MatTableDataSource<any>;
   filterValue: string;
 
@@ -25,6 +26,7 @@ export class TableWrapperComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.createTableRows();
+    this.searchableColumns = this.columns.filter((col: IColumnInterface) => col.isSearchable);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -32,8 +34,16 @@ export class TableWrapperComponent implements OnInit, OnChanges {
   }
 
   createTableRows() {
-    this.displayedColumns = this.columns.map(x => x.columnDef);
+    this.displayedColumns = this.columns.map((col: IColumnInterface) => col.columnDef);
+
     this.dataSource = new MatTableDataSource(this.elements);
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const concatenatedData = this.searchableColumns
+        .map((col: IColumnInterface) => col.cellContent(data))
+        .join('');
+      return concatenatedData.search(new RegExp(filter, 'i')) >= 0;
+    };
+
     if (this.elements) {
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
@@ -42,7 +52,7 @@ export class TableWrapperComponent implements OnInit, OnChanges {
 
   applyFilter(filterValue: string) {
     this.filterValue = filterValue;
-    this.dataSource.filter = this.filterValue.trim().toLowerCase();
+    this.dataSource.filter = this.filterValue.trim();
   }
 
 }
