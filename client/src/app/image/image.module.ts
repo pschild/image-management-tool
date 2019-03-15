@@ -9,6 +9,8 @@ import { SharedModule } from '../shared/shared.module';
 import { MaterialModule } from '../material/material.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TagManagementModule } from '../management/tag-management/tag-management.module';
+import { MarkerDirective } from './marker.directive';
+import { ImageMarkerComponent } from './image-marker.component';
 
 @NgModule({
   imports: [
@@ -23,8 +25,11 @@ import { TagManagementModule } from '../management/tag-management/tag-management
   declarations: [
     ImageEditComponent,
     ImagePreviewComponent,
-    ImageFormComponent
+    ImageFormComponent,
+    ImageMarkerComponent,
+    MarkerDirective
   ],
+  entryComponents: [ImageMarkerComponent],
   exports: [],
   providers: [
     ImageService
