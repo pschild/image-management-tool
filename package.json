@@ -60,7 +60,7 @@
     "request-promise": "^4.2.2",
     "rxjs": "6.3.3",
     "sqlite3": "^4.0.6",
-    "typeorm": "^0.2.7"
+    "typeorm": "^0.2.15"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.10.0",
