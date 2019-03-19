@@ -22,27 +22,20 @@ export class FileSystemService {
     }
 
     async getSystemDrives(): Promise<IFsFile[]> {
-        return new Promise<IFsFile[]>((resolve, reject) => {
-            drivelist.list((error, driveList) => {
-                if (error) {
-                    reject(error);
-                }
-
-                const driveDirectories: IFsFile[] = [];
-                driveList.forEach(driveInfo => {
-                    driveInfo.mountpoints.forEach(mountpoint => {
-                        const drivePath = mountpoint.path;
-                        const strippedPath = drivePath.replace(path.sep, ''); // strip slashes after drive letter
-                        driveDirectories.push({
-                            name: strippedPath,
-                            absolutePath: strippedPath,
-                            isDirectory: true
-                        });
-                    });
+        const drives: drivelist.Drive[] = await drivelist.list();
+        const driveDirectories: IFsFile[] = [];
+        drives.forEach((drive: drivelist.Drive) => {
+            drive.mountpoints.forEach((mountpoint: drivelist.Mountpoint) => {
+                const drivePath = mountpoint.path;
+                const strippedPath = drivePath.replace(path.sep, ''); // strip slashes after drive letter
+                driveDirectories.push({
+                    name: strippedPath,
+                    absolutePath: strippedPath,
+                    isDirectory: true
                 });
-                resolve(driveDirectories);
             });
         });
+        return driveDirectories;
     }
 
     async getFilesByPath(givenPath: string): Promise<IFsFile[]> {

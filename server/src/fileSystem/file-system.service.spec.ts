@@ -81,12 +81,12 @@ describe('FileSystemService', () => {
 
     describe('getSystemDrives', () => {
         it('should return system drives', async () => {
-            jest.spyOn(drivelist, 'list').mockImplementation(callbackFn => {
-                callbackFn(null, [
+            jest.spyOn(drivelist, 'list').mockResolvedValue(
+                [
                     { mountpoints: [{ path: 'C:\\' }] },
                     { mountpoints: [{ path: 'D:\\' }] }
-                ]);
-            });
+                ]
+            );
 
             const systemDrives = await fileSystemService.getSystemDrives();
             expect(drivelist.list).toHaveBeenCalled();

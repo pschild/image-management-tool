@@ -105,12 +105,12 @@ describe('ExplorerController', () => {
 
     describe('getSystemDrives', () => {
         it('should return a correctly merged result', async () => {
-            jest.spyOn(drivelist, 'list').mockImplementation(callbackFn => {
-                callbackFn(null, [
+            jest.spyOn(drivelist, 'list').mockResolvedValue(
+                [
                     { mountpoints: [{ path: 'C:\\' }] },
                     { mountpoints: [{ path: 'D:\\' }] }
-                ]);
-            });
+                ]
+            );
 
             const result: IExplorerContentDto | FileSystemException = await explorerController.getSystemDrives();
             const mergeResult = result as IExplorerContentDto;
