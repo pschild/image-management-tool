@@ -1,0 +1,29 @@
+.sidenav-container {
+    height: 100%;
+
+    .sidenav {
+        width: 200px;
+
+        .nav-list {
+            .nav-list-item {
+                &.active {
+                    font-weight: bold;
+                }
+
+                &.sub-item {
+                    padding-left: 30px;
+                }
+            }
+        }
+
+        .mat-toolbar {
+            background: inherit;
+        }
+
+        &.mat-primary {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+    }
+}

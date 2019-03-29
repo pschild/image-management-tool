@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatCardModule, MatListModule, MatMenuModule, MatIconModule, MatDividerModule, MatFormFieldModule, MatChipsModule, MatAutocompleteModule, MatOptionModule, MatInputModule, MatSliderModule, MatProgressBarModule, MatDialogModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatTableModule, MatSortModule, MatPaginatorModule, MatPaginatorIntl, MAT_DATE_LOCALE } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatListModule, MatMenuModule, MatIconModule, MatDividerModule, MatFormFieldModule, MatChipsModule, MatAutocompleteModule, MatOptionModule, MatInputModule, MatSliderModule, MatProgressBarModule, MatDialogModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatTableModule, MatSortModule, MatPaginatorModule, MatPaginatorIntl, MAT_DATE_LOCALE, MatToolbarModule, MatSidenavModule } from '@angular/material';
 import { MatPaginatorIntlCustom } from './material-custom-paginator';
 
 @NgModule({
@@ -24,7 +24,9 @@ import { MatPaginatorIntlCustom } from './material-custom-paginator';
     MatNativeDateModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatToolbarModule,
+    MatSidenavModule
   ],
   exports: [
     MatButtonModule,
@@ -47,7 +49,9 @@ import { MatPaginatorIntlCustom } from './material-custom-paginator';
     MatNativeDateModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatToolbarModule,
+    MatSidenavModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCustom },

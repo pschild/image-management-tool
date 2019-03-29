@@ -1,7 +1,25 @@
-<nav>
-  <a routerLink="/explorer" routerLinkActive="active">Explorer</a>
-  <a routerLink="/management" routerLinkActive="active">Management</a>
-  <a routerLink="/management/tags" routerLinkActive="active">Tags</a>
-  <a routerLink="/settings" routerLinkActive="active">Settings</a>
-  <a routerLink="/playground" routerLinkActive="active">Playground</a>
-</nav>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="!(isHandset$ | async)">
+    <!-- <mat-toolbar>Menu</mat-toolbar> -->
+    <mat-nav-list class="nav-list">
+      <mat-list-item *ngFor="let item of navigationItems">
+        <a class="nav-list-item" [routerLink]="item.route" routerLinkActive="active" [ngClass]="{'sub-item': item.isChild}">
+          <mat-icon matListIcon>{{ item.iconClass }}</mat-icon>
+          {{ item.label }}
+        </a>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Image Management Tool</span>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
