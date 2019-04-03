@@ -4,12 +4,17 @@
     [opened]="!(isHandset$ | async)">
     <!-- <mat-toolbar>Menu</mat-toolbar> -->
     <mat-nav-list class="nav-list">
-      <mat-list-item *ngFor="let item of navigationItems">
-        <a class="nav-list-item" [routerLink]="item.route" routerLinkActive="active" [ngClass]="{'sub-item': item.isChild}">
+      <a class="nav-list-item"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}"
+        [ngClass]="{'sub-item': item.isChild}"
+        *ngFor="let item of navigationItems">
+        <mat-list-item>
           <mat-icon matListIcon>{{ item.iconClass }}</mat-icon>
           {{ item.label }}
-        </a>
-      </mat-list-item>
+        </mat-list-item>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

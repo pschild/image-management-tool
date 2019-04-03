@@ -6,12 +6,20 @@
 
         .nav-list {
             .nav-list-item {
-                &.active {
-                    font-weight: bold;
+                .mat-list-item {
+                    border-left: 5px solid transparent;
+                }
+
+                &.active > .mat-list-item {
+                    background-color: #ddd;
+                    border-color: #3f51b5;
+                    transition: border .5s ease-in-out;
                 }
 
                 &.sub-item {
-                    padding-left: 30px;
+                    .mat-list-item-content {
+                        padding-left: 25px;
+                    }
                 }
             }
         }
