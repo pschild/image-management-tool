@@ -1,0 +1,11 @@
+@import '~ngx-toastr/toastr.css';
+
+.toast-container {
+    .ngx-toastr {
+        box-shadow: none;
+
+        &:hover {
+            box-shadow: 0 0 2px #000000;
+        }
+    }
+}

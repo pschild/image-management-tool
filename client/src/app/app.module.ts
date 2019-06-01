@@ -36,7 +36,11 @@ const CustomUrlSerializerProvider = {
     CoreModule,
     SharedModule,
     AppRoutingModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      closeButton: true,
+      progressBar: true,
+      positionClass: 'toast-bottom-right'
+    }),
     NgxsModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot({
       disabled: AppConfig.production
